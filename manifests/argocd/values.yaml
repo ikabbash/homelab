@@ -1,0 +1,85 @@
+global:
+  domain: argocd.homelab.ikabbash.com
+  logging:
+    format: text
+    level: info
+
+configs:
+  params:
+    server.insecure: true
+
+certificate:
+  enabled: true
+
+server:
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    annotations:
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+      cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    tls: true
+  resources:
+    limits:
+      cpu: 300m
+      memory: 1Gi
+    requests:
+      cpu: 150m
+      memory: 512Mi
+
+controller:
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 750Mi
+    requests:
+      cpu: 250m
+      memory: 256Mi
+
+repoServer:
+  resources:
+    limits:
+      cpu: 50m
+      memory: 128Mi
+    requests:
+      cpu: 10m
+      memory: 64Mi
+
+redis:
+  exporter:
+    resources:
+      limits:
+        cpu: 50m
+        memory: 64Mi
+      requests:
+        cpu: 10m
+        memory: 32Mi
+  resources:
+    limits:
+      cpu: 200m
+      memory: 128Mi
+    requests:
+      cpu: 100m
+      memory: 64Mi
+
+applicationSet:
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 750Mi
+    requests:
+      cpu: 250m
+      memory: 256Mi
+
+notifications:
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+dex:
+  enabled: false
