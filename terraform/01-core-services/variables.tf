@@ -1,7 +1,21 @@
+# Optional
 variable "kubeconfig_path" {
   description = "Path to the kubeconfig file"
   type        = string
   default     = "~/.kube/config"
+}
+
+# Required
+variable "homelab_domain" {
+  description = "Domain name for the homelab environment"
+  type        = string
+}
+
+# Optional
+variable "homelab_data_path" {
+  description = "Base path for homelab data storage"
+  type        = string
+  default     = "/srv/homelab"
 }
 
 # Required

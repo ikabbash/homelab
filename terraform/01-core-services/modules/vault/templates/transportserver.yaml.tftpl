@@ -1,0 +1,16 @@
+apiVersion: k8s.nginx.org/v1
+kind: TransportServer
+metadata:
+  name: vault-tls-passthrough
+  namespace: ${namespace}
+spec:
+  listener:
+    name: tls-passthrough
+    protocol: TLS_PASSTHROUGH
+  host: ${subdomain}.${domain}
+  upstreams:
+    - name: vault-active
+      service: vault-active
+      port: 8200
+  action:
+    pass: vault-active

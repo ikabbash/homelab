@@ -21,3 +21,15 @@ module "cert_manager" {
   cloudflare_api_token = var.cloudflare_api_token
   letsencrypt_email    = var.letsencrypt_email
 }
+
+# Deploy Vault
+module "vault" {
+  source              = "./modules/vault"
+  chart_namespace     = "vault"
+  chart_version       = "0.31.0"
+  homelab_domain      = var.homelab_domain
+  homelab_data_path   = var.homelab_data_path
+  cluster_issuer_name = module.cert_manager.cluster_issuer_name
+
+  depends_on = [module.cert_manager]
+}
