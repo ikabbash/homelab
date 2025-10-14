@@ -1,0 +1,4 @@
+login_approle_role_id   = "example-role-id"
+login_approle_secret_id = "example-secret-id"
+vault_address           = "vault.example.com"
+vault_port              = "8200"
