@@ -7,7 +7,7 @@ BASE_DIR=$(readlink -f $(dirname ${0}))
 VAULT_POD="vault-0"
 VAULT_NAMESPACE="vault"
 VAULT_ADDRESS="${VAULT_ADDRESS:-}"
-VAULT_PORT="8200"
+VAULT_PORT="443"
 POLICY_NAME="terraform-admin"
 POLICY_FILE="terraform-admin.hcl"
 TERRAFORM_FILE="terraform.tfvars"
@@ -32,7 +32,7 @@ kubectl exec -n "${VAULT_NAMESPACE}" "${VAULT_POD}" -- sh -c "
 
     # Enable AppRole auth method if not exists
     if ! vault auth list | grep -q '^${AUTH_PATH}/'; then
-        vault auth enable -path=${AUTH_PATH} approle
+        vault auth enable -path=${AUTH_PATH} -description='for Terraform and automation tools' approle
     fi
 
     # Create AppRole role
