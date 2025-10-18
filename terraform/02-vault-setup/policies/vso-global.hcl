@@ -1,7 +1,7 @@
-path "secret/data/homelab/*" {
+path "homelab/infra/kv-secret/data/*" {
   capabilities = ["read", "list"]
 }
 
-path "secret/metadata/homelab/*" {
+path "homelab/infra/kv-secret/metadata/*" {
   capabilities = ["read", "list"]
 }
