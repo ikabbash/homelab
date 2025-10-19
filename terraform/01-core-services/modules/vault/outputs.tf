@@ -8,7 +8,7 @@ output "namespace" {
   value       = helm_release.vault.namespace
 }
 
-output "domain" {
+output "address" {
   description = "Complete domain name where the Vault service will be accessible"
-  value       = "vault.${var.homelab_domain}"
+  value       = "${var.vault_subdomain}.${var.homelab_domain}"
 }
