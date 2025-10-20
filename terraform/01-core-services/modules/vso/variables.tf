@@ -10,3 +10,9 @@ variable "chart_version" {
   description = "Version of the VSO Helm chart"
   type        = string
 }
+
+# Required
+variable "vault_address" {
+  description = "Complete domain name where the Vault service will be accessible"
+  type        = string
+}

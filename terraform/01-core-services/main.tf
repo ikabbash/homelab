@@ -33,3 +33,13 @@ module "vault" {
 
   depends_on = [module.cert_manager]
 }
+
+# Deploy VSO
+module "vso" {
+  source          = "./modules/vso"
+  chart_namespace = "vault-secrets-operator-system"
+  chart_version   = "1.0.1"
+  vault_address   = module.vault.address
+
+  depends_on = [module.vault]
+}
