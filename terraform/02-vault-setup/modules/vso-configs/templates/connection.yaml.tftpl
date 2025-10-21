@@ -1,0 +1,8 @@
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultConnection
+metadata:
+  name: ${connection}
+  namespace: ${namespace}
+spec:
+  address: https://${domain}:${port}
+  skipTLSVerify: false

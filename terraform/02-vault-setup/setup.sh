@@ -6,7 +6,7 @@ set -e
 BASE_DIR=$(readlink -f $(dirname ${0}))
 VAULT_POD="vault-0"
 VAULT_NAMESPACE="vault"
-VAULT_ADDRESS="${VAULT_ADDRESS:-}"
+VAULT_ADDRESS=$(terraform output -state=../01-core-services/terraform.tfstate -raw vault_address)
 VAULT_PORT="443"
 POLICY_NAME="terraform-admin"
 POLICY_FILE="terraform-admin.hcl"
@@ -15,14 +15,14 @@ AUTH_PATH="approle"
 ROLE_NAME="terraform-role"
 
 # Check if policy file exists
-if [ ! -f "${BASE_DIR}/policies/$POLICY_FILE" ]; then
+if [ ! -f "${BASE_DIR}/modules/vault-configs/policies/$POLICY_FILE" ]; then
     echo "Error: Policy file '$POLICY_FILE' not found"
     exit 1
 fi
 
 # Copy policy file to pod
 echo "Copying policy file to Vault pod..."
-kubectl cp -n "${VAULT_NAMESPACE}" "${BASE_DIR}/policies/${POLICY_FILE}" "${VAULT_POD}:/tmp/${POLICY_FILE}"
+kubectl cp -n "${VAULT_NAMESPACE}" "${BASE_DIR}/modules/vault-configs/policies/${POLICY_FILE}" "${VAULT_POD}:/tmp/${POLICY_FILE}"
 
 # Execute all vault commands in the pod
 echo "Setting up Vault authentication..."
