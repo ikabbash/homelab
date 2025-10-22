@@ -1,0 +1,12 @@
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultAuth
+metadata:
+  name: ${auth_name}
+  namespace: ${namespace}
+spec:
+  kubernetes:
+    role: ${role}
+    serviceAccount: ${service_account}
+  vaultAuthGlobalRef:
+    allowDefault: true
+    namespace: ${auth_global_namespace}
