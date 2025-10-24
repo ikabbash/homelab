@@ -5,7 +5,7 @@ set -e
 # Variables
 BASE_DIR=$(readlink -f $(dirname ${0}))
 VAULT_POD="vault-0"
-VAULT_NAMESPACE="vault"
+VAULT_NAMESPACE=$(terraform output -state=../01-core-services/terraform.tfstate -raw vault_namespace)
 VAULT_ADDRESS=$(terraform output -state=../01-core-services/terraform.tfstate -raw vault_address)
 VAULT_PORT="443"
 POLICY_NAME="terraform-admin"
