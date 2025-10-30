@@ -1,40 +1,92 @@
-# Overview
-This repository contains my homelab infrastructure configuration, managed primarily with ArgoCD, and is a work in progress as I explore, refine, and address pending improvements.
+# Homelab
+This repository contains a work-in-progress Kubernetes homelab setup with core infrastructure bootstrapped via Terraform and applications deployed using ArgoCD. Terraform provisions essential services like Cert Manager, Vault, and ArgoCD while ArgoCD manages the deployment of applications and ensures GitOps-driven infrastructure consistency.
 
-## ArgoCD
-ArgoCD is initially deployed manually using the app-of-apps pattern, with configuration from [`manifests/argocd/values.yaml`](./manifests/argocd/values.yaml). To begin, install ArgoCD:
-```bash
-helm repo add argo https://argoproj.github.io/argo-helm
-helm repo update
+<!-- ## Architecture -->
 
-# For Debian based distros
-sudo apt update
-sudo apt install apache2-utils
-htpasswd -nbBC 10 "" "YourPasswordHere" | tr -d ':\n' | sed 's/$2y/$2a/'
+<!-- ## Hardware Overview -->
 
-helm upgrade -i argocd argo/argo-cd -n argocd \
-    --create-namespace \
-    -f values.yaml \
-    --set configs.secret.argocdServerAdminPassword="Bcrypt hashed password" \
-    --version 8.0.0
+## What's Inside
+
+<img src="docs/images/homelab-setup.png" alt="Homelab Secrets Diagram" width="800"/>
+
+The setup is split into two main parts:
+- Terraform (`terraform/`) which bootstraps the foundation in three stages (check the [doc](./terraform/README.md) for steps and explanation)
+- ArgoCD which deploys and manages applications using manifests stored in this repo
+
+This design keeps infrastructure changes tracked and versioned, making it straightforward to reproduce the cluster elsewhere if needed (for cases like creating a separate environment for testing, moving to new hardware, and so on). Terraform handles the bootstrapping of core services that ArgoCD depends on, while ArgoCD provides GitOps for everything else.
+
+### Key Components
+- Cert Manager: Handles TLS certificate management and automation using Let's Encrypt. Configured to use Cloudflare DNS challenges for domain validation
+- Vault: Stores all secrets for the cluster. Acts as the single source of truth for sensitive data like API keys, database passwords, and service credentials
+- Vault Secrets Operator (VSO): Syncs secrets from Vault into Kubernetes Secrets, letting pods use them natively without storing secrets in repos, improving security by keeping sensitive data out of source control
+- ArgoCD: The GitOps engine that keeps the cluster in sync with this repository. Any changes pushed here get automatically reflected in the cluster
+
+## Getting Started
+Follow these steps to get the homelab up and running.
+
+### Requirements
+You'll need a few things prepared:
+- [Cilium](https://docs.cilium.io/en/stable/gettingstarted/k8s-install-default/) as the cluster's CNI (optional)
+- F5's NGINX [Ingress Controller](https://docs.nginx.com/nginx-ingress-controller/installation/installing-nic/installation-with-helm/) (you can use the Helm values below)
+  ```yaml
+  controller:
+    kind: daemonset
+    enableCertManager: true
+    enableCustomResources: true
+    enableTLSPassthrough: true
+    tlsPassThroughPort: 443
+  ```
+- A domain preferably managed through Cloudflare since that's what Cert Manager is configured to use for DNS challenges
+
+Since this is a single-node private homelab without proper DNS (for now), you'll need to add entries to your `/etc/hosts` file to access services:
+
+```
+ip_address argocd.example.com vault.example.com etc.example.com
 ```
 
-When creating new cluster, you'll need to manually add `super-app.yaml` into ArgoCD so everything else will be installed.
+### Deployment
+1. Work through the Terraform projects in order (`01-core-services` → `02-vault-setup` → `03-base-services`). Each directory has its own README with specific instructions
+2. After Terraform completes, ArgoCD will be available and can start managing the applications
 
-### Components
-| Component      | Purpose                                                   |
-|----------------|-----------------------------------------------------------|
-| controller     | Reconciles desired Git state with live cluster state.     |
-| repoServer     | Fetches and renders manifests from Git, Helm, Kustomize.  |
-| dex            | Provides OAuth/OIDC-based user authentication.            |
-| redis          | Speeds up operations with cached and ephemeral data.      |
-| notifications  | Sends alerts triggered by app events or sync changes.     |
-| server         | Hosts API/UI, manages RBAC, and coordinates user actions. |
+## Notes
+- All storage currently resides on the local node using Kubernetes `hostPath`
+- In case no one told you before, always back up your data before upgrading anything. For example, Vault does not make backward-compatibility guarantees for its data store so you better take backups
 
-# To-do
-- [ ] Integrate Vault for secret management  
-  - [ ] Automate creation of currently manual resources (e.g., cert-manager secret and cluster issuer)  
-- [ ] Apply DevSecOps best practices across the setup  
-  - [ ] Define and enforce pod security contexts  
-- [ ] Refactor documentation for clarity and structure  
-- [ ] Configure ArgoCD to send alerts via email and Slack
+## To-do
+What's planned for the homelab as it evolves. The ideas below may change and more may be added.
+
+### Infra
+- [ ] Learn and setup Talos (current in progress)
+- [ ] Enable audit logging for Vault
+- [ ] Deploy the following with ArgoCD
+  - [ ] [homepage](https://github.com/gethomepage/homepage)
+  - [ ] PostgreSQL
+  - [ ] Scheduled backups
+  - [ ] [n8n](https://docs.n8n.io/hosting/)
+  - [ ] [FreshRSS](https://freshrss.org/)
+  - [ ] [Karakeep](https://github.com/karakeep-app/karakeep)
+  - [ ] [changedetection.io](https://github.com/dgtlmoon/changedetection.io/)
+  - [ ] [Prometheus and Grafana](https://github.com/prometheus-community/helm-charts)
+  - [ ] [Grafana Loki](https://grafana.com/docs/loki/latest/setup/install/helm/)
+  - [ ] [SonarQube](https://github.com/SonarSource/helm-chart-sonarqube)
+- [ ] Monitoring and health checks
+- [ ] DNS server
+- [ ] Plan for a storage solution (e.g. Longhorn, OpenEBS, Ceph, Synology, etc.)
+- [ ] Migrate from NGINX Ingress Controller to Cilium's Gateway API (maybe?)
+
+### Security
+- [ ] Deploy [Authentik](https://github.com/goauthentik/helm/blob/main/charts/authentik/README.md) using Terraform
+  - [ ] Integrate SSO across platforms
+  - [ ] Protect web apps with [M2M](https://youtu.be/bS_Pey6yAjA?si=fuhExwsYiVCINHAl)
+- [ ] Define and enforce pod security contexts  
+- [ ] Cilium network policies
+  - [ ] Default deny all traffic between namespaces
+- [ ] Scheduled jobs to scan containers for vulnerabilities
+
+### n8n
+- [ ] RSS feed summarizer
+- [ ] Check every app installed by Helm for new versions and notify with a summary of the changelogs
+  - [ ] Create PRs for automatic upgrade (e.g. update image tags in the manifests or chart version)
+  - [ ] Notify on list of apps/repos releases (e.g. Kubernetes, GitLab)
+- [ ] Alert for product verions approaching end of life
+- [ ] Alert on newly discovered vulnerabilities for homelab apps
