@@ -1,0 +1,54 @@
+cluster:
+  network:
+    cni:
+      name: none  # Don't install default CNI - we'll install Cilium separately
+    podSubnets:
+      - 10.244.0.0/16  # IP range for pods (65,536 addresses)
+    serviceSubnets:
+      - 10.96.0.0/12   # IP range for services (1,048,576 addresses)
+  proxy:
+    disabled: true
+  apiServer:
+    certSANs:
+      - NODE_IP_ADDRESS
+      - VIRTUAL_IP_ADDRESS  # VIP - ensures all API server certs include it to prevent cert errors when accessing via VIP
+      # - k8s.homelab.example  # Add DNS name if you use one for the VIP
+  allowSchedulingOnControlPlanes: true
+
+machine:
+  network:
+    hostname: NODE_HOSTNAME
+    interfaces:
+      - interface: NODE_NETWORK_INTERFACE
+        dhcp: false
+        addresses:
+          - NODE_IP_ADDRESS/24
+        mtu: 1500 # Must be an integer, can't be a string
+        routes:
+          - network: 0.0.0.0/0     # Default route (all traffic)
+            gateway: NODE_NETWORK_GATEWAY
+        vip:
+          ip: VIRTUAL_IP_ADDRESS
+  time:
+    servers:
+      - time.cloudflare.com
+      - pool.ntp.org
+  features:
+    kubernetesTalosAPIAccess:
+      enabled: true          # Allow Kubernetes to manage Talos
+      allowedRoles:
+        - os:admin           # Which roles can access Talos API
+      allowedKubernetesNamespaces:
+        - kube-system        # Only kube-system pods can manage OS to limit OS access
+    hostDNS:
+      enabled: true
+      forwardKubeDNSToHost: false  # Must be false for Cilium without kube-proxy. Why: Prevents DNS loops
+  kubelet:
+    extraArgs:
+      rotate-certificates: true
+  install:
+    disk: NODE_DISK
+    wipe: true
+  certSANs:
+    - NODE_IP_ADDRESS
+    - VIRTUAL_IP_ADDRESS
