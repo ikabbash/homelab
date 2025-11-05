@@ -1,3 +1,4 @@
+# certSANs is added automatically for cluster VIP
 cluster:
   network:
     cni:
@@ -8,25 +9,15 @@ cluster:
       - 10.96.0.0/12   # IP range for services (1,048,576 addresses)
   proxy:
     disabled: true
-  apiServer:
-    certSANs:
-      - NODE_IP_ADDRESS
-      - VIRTUAL_IP_ADDRESS  # VIP - ensures all API server certs include it to prevent cert errors when accessing via VIP
-      # - k8s.homelab.example  # Add DNS name if you use one for the VIP
   allowSchedulingOnControlPlanes: true
 
 machine:
   network:
     hostname: NODE_HOSTNAME
     interfaces:
-      - interface: NODE_NETWORK_INTERFACE
-        dhcp: false
-        addresses:
-          - NODE_IP_ADDRESS/24
-        mtu: 1500 # Must be an integer, can't be a string
-        routes:
-          - network: 0.0.0.0/0     # Default route (all traffic)
-            gateway: NODE_NETWORK_GATEWAY
+      - deviceSelector:
+          physical: true # Should select any hardware network device
+        dhcp: true # Static IPs handled by DHCP
         vip:
           ip: VIRTUAL_IP_ADDRESS
   time:
@@ -47,8 +38,16 @@ machine:
     extraArgs:
       rotate-certificates: true
   install:
-    disk: NODE_DISK
+    disk: NODE_DISK_DEVICE
     wipe: true
   certSANs:
     - NODE_IP_ADDRESS
     - VIRTUAL_IP_ADDRESS
+    - NODE_HOSTNAME
+  sysctls:  # Kernel tuning parameters
+    net.core.somaxconn: "65535"         # Max queued connections
+    net.core.netdev_max_backlog: "4096" # Network device backlog
+    net.netfilter.nf_conntrack_max: "131072"  # Increase connection tracking to prevent "table full" errors
+    # CRITICAL for Cilium eBPF because it needs relaxed rp_filter. Drop to "0" if you see asymmetric routing
+    net.ipv4.conf.all.rp_filter: "2"      # Loose mode reverse path filtering
+    net.ipv4.conf.default.rp_filter: "2"  # Loose mode for new interfaces
