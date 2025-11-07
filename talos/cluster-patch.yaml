@@ -9,7 +9,6 @@ cluster:
       - 10.96.0.0/12   # IP range for services (1,048,576 addresses)
   proxy:
     disabled: true
-  allowSchedulingOnControlPlanes: true
 
 machine:
   network:
@@ -44,6 +43,9 @@ machine:
     - NODE_IP_ADDRESS
     - VIRTUAL_IP_ADDRESS
     - NODE_HOSTNAME
+  kernel:
+    modules:
+      - name: br_netfilter  # Required for Kubernetes networking
   sysctls:  # Kernel tuning parameters
     net.core.somaxconn: "65535"         # Max queued connections
     net.core.netdev_max_backlog: "4096" # Network device backlog
