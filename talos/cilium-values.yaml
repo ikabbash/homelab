@@ -8,6 +8,12 @@ k8sServicePort: 6443
 ipam:
   mode: kubernetes
 
+# Use L2 (ARP) mode for load balancing
+l2announcements:
+  enabled: true
+  interfaces:
+    - '^(eth0|ens.*|enp[0-9s]+)$' 
+
 securityContext:
   capabilities:
     ciliumAgent:

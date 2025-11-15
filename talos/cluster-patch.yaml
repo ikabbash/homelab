@@ -17,8 +17,6 @@ machine:
       - deviceSelector:
           physical: true # Should select any hardware network device
         dhcp: true # Static IPs handled by DHCP
-        vip:
-          ip: VIRTUAL_IP_ADDRESS
   time:
     servers:
       - time.cloudflare.com
@@ -41,7 +39,6 @@ machine:
     wipe: true
   certSANs:
     - NODE_IP_ADDRESS
-    - VIRTUAL_IP_ADDRESS
     - NODE_HOSTNAME
   kernel:
     modules:
