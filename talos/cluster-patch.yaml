@@ -9,6 +9,18 @@ cluster:
       - 10.96.0.0/12   # IP range for services (1,048,576 addresses)
   proxy:
     disabled: true
+  apiServer:
+    admissionControl:
+        - name: PodSecurity
+          configuration:
+            apiVersion: pod-security.admission.config.k8s.io/v1alpha1
+            defaults:
+                audit: restricted
+                audit-version: latest
+                enforce: baseline
+                enforce-version: latest
+                warn: restricted
+                warn-version: latest
 
 machine:
   network:
