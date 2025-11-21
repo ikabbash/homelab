@@ -11,6 +11,21 @@ ui:
 server:
   dataStorage:
     enabled: false
+  statefulSet:
+    securityContext:
+      pod:
+        seccompProfile:
+          type: RuntimeDefault
+      container:
+        runAsNonRoot: true
+        runAsUser: 100
+        runAsGroup: 1000
+        fsGroup: 1000
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+        readOnlyRootFilesystem: false
   ha:
     enabled: true
     replicas: 1
