@@ -14,6 +14,11 @@ Note that it's assumed that the DHCP server is configured to assign fixed IPs to
 
 Cilium is used for the Kubernetes CNI and F5's NGINX Ingress Controller manages external access to cluster services in this setup.
 
+Note that the PodSecurity admission defaults are already set to restricted for all audit, enforce, and warn levels. To check after installation, execute the command below.
+```bash
+talosctl get admissioncontrolconfigs.kubernetes.talos.dev admission-control -o yaml
+```
+
 ### Requirements
 Make sure the following are installed and accessible:
 - `talosctl`: For generating and managing Talos cluster configurations
@@ -68,7 +73,7 @@ provisioning:
 ---
 apiVersion: v1alpha1
 kind: UserVolumeConfig
-name: homelab-storage
+name: homelab
 provisioning:
   diskSelector:
     match: disk.dev_path == "/dev/sda"
@@ -184,3 +189,24 @@ spec:
 ```
 
 And you should be done! The cluster is ready to be used.
+
+### Commands
+```bash
+# Shows dashboard
+talosctl dashboard
+
+# Retrieves the status of node system services
+talosctl --nodes $NODE_IP_ADDRESS services
+
+# Retrieves logs of target service
+talosctl --nodes $NODE_IP_ADDRESS logs service_name
+
+# Lists all containers in the containerd namespace (with -k)
+talosctl --nodes $NODE_IP_ADDRESS containers -k
+
+# Checks volume status
+talosctl get volumestatus
+
+# Checks volume location usage (obtained from volumestatus)
+talosctl usage -H /dev/sdaX
+```
