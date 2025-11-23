@@ -97,7 +97,7 @@ resource "helm_release" "vault" {
   chart      = "vault"
   namespace  = var.chart_namespace
   version    = var.chart_version
-  skip_crds  = true
+  skip_crds  = false
 
   values = [
     templatefile("${path.module}/templates/values.yaml.tftpl", {

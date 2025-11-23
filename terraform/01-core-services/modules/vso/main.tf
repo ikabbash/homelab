@@ -15,7 +15,7 @@ resource "helm_release" "vso" {
   chart            = "vault-secrets-operator"
   namespace        = var.chart_namespace
   version          = var.chart_version
-  skip_crds        = true
+  skip_crds        = false
   create_namespace = true
 
   values = [

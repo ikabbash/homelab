@@ -15,7 +15,7 @@ variable "homelab_domain" {
 variable "homelab_data_path" {
   description = "Base path for homelab data storage"
   type        = string
-  default     = "/srv/homelab"
+  default     = "/var/mnt/homelab"
 }
 
 # Required
