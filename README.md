@@ -56,8 +56,7 @@ ip_address argocd.example.com vault.example.com etc.example.com
 What's planned for the homelab as it evolves. The ideas below may change and more may be added.
 
 ### Infra
-- [ ] Learn and setup Talos (current in progress)
-- [ ] Enable audit logging for Vault
+- [x] Learn and setup Talos
 - [ ] Deploy the following with ArgoCD
   - [ ] [homepage](https://github.com/gethomepage/homepage)
   - [ ] PostgreSQL
@@ -66,7 +65,7 @@ What's planned for the homelab as it evolves. The ideas below may change and mor
   - [ ] [FreshRSS](https://freshrss.org/)
   - [ ] [Karakeep](https://github.com/karakeep-app/karakeep)
   - [ ] [changedetection.io](https://github.com/dgtlmoon/changedetection.io/)
-  - [ ] [Prometheus and Grafana](https://github.com/prometheus-community/helm-charts)
+  - [ ] [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack)
   - [ ] [Grafana Loki](https://grafana.com/docs/loki/latest/setup/install/helm/)
   - [ ] [SonarQube](https://github.com/SonarSource/helm-chart-sonarqube)
 - [ ] Monitoring and health checks
@@ -78,6 +77,10 @@ What's planned for the homelab as it evolves. The ideas below may change and mor
 - [ ] Deploy [Authentik](https://github.com/goauthentik/helm/blob/main/charts/authentik/README.md) using Terraform
   - [ ] Integrate SSO across platforms
   - [ ] Protect web apps with [M2M](https://youtu.be/bS_Pey6yAjA?si=fuhExwsYiVCINHAl)
+- [ ] Setup audits (plan storage and retention accordingly)
+  - [ ] Kubernetes audits
+  - [ ] Vault audit logging 
+  - [ ] Send logs to a central server
 - [ ] Define and enforce pod security contexts  
 - [ ] Cilium network policies
   - [ ] Default deny all traffic between namespaces
