@@ -20,7 +20,6 @@ variable "cilium_chart_namespace" {
 variable "cilium_service_host" {
   description = ""
   type        = string
-  default     = "auto"
 }
 
 variable "ingress_controller_chart_version" {
@@ -38,5 +37,4 @@ variable "ingress_controller_chart_namespace" {
 variable "ingress_controller_loadbalancer" {
   description = ""
   type        = string
-  default     = "192.168.1.210"
 }

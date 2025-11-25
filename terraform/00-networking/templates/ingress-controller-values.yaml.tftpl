@@ -3,7 +3,8 @@ controller:
   service:
     create: true
     type: "LoadBalancer"
-    externalIPs: ${loadbalancer_ip}
+    externalIPs:
+      - ${loadbalancer_ip}
   enableCertManager: true
   enableCustomResources: true
   enableTLSPassthrough: true
