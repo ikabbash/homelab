@@ -15,7 +15,7 @@ terraform {
 
 locals {
   cilium_l2_policy_manifest = templatefile("${path.module}/templates/cilium_l2_policy.yaml.tftpl", {
-    namespace = "var.ingress_controller_chart_namespace"
+    loadbalancer_ip = var.ingress_controller_loadbalancer
   })
 }
 
@@ -37,7 +37,7 @@ resource "helm_release" "cilium" {
 
 # Deploy F5's NGINX Ingress Controller
 resource "helm_release" "ingress_controller" {
-  name             = "nginx-ingress-controller"
+  name             = "nginx-ingress"
   repository       = "https://helm.nginx.com/stable/"
   chart            = "nginx-ingress"
   namespace        = var.ingress_controller_chart_namespace
@@ -55,8 +55,8 @@ resource "helm_release" "ingress_controller" {
 
 resource "null_resource" "cilium_l2_policy" {
   triggers = {
-    namespace        = var.ingress_controller_chart_namespace
     policy_name      = "nginx-ingress-l2-policy"
+    loadbalancer_ip  = var.ingress_controller_loadbalancer
     manifest_content = local.cilium_l2_policy_manifest
   }
 
@@ -70,7 +70,7 @@ resource "null_resource" "cilium_l2_policy" {
 
   provisioner "local-exec" {
     when    = destroy
-    command = "kubectl delete ciliuml2announcementpolicy ${self.triggers.policy_name} -n ${self.triggers.namespace} --ignore-not-found=true"
+    command = "kubectl delete ciliuml2announcementpolicy ${self.triggers.policy_name} --ignore-not-found=true"
   }
 
   depends_on = [helm_release.ingress_controller]
