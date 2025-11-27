@@ -9,6 +9,14 @@ k8sServiceHost: ${api_host}
 ipam:
   mode: kubernetes
 
+gatewayAPI:
+  enabled: true
+  gatewayClass:
+    create: "auto"
+
+# Enable Layer 7 network policy
+l7Proxy: true
+
 # Use L2 (ARP) mode for load balancing
 l2announcements:
   enabled: true

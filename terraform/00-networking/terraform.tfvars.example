@@ -1,2 +1,2 @@
-cilium_service_host                = "192.168.1.107"
-ingress_controller_loadbalancer    = "192.168.1.108"
+cilium_service_host      = "192.168.1.107"
+lb_service_external_ip   = "192.168.1.108"
