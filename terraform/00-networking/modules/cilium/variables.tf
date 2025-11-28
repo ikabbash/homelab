@@ -4,11 +4,10 @@ variable "chart_version" {
   type        = string
 }
 
-# Optional
+# Required
 variable "chart_namespace" {
   description = "The Kubernetes namespace to deploy Cilium into"
   type        = string
-  default     = "kube-system"
 }
 
 # Required
@@ -33,7 +32,6 @@ variable "gateway_enable" {
 variable "gateway_api_version" {
   description = "Kubernetes Gateway API CRDs version"
   type        = string
-  default     = "v1.2.0"
 }
 
 # Required

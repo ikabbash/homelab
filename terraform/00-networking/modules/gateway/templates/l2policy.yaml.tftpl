@@ -2,7 +2,6 @@ apiVersion: "cilium.io/v2alpha1"
 kind: CiliumL2AnnouncementPolicy
 metadata:
   name: ${policy_name}
-  namespace: ${gateway_namespace}
 spec:
   externalIPs: true
   loadBalancerIPs: true
