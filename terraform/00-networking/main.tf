@@ -32,3 +32,13 @@ module "gateway" {
 
   depends_on = [module.cilium]
 }
+
+module "ingress_controller" {
+  source          = "./modules/ingress-controller"
+  count           = var.gateway_enable ? 0 : 1 # If false, module is created
+  lb_external_ip  = var.lb_external_ip
+  chart_namespace = "nginx-ingress"
+  chart_version   = "2.3.1"
+
+  depends_on = [module.cilium]
+}
