@@ -23,3 +23,15 @@ variable "l2_policy_name" {
   type        = string
   default     = "cluster-entrypoint-l2-policy"
 }
+
+# Required
+variable "homelab_domain" {
+  description = "Domain name for the homelab environment"
+  type        = string
+}
+
+# Required
+variable "cluster_issuer_name" {
+  description = "The name of the ClusterIssuer from cert-manager module"
+  type        = string
+}

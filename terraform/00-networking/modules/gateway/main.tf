@@ -5,6 +5,8 @@ locals {
     gateway_namespace = var.gateway_namespace
     loadbalancer_ip   = var.lb_external_ip
     ip_pool_name      = local.ip_pool_name
+    homelab_domain    = var.homelab_domain
+    cluster_issuer    = var.cluster_issuer_name
   })
 
   cilium_l2_policy_manifest = templatefile("${path.module}/templates/l2policy.yaml.tftpl", {
@@ -27,6 +29,8 @@ resource "null_resource" "cilium_gateway" {
     gateway_namespace = var.gateway_namespace
     loadbalancer_ip   = var.lb_external_ip
     ip_pool_name      = local.ip_pool_name
+    homelab_domain    = var.homelab_domain
+    cluster_issuer    = var.cluster_issuer_name
     manifest_content  = local.cilium_gateway_manifest
   }
 

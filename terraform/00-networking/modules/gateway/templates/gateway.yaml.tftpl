@@ -15,6 +15,8 @@ kind: Gateway
 metadata:
   name: ${gateway_name}
   namespace: ${gateway_namespace}
+  annotations:
+    cert-manager.io/cluster-issuer: ${cluster_issuer}
 spec:
   gatewayClassName: cilium
   addresses:
@@ -27,3 +29,12 @@ spec:
       allowedRoutes:
         namespaces:
           from: All
+    - name: homelab-wildcard-https
+      protocol: HTTPS
+      port: 443
+      hostname: "*.${homelab_domain}"
+      tls:
+        certificateRefs:
+        - kind: Secret
+          group: ""
+          name: wildcard-homelab-cert
