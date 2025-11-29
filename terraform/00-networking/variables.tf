@@ -30,3 +30,22 @@ variable "gateway_enable" {
   type        = bool
   default     = true
 }
+
+# Required
+variable "homelab_domain" {
+  description = "Domain name for the homelab environment"
+  type        = string
+}
+
+# Required
+variable "cloudflare_api_token" {
+  description = "Cloudflare API token for DNS validation"
+  type        = string
+  sensitive   = true
+}
+
+# Required
+variable "letsencrypt_email" {
+  description = "Email address for Let's Encrypt notifications"
+  type        = string
+}

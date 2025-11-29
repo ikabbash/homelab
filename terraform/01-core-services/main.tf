@@ -13,15 +13,6 @@ terraform {
   }
 }
 
-# Deploy cert-manager
-module "cert_manager" {
-  source               = "./modules/cert-manager"
-  chart_namespace      = "cert-manager"
-  chart_version        = "v1.19.0"
-  cloudflare_api_token = var.cloudflare_api_token
-  letsencrypt_email    = var.letsencrypt_email
-}
-
 # Deploy Vault
 module "vault" {
   source              = "./modules/vault"
@@ -30,8 +21,6 @@ module "vault" {
   homelab_domain      = var.homelab_domain
   homelab_data_path   = var.homelab_data_path
   cluster_issuer_name = module.cert_manager.cluster_issuer_name
-
-  depends_on = [module.cert_manager]
 }
 
 # Deploy VSO

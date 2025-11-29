@@ -1,8 +1,7 @@
-# Optional
+# Required
 variable "chart_namespace" {
   description = "The Kubernetes namespace to deploy cert-manager into"
   type        = string
-  default     = "cert-manager"
 }
 
 # Required
