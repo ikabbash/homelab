@@ -1,0 +1,27 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: dirs-init-job
+  namespace: ${namespace}
+spec:
+  ttlSecondsAfterFinished: 180  # deletes job (and pod) after finish
+  template:
+    spec:
+      containers:
+      - name: dirs-creator
+        image: alpine
+        command:
+          - sh
+          - -c
+          - |
+            mkdir -p ${homelab_mount}/vault && chown 100:1000 ${homelab_mount}/vault
+            ls -l ${homelab_mount}
+        volumeMounts:
+        - name: homelab
+          mountPath: ${homelab_mount}
+      restartPolicy: Never
+      volumes:
+      - name: homelab
+        hostPath:
+          path: ${homelab_mount}
+          type: Directory

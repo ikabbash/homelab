@@ -49,3 +49,10 @@ variable "letsencrypt_email" {
   description = "Email address for Let's Encrypt notifications"
   type        = string
 }
+
+# Optional
+variable "homelab_mount" {
+  description = "Base path for homelab volume"
+  type        = string
+  default     = "/var/mnt/homelab"
+}

@@ -39,11 +39,11 @@ module "cert_manager" {
 
 # Deploy Gateway resource (if Cilium Gateway API is enabled)
 module "gateway" {
-  source         = "./modules/gateway"
-  count          = var.gateway_enable ? 1 : 0 # If true, module is created
-  lb_external_ip = var.lb_external_ip
-  gateway_name   = var.gateway_name
-  homelab_domain = var.homelab_domain
+  source              = "./modules/gateway"
+  count               = var.gateway_enable ? 1 : 0 # If true, module is created
+  lb_external_ip      = var.lb_external_ip
+  gateway_name        = var.gateway_name
+  homelab_domain      = var.homelab_domain
   cluster_issuer_name = module.cert_manager.cluster_issuer_name
 
   depends_on = [module.cert_manager]
@@ -58,4 +58,12 @@ module "ingress_controller" {
   chart_version   = "2.3.1"
 
   depends_on = [module.cert_manager]
+}
+
+# Created needed dirs for volumes
+module "volumes_init" {
+  source        = "./modules/volumes-init"
+  homelab_mount = var.homelab_mount
+
+  depends_on = [module.gateway, module.ingress_controller]
 }
