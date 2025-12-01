@@ -24,13 +24,6 @@ variable "gateway_name" {
   default     = "homelab-gw"
 }
 
-# Optional
-variable "gateway_enable" {
-  description = "Decides cluster entrypoint, true for Gateway API, false for NGINX Ingress Controller"
-  type        = bool
-  default     = true
-}
-
 # Required
 variable "homelab_domain" {
   description = "Domain name for the homelab environment"

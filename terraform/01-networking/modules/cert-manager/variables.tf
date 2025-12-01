@@ -36,9 +36,3 @@ variable "letsencrypt_email" {
   description = "Email address for Let's Encrypt notifications"
   type        = string
 }
-
-# Required
-variable "gateway_enable" {
-  description = "Either enables or disables Gateway API support for cert-manager"
-  type        = bool
-}

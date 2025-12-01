@@ -12,9 +12,3 @@ output "homelab_mount" {
   description = "Base path for homelab volume"
   value       = var.homelab_mount
 }
-
-# Optional
-output "gateway_enable" {
-  description = "Decides cluster entrypoint, true for Gateway API, false for NGINX Ingress Controller"
-  value       = var.gateway_enable
-}

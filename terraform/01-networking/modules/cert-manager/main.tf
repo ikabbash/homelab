@@ -18,7 +18,6 @@ resource "helm_release" "cert_manager" {
   values = [
     templatefile("${path.module}/templates/values.yaml.tftpl", {
       namespace      = var.chart_namespace
-      enable_gateway = var.gateway_enable
     })
   ]
 }

@@ -9,7 +9,6 @@ k8sServiceHost: ${cluster_host}
 ipam:
   mode: kubernetes
 
-%{ if enable_gateway }
 gatewayAPI:
   enabled: true
   gatewayClass:
@@ -17,7 +16,6 @@ gatewayAPI:
 
 # Enable Layer 7 network policy
 l7Proxy: true
-%{ endif }
 
 # Use L2 (ARP) mode for load balancing
 l2announcements:

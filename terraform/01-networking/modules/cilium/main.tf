@@ -4,7 +4,6 @@ locals {
 
 # Apply Gateway API CRDs
 resource "null_resource" "gateway_api_crds" {
-  count = var.gateway_enable ? 1 : 0 # If true, module is created
   triggers = {
     version = var.gateway_api_version
   }
@@ -33,7 +32,6 @@ resource "helm_release" "cilium" {
   values = [
     templatefile("${path.module}/templates/values.yaml.tftpl", {
       cluster_host   = var.cluster_service_host
-      enable_gateway = var.gateway_enable
     })
   ]
 }

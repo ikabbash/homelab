@@ -19,7 +19,6 @@ module "cilium" {
   chart_namespace      = "kube-system"
   chart_version        = "1.18.4"
   gateway_api_version  = "v1.2.0"
-  gateway_enable       = var.gateway_enable
   cluster_service_host = var.cluster_service_host
   lb_external_ip       = var.lb_external_ip
   gateway_name         = var.gateway_name
@@ -30,7 +29,6 @@ module "cert_manager" {
   source               = "./modules/cert-manager"
   chart_namespace      = "cert-manager"
   chart_version        = "v1.19.0"
-  gateway_enable       = var.gateway_enable
   cloudflare_api_token = var.cloudflare_api_token
   letsencrypt_email    = var.letsencrypt_email
 
@@ -40,7 +38,6 @@ module "cert_manager" {
 # Deploy Gateway resource (if Cilium Gateway API is enabled)
 module "gateway" {
   source              = "./modules/gateway"
-  count               = var.gateway_enable ? 1 : 0 # If true, module is created
   lb_external_ip      = var.lb_external_ip
   gateway_name        = var.gateway_name
   homelab_domain      = var.homelab_domain
@@ -49,21 +46,9 @@ module "gateway" {
   depends_on = [module.cert_manager]
 }
 
-# Deploy NGINX Ingress Controller
-module "ingress_controller" {
-  source          = "./modules/ingress-controller"
-  count           = var.gateway_enable ? 0 : 1 # If false, module is created
-  lb_external_ip  = var.lb_external_ip
-  chart_namespace = "nginx-ingress"
-  chart_version   = "2.3.1"
+# module "volumes_init" {
+#   source        = "./modules/volumes-init"
+#   homelab_mount = var.homelab_mount
 
-  depends_on = [module.cert_manager]
-}
-
-# Created needed dirs for volumes
-module "volumes_init" {
-  source        = "./modules/volumes-init"
-  homelab_mount = var.homelab_mount
-
-  depends_on = [module.gateway, module.ingress_controller]
-}
+#   depends_on = [module.gateway]
+# }

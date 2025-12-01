@@ -23,12 +23,6 @@ variable "lb_external_ip" {
 }
 
 # Required
-variable "gateway_enable" {
-  description = "Decides cluster entrypoint, true for Gateway API, false for NGINX Ingress Controller"
-  type        = bool
-}
-
-# Required
 variable "gateway_api_version" {
   description = "Kubernetes Gateway API CRDs version"
   type        = string
