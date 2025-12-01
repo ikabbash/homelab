@@ -5,6 +5,9 @@ This repository contains a work-in-progress Kubernetes homelab setup with core i
 
 <!-- ## Hardware Overview -->
 
+> ⚠️ Warning  
+> The current Terraform setup is undergoing major refactoring, so this documentation may be outdated. For the last stable version, please refer to this [commit](https://github.com/ikabbash/homelab/tree/5f15149860d8bdcdec18e5c16dfadd01c0d1114f).
+
 ## What's Inside
 
 <img src="docs/images/homelab-setup.png" alt="Homelab Secrets Diagram" width="800"/>
@@ -59,7 +62,6 @@ What's planned for the homelab as it evolves. The ideas below may change and mor
 - [x] Learn and setup Talos
 - [ ] Deploy the following with ArgoCD
   - [ ] [homepage](https://github.com/gethomepage/homepage)
-  - [ ] PostgreSQL
   - [ ] Scheduled backups
   - [ ] [n8n](https://docs.n8n.io/hosting/)
   - [ ] [FreshRSS](https://freshrss.org/)
@@ -71,7 +73,7 @@ What's planned for the homelab as it evolves. The ideas below may change and mor
 - [ ] Monitoring and health checks
 - [ ] DNS server
 - [ ] Plan for a storage solution (e.g. Longhorn, OpenEBS, Ceph, Synology, etc.)
-- [ ] Migrate from NGINX Ingress Controller to Cilium's Gateway API (maybe?)
+- [ ] Migrate from NGINX Ingress Controller to Cilium's Gateway API
 
 ### Security
 - [ ] Deploy [Authentik](https://github.com/goauthentik/helm/blob/main/charts/authentik/README.md) using Terraform
