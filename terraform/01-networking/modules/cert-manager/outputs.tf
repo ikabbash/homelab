@@ -1,4 +1,4 @@
-output "cluster_issuer_name" {
-  description = "The name of the ClusterIssuer"
-  value       = var.cluster_issuer_name
+output "chart_namespace" {
+  description = "The namespace where Cert Manager is deployed"
+  value       = helm_release.cert_manager.namespace
 }

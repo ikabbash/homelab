@@ -3,8 +3,8 @@ locals {
 }
 
 # Apply Gateway API CRDs
-resource "null_resource" "gateway_api_crds" {
-  triggers = {
+resource "terraform_data" "gateway_api_crds" {
+  triggers_replace = {
     version = var.gateway_api_version
   }
 
@@ -31,22 +31,9 @@ resource "helm_release" "cilium" {
 
   values = [
     templatefile("${path.module}/templates/values.yaml.tftpl", {
-      cluster_host   = var.cluster_service_host
+      cluster_host = var.cluster_service_host
     })
   ]
-}
 
-# Wait for Cilium CRDs to be available
-resource "null_resource" "wait_for_cilium_crds" {
-  provisioner "local-exec" {
-    command = <<-EOT
-      until kubectl get crd ciliuml2announcementpolicies.cilium.io 2>/dev/null; do
-        echo "Waiting for Cilium CRDs to be available..."
-        sleep 10
-      done
-      echo "Cilium CRDs are ready"
-    EOT
-  }
-
-  depends_on = [helm_release.cilium]
+  depends_on = [terraform_data.gateway_api_crds]
 }

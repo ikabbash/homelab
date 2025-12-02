@@ -17,19 +17,7 @@ variable "cluster_service_host" {
 }
 
 # Required
-variable "lb_external_ip" {
-  description = "Load balancer external IP for either Ingress Controller or Gateway API"
-  type        = string
-}
-
-# Required
 variable "gateway_api_version" {
   description = "Kubernetes Gateway API CRDs version"
-  type        = string
-}
-
-# Required
-variable "gateway_name" {
-  description = "Name of the main Gateway for all namespaces"
   type        = string
 }
