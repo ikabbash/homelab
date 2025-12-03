@@ -1,0 +1,4 @@
+lb_external_ip       = "192.168.1.108"
+homelab_domain       = "homelab.example.com"
+cloudflare_api_token = "your-cloudflare-api-token"
+letsencrypt_email    = "hamada@example.com"
