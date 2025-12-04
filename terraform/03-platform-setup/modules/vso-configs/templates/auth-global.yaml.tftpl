@@ -1,0 +1,18 @@
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultAuthGlobal
+metadata:
+  name: default
+  namespace: ${namespace}
+spec:
+  allowedNamespaces:
+%{ for ns in bound_namespaces ~}
+    - ${ns}
+%{ endfor ~}
+  vaultConnectionRef: ${namespace}/${connection}
+  defaultAuthMethod: kubernetes
+  kubernetes:
+    mount: ${path}
+    role: ${role}
+    serviceAccount: ${service_account}
+    audiences:
+      - ${audience}

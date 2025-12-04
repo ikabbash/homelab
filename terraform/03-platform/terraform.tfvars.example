@@ -1,3 +1,0 @@
-homelab_domain       = "homelab.example.com"
-cloudflare_api_token = "your-cloudflare-api-token-here"
-letsencrypt_email    = "hamada@example.com"
