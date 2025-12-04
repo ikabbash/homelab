@@ -1,0 +1,11 @@
+apiVersion: cilium.io/v2alpha1
+kind: CiliumLoadBalancerIPPool
+metadata:
+  name: gateway-ip-pool
+spec:
+  blocks:
+    - cidr: "${gateway_external_ip}/32"
+  serviceSelector:
+    matchLabels:
+      io.kubernetes.service.namespace: ${gateway_namespace}
+      io.kubernetes.service.name: cilium-gateway-${gateway_name}

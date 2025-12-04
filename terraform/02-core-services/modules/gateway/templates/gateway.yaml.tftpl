@@ -1,0 +1,40 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: ${gateway_name}
+  namespace: ${gateway_namespace}
+  annotations:
+    cert-manager.io/cluster-issuer: ${cluster_issuer_name}
+spec:
+  gatewayClassName: cilium
+  addresses:
+    - type: IPAddress
+      value: "${gateway_external_ip}"
+  listeners:
+    - name: ${gateway_listener_http}
+      protocol: HTTP
+      port: 80
+      allowedRoutes:
+        namespaces:
+          from: All
+    - name: ${gateway_listener_https}
+      protocol: HTTPS
+      port: 443
+      hostname: "*.${homelab_domain}"
+      tls:
+        certificateRefs:
+          - kind: Secret
+            group: ""
+            name: homelab-wildcard-cert
+    - name: ${gateway_listener_vault}
+      protocol: TLS
+      port: 443
+      hostname: "${vault_address}"
+      tls:
+        mode: Passthrough
+      allowedRoutes:
+        namespaces:
+          from: Selector
+          selector:
+            matchLabels:
+              route-access: "vault"

@@ -1,0 +1,29 @@
+defaultVaultConnection:
+  enabled: false
+
+defaultAuthMethod:
+  enabled: false
+
+controller:
+# Temporary, not efficient for pod-to-pod communication
+  hostAliases:
+    - ip: "${gateway_external_ip}"
+      hostnames:
+        - "${vault_address}"
+  resources:
+    limits:
+      cpu: 500m
+      memory: 128Mi
+    requests:
+      cpu: 50m
+      memory: 64Mi
+  podSecurityContext:
+    seccompProfile:
+      type: RuntimeDefault
+  securityContext:
+    runAsNonRoot: true
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    readOnlyRootFilesystem: false
