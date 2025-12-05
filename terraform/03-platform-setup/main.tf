@@ -16,7 +16,7 @@ terraform {
 data "terraform_remote_state" "core_services" {
   backend = "local"
   config = {
-    path = "../01-core-services/terraform.tfstate"
+    path = "../02-core-services/terraform.tfstate"
   }
 }
 

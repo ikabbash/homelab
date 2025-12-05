@@ -1,8 +1,8 @@
 apiVersion: secrets.hashicorp.com/v1beta1
 kind: VaultConnection
 metadata:
-  name: ${connection}
-  namespace: ${namespace}
+  name: ${vso_connection_name}
+  namespace: ${vso_namespace}
 spec:
-  address: https://${domain}:${port}
+  address: https://${vault_address}:${vault_port}
   skipTLSVerify: false
