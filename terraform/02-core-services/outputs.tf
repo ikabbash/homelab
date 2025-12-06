@@ -32,3 +32,8 @@ output "gateway_listener_http" {
   description = "Listener name for HTTP traffic"
   value       = module.gateway.gateway_listener_https
 }
+
+output "homelab_domain" {
+  description = "Domain name for the homelab environment"
+  value       = var.homelab_domain
+}

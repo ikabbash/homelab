@@ -26,6 +26,9 @@ spec:
           - kind: Secret
             group: ""
             name: homelab-wildcard-cert
+      allowedRoutes:
+        namespaces:
+          from: All
     - name: ${gateway_listener_vault}
       protocol: TLS
       port: 443
