@@ -60,6 +60,7 @@ What's planned for the homelab as it evolves. The ideas below may change and mor
 
 ### Infra
 - [x] Learn and setup Talos
+- [ ] Setup [CloudNativePG](https://cloudnative-pg.io/)
 - [ ] Deploy the following with ArgoCD
   - [ ] [homepage](https://github.com/gethomepage/homepage)
   - [ ] Scheduled backups
@@ -72,8 +73,8 @@ What's planned for the homelab as it evolves. The ideas below may change and mor
   - [ ] [SonarQube](https://github.com/SonarSource/helm-chart-sonarqube)
 - [ ] Monitoring and health checks
 - [ ] DNS server
-- [ ] Plan for a storage solution (e.g. Longhorn, OpenEBS, Ceph, Synology, etc.)
-- [ ] Migrate from NGINX Ingress Controller to Cilium's Gateway API
+- [ ] Plan for a storage scalability (e.g. Longhorn, OpenEBS, Ceph, Synology, etc.)
+- [x] Migrate from NGINX Ingress Controller to Cilium's Gateway API
 
 ### Security
 - [ ] Deploy [Authentik](https://github.com/goauthentik/helm/blob/main/charts/authentik/README.md) using Terraform
@@ -83,7 +84,7 @@ What's planned for the homelab as it evolves. The ideas below may change and mor
   - [ ] Kubernetes audits
   - [ ] Vault audit logging 
   - [ ] Send logs to a central server
-- [ ] Define and enforce pod security contexts  
+- [x] Define and enforce pod security contexts  
 - [ ] Cilium network policies
   - [ ] Default deny all traffic between namespaces
 - [ ] Scheduled jobs to scan containers for vulnerabilities
