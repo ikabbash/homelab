@@ -26,3 +26,10 @@ module "cert_manager" {
 
   depends_on = [module.cilium]
 }
+
+# Deploy cert-manager
+module "cnpg" {
+  source          = "./modules/cnpg"
+  chart_namespace = "cnpg-system"
+  chart_version   = "0.26.1"
+}
