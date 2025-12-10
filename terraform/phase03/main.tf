@@ -17,15 +17,15 @@ terraform {
   }
 }
 
-data "terraform_remote_state" "core_services" {
+data "terraform_remote_state" "phase02" {
   backend = "local"
   config = {
-    path = "../02-core-services/terraform.tfstate"
+    path = "../phase02/terraform.tfstate"
   }
 }
 
 locals {
-  core_services = data.terraform_remote_state.core_services.outputs
+  phase02 = data.terraform_remote_state.phase02.outputs
 }
 
 # Setup Vault configs
@@ -38,8 +38,8 @@ module "vault_setup" {
 module "vso_setup" {
   source        = "./modules/vso-configs"
   vault_port    = var.vault_port
-  vault_address = local.core_services.vault_address
-  vso_namespace = local.core_services.vso_namespace
+  vault_address = local.phase02.vault_address
+  vso_namespace = local.phase02.vso_namespace
 
   vso_role_name        = module.vault_setup.vso_role_name
   kubernetes_auth_path = module.vault_setup.kubernetes_auth_path
@@ -55,8 +55,8 @@ module "argocd" {
   source                 = "./modules/argocd"
   chart_namespace        = "argocd"
   chart_version          = "9.1.6"
-  homelab_domain         = local.core_services.homelab_domain
-  gateway_name           = local.core_services.gateway_name
-  gateway_namespace      = local.core_services.gateway_namespace
-  gateway_listener_https = local.core_services.gateway_listener_https
+  homelab_domain         = local.phase02.homelab_domain
+  gateway_name           = local.phase02.gateway_name
+  gateway_namespace      = local.phase02.gateway_namespace
+  gateway_listener_https = local.phase02.gateway_listener_https
 }

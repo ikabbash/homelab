@@ -20,5 +20,5 @@ output "vso_service_account" {
 
 output "vso_namespace" {
   description = "The namespace where VSO is deployed"
-  value       = data.terraform_remote_state.core_services.outputs.vso_namespace
+  value       = data.terraform_remote_state.phase02.outputs.vso_namespace
 }

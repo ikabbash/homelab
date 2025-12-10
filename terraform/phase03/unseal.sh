@@ -10,7 +10,7 @@ set -euo pipefail
 DB_FILE="$1"
 # vault unseal entries
 BASE_PATH="homelab/vault"
-VAULT_NAMESPACE=$(terraform output -state=../02-core-services/terraform.tfstate -raw vault_namespace)
+VAULT_NAMESPACE=$(terraform output -state=../phase02/terraform.tfstate -raw vault_namespace)
 
 # Prompt for master password (hidden input)
 read -s -p "Master password for ${DB_FILE}: " MASTER_PW

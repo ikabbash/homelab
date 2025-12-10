@@ -13,10 +13,10 @@ terraform {
   }
 }
 
-data "terraform_remote_state" "networking" {
+data "terraform_remote_state" "phase01" {
   backend = "local"
   config = {
-    path = "../01-networking/terraform.tfstate"
+    path = "../phase01/terraform.tfstate"
   }
 }
 
@@ -31,7 +31,7 @@ module "gateway" {
   homelab_domain         = var.homelab_domain
   cloudflare_api_token   = var.cloudflare_api_token
   letsencrypt_email      = var.letsencrypt_email
-  cert_manager_namespace = data.terraform_remote_state.networking.outputs.cert_manager_namespace
+  cert_manager_namespace = data.terraform_remote_state.phase01.outputs.cert_manager_namespace
   vault_address          = local.vault_address
 }
 
