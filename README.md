@@ -60,7 +60,6 @@ What's planned for the homelab as it evolves. The ideas below may change and mor
 
 ### Infra
 - [x] Learn and setup Talos
-- [ ] Setup [CloudNativePG](https://cloudnative-pg.io/)
 - [ ] Deploy the following with ArgoCD
   - [ ] [homepage](https://github.com/gethomepage/homepage)
   - [ ] Scheduled backups
@@ -73,7 +72,8 @@ What's planned for the homelab as it evolves. The ideas below may change and mor
   - [ ] [SonarQube](https://github.com/SonarSource/helm-chart-sonarqube)
 - [ ] Monitoring and health checks
 - [ ] DNS server
-- [ ] Plan for a storage scalability (e.g. Longhorn, OpenEBS, Ceph, Synology, etc.)
+- [ ] Storage scalability (e.g. OpenEBS, Rook with Ceph, etc.)
+- [ ] Setup [CloudNativePG](https://cloudnative-pg.io/)
 - [x] Migrate from NGINX Ingress Controller to Cilium's Gateway API
 
 ### Security
