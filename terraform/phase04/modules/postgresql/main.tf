@@ -5,7 +5,7 @@ resource "random_password" "postgres_password" {
 
 resource "kubernetes_persistent_volume_v1" "postgres_pv" {
   metadata {
-    name = "postgres-pv-${var.authentik_namespace}"
+    name = "authentik-postgres-pv"
   }
   spec {
     capacity = {
@@ -22,14 +22,14 @@ resource "kubernetes_persistent_volume_v1" "postgres_pv" {
     }
     claim_ref {
       namespace = var.authentik_namespace
-      name      = "postgres-pvc"
+      name      = "authentik-postgres-pvc"
     }
   }
 }
 
 resource "kubernetes_persistent_volume_claim_v1" "postgres_pvc" {
   metadata {
-    name      = "postgres-pvc"
+    name      = "authentik-postgres-pvc"
     namespace = var.authentik_namespace
   }
   spec {
@@ -46,7 +46,7 @@ resource "kubernetes_persistent_volume_claim_v1" "postgres_pvc" {
 
 resource "kubernetes_secret" "postgres_credentials" {
   metadata {
-    name      = "postgres-credentials"
+    name      = "authentik-postgres-credentials"
     namespace = var.authentik_namespace
   }
 
@@ -58,9 +58,9 @@ resource "kubernetes_secret" "postgres_credentials" {
 
 resource "kubernetes_manifest" "postgres_statefulset" {
   manifest = yamldecode(templatefile("${path.module}/templates/statefulset.yaml.tftpl", {
-    secret_name        = kubernetes_secret.postgres_credentials.metadata[0].name
-    namespace          = var.authentik_namespace
-    pvc_name           = kubernetes_persistent_volume_claim_v1.postgres_pvc.metadata[0].name
+    secret_name = kubernetes_secret.postgres_credentials.metadata[0].name
+    namespace   = var.authentik_namespace
+    pvc_name    = kubernetes_persistent_volume_claim_v1.postgres_pvc.metadata[0].name
   }))
 
   depends_on = [kubernetes_persistent_volume_claim_v1.postgres_pvc]

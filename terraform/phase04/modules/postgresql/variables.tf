@@ -1,8 +1,7 @@
-# Optional
+# Required
 variable "authentik_namespace" {
   description = "The namespace where Authentik will be deployedinto"
   type        = string
-  default     = "authentik"
 }
 
 # Optional
