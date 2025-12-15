@@ -37,3 +37,8 @@ output "homelab_domain" {
   description = "Domain name for the homelab environment"
   value       = var.homelab_domain
 }
+
+output "homelab_data_path" {
+  description = "Base path for homelab data storage"
+  value       = var.homelab_data_path
+}
