@@ -22,14 +22,14 @@ resource "kubernetes_persistent_volume_v1" "postgres_pv" {
     }
     claim_ref {
       namespace = var.authentik_namespace
-      name      = "authentik-postgres-pvc"
+      name      = var.postgres_pvc_name
     }
   }
 }
 
 resource "kubernetes_persistent_volume_claim_v1" "postgres_pvc" {
   metadata {
-    name      = "authentik-postgres-pvc"
+    name      = var.postgres_pvc_name
     namespace = var.authentik_namespace
   }
   spec {
@@ -40,8 +40,9 @@ resource "kubernetes_persistent_volume_claim_v1" "postgres_pvc" {
         storage = var.postgres_storage_size
       }
     }
-    volume_name = kubernetes_persistent_volume_v1.postgres_pv.metadata[0].name
   }
+
+  depends_on = [kubernetes_persistent_volume_v1.postgres_pv]
 }
 
 resource "kubernetes_secret" "postgres_credentials" {
@@ -49,10 +50,29 @@ resource "kubernetes_secret" "postgres_credentials" {
     name      = "authentik-postgres-credentials"
     namespace = var.authentik_namespace
   }
-
   data = {
     POSTGRES_PASSWORD = random_password.postgres_password.result
     POSTGRES_USER     = var.postgres_user
+    POSTGRES_DB       = var.postgres_db
+  }
+}
+
+resource "kubernetes_service_v1" "postgres_svc" {
+  metadata {
+    name      = "postgres"
+    namespace = var.authentik_namespace
+  }
+  spec {
+    cluster_ip = "None"
+    selector = {
+      app = "postgres"
+    }
+    port {
+      name        = "postgres"
+      port        = 5432
+      target_port = 5432
+      protocol    = "TCP"
+    }
   }
 }
 

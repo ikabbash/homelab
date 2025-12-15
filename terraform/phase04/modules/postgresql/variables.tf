@@ -8,7 +8,14 @@ variable "authentik_namespace" {
 variable "postgres_user" {
   description = "PostgreSQL user"
   type        = string
-  default     = "postgres"
+  default     = "authentik"
+}
+
+# Optional
+variable "postgres_db" {
+  description = "Intial DB created"
+  type        = string
+  default     = "authentik"
 }
 
 # Required
@@ -22,4 +29,11 @@ variable "postgres_storage_size" {
   description = "Storage size for PostgreSQL"
   type        = string
   default     = "5Gi"
+}
+
+# Optional
+variable "postgres_pvc_name" {
+  description = "Persistent Volume Claim name for PostgreSQL"
+  type        = string
+  default     = "authentik-postgres-pvc"
 }
