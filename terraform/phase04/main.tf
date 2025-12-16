@@ -33,3 +33,11 @@ module "postgresql" {
 
   depends_on = [kubernetes_namespace_v1.authentik_namespace]
 }
+
+module "redis" {
+  source              = "./modules/redis"
+  authentik_namespace = var.authentik_namespace
+  homelab_data_path   = data.terraform_remote_state.phase02.outputs.homelab_data_path
+
+  depends_on = [kubernetes_namespace_v1.authentik_namespace]
+}
