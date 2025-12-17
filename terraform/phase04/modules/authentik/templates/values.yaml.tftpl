@@ -1,0 +1,86 @@
+authentik:
+  secret_key: "${secret_key}"
+  error_reporting:
+    enabled: false
+  postgresql:
+    host: ${postgres_host}
+    port: 5432
+    name: "file:///postgres-creds/POSTGRES_DB"
+    user: "file:///postgres-creds/POSTGRES_USER"
+    password: "file:///postgres-creds/POSTGRES_PASSWORD"
+  redis:
+    host: ${redis_host}
+
+global:
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 1000
+    seccompProfile:
+      type: RuntimeDefault
+  volumes:
+    - name: media
+      persistentVolumeClaim:
+        claimName: ${media_pvc_name}
+    - name: custom-templates
+      persistentVolumeClaim:
+        claimName: ${templates_pvc_name}
+    - name: postgres-creds
+      secret:
+        secretName: authentik-postgres-credentials
+  volumeMounts:
+    - name: media
+      mountPath: /media
+    - name: custom-templates
+      mountPath: /templates
+    - name: postgres-creds
+      mountPath: /postgres-creds
+      readOnly: true
+
+
+postgresql:
+  enabled: false
+
+redis:
+  enabled: false
+
+serviceAccount:
+  create: true
+
+geoip:
+  enabled: false
+
+server:
+  replicas: 1
+  ingress:
+    enabled: false
+  containerSecurityContext:
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: true
+    capabilities:
+      drop:
+        - ALL
+  resources:
+    requests:
+      cpu: 100m
+      memory: 512Mi
+    limits:
+      cpu: 2000m
+      memory: 2Gi
+
+worker:
+  replicas: 1
+  containerSecurityContext:
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: true
+    capabilities:
+      drop:
+        - ALL
+  resources:
+    requests:
+      cpu: 100m
+      memory: 512Mi
+    limits:
+      cpu: 2000m
+      memory: 2Gi
