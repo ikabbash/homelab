@@ -14,7 +14,14 @@ variable "authentik_subdomain" {
 
 # Optional
 variable "authentik_namespace" {
-  description = "The namespace where Authentik will be deployedinto"
+  description = "The namespace where Authentik will be deployed into"
   type        = string
   default     = "authentik"
+}
+
+# Optional
+variable "vso_auth_name" {
+  description = "Vault Secrets Operator's Auth manifest name"
+  type        = string
+  default     = "default"
 }

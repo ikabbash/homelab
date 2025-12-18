@@ -19,6 +19,12 @@ global:
     fsGroup: 1000
     seccompProfile:
       type: RuntimeDefault
+  env:
+    - name: AUTHENTIK_EMAIL__USE_TLS
+      value: "true"
+  envFrom:
+    - secretRef:
+        name: ${smtp_secret_name}
   volumes:
     - name: media
       persistentVolumeClaim:

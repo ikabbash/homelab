@@ -58,6 +58,7 @@ module "authentik" {
   gateway_name           = local.phase02.gateway_name
   gateway_namespace      = local.phase02.gateway_namespace
   gateway_listener_https = local.phase02.gateway_listener_https
+  vso_auth_name          = var.vso_auth_name
 
   depends_on = [module.postgresql, module.redis]
 }

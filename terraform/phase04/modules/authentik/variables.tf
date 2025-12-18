@@ -92,3 +92,16 @@ variable "gateway_listener_https" {
   description = "Listener name for wildcard HTTPS traffic"
   type        = string
 }
+
+# Optional
+variable "authentik_smtp_secret_name" {
+  description = ""
+  type        = string
+  default     = "authentik-smtp-secret"
+}
+
+# Required
+variable "vso_auth_name" {
+  description = "Vault Secrets Operator's Auth manifest name"
+  type        = string
+}

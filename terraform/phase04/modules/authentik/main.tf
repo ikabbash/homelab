@@ -87,6 +87,18 @@ resource "kubernetes_persistent_volume_claim_v1" "authentik_templates_pvc" {
   depends_on = [kubernetes_persistent_volume_v1.authentik_templates_pv]
 }
 
+resource "kubernetes_manifest" "authentik_smtp_secret" {
+  manifest = yamldecode(
+    templatefile(
+      "${path.module}/templates/static-secret.yaml.tftpl",
+      {
+        authentik_namespace = var.chart_namespace
+        secret_name         = var.authentik_smtp_secret_name
+        vso_auth            = var.vso_auth_name
+      }
+    )
+  )
+}
 
 # Deploy Vault 
 resource "helm_release" "authentik" {
@@ -104,6 +116,7 @@ resource "helm_release" "authentik" {
       media_pvc_name       = var.authentik_media_pvc_name
       templates_pvc_name   = var.authentik_templates_pvc_name
       postgres_secret_name = var.postgres_secret_name
+      smtp_secret_name     = var.authentik_smtp_secret_name
       redis_host           = var.redis_host
       postgres_host        = var.postgres_host
     })
@@ -111,7 +124,8 @@ resource "helm_release" "authentik" {
 
   depends_on = [
     kubernetes_persistent_volume_claim_v1.authentik_media_pvc,
-    kubernetes_persistent_volume_claim_v1.authentik_templates_pvc
+    kubernetes_persistent_volume_claim_v1.authentik_templates_pvc,
+    kubernetes_manifest.authentik_smtp_secret
   ]
 }
 
