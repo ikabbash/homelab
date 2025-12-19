@@ -31,7 +31,7 @@ resource "vault_kubernetes_auth_backend_role" "vso_role" {
   backend                          = vault_auth_backend.vso_kubernetes.path
   role_name                        = "default"
   bound_service_account_names      = ["vso-sa"]
-  bound_service_account_namespaces = ["argocd"]
+  bound_service_account_namespaces = ["authentik"]
   token_ttl                        = 3600  # 1 hour
   token_max_ttl                    = 14400 # 4 hours
   token_policies                   = [vault_policy.vso_policy.name]

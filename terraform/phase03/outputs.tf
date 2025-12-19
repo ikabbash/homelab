@@ -1,8 +1,3 @@
-output "infra_kv_mount_path" {
-  description = "Path of the KV-v2 secret mount for homelab infrastructure"
-  value       = module.vault_setup.infra_kv_mount_path
-}
-
 output "vso_role_name" {
   description = "Name of the Kubernetes auth backend role for VSO"
   value       = module.vault_setup.vso_role_name
