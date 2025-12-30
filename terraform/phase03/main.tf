@@ -49,14 +49,3 @@ module "vso_setup" {
 
   depends_on = [module.vault_setup]
 }
-
-# Deploy ArgoCD
-module "argocd" {
-  source                 = "./modules/argocd"
-  chart_namespace        = "argocd"
-  chart_version          = "9.1.6"
-  homelab_domain         = local.phase02.homelab_domain
-  gateway_name           = local.phase02.gateway_name
-  gateway_namespace      = local.phase02.gateway_namespace
-  gateway_listener_https = local.phase02.gateway_listener_https
-}
