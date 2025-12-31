@@ -117,7 +117,6 @@ resource "helm_release" "authentik" {
       templates_pvc_name   = var.authentik_templates_pvc_name
       postgres_secret_name = var.postgres_secret_name
       smtp_secret_name     = var.authentik_smtp_secret_name
-      redis_host           = var.redis_host
       postgres_host        = var.postgres_host
     })
   ]

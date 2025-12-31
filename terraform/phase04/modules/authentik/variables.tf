@@ -57,12 +57,6 @@ variable "postgres_host" {
 }
 
 # Required
-variable "redis_host" {
-  description = "Redis server address"
-  type        = string
-}
-
-# Required
 variable "homelab_domain" {
   description = "Domain name for the homelab environment"
   type        = string

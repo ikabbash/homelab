@@ -8,8 +8,6 @@ authentik:
     name: "file:///postgres-creds/POSTGRES_DB"
     user: "file:///postgres-creds/POSTGRES_USER"
     password: "file:///postgres-creds/POSTGRES_PASSWORD"
-  redis:
-    host: ${redis_host}
 
 global:
   securityContext:
@@ -46,9 +44,6 @@ global:
 
 
 postgresql:
-  enabled: false
-
-redis:
   enabled: false
 
 serviceAccount:
