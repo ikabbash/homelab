@@ -28,7 +28,7 @@ locals {
 module "argocd" {
   source                 = "./modules/argocd"
   chart_namespace        = "argocd"
-  chart_version          = "9.1.6"
+  chart_version          = "9.2.3"
   homelab_domain         = local.phase02.homelab_domain
   gateway_name           = local.phase02.gateway_name
   gateway_namespace      = local.phase02.gateway_namespace
