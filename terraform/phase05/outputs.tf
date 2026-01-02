@@ -1,4 +1,4 @@
 output "argocd_address" {
   description = "Complete domain name for ArgoCD"
-  value       = var.argocd_address
+  value       = module.argocd.argocd_address
 }

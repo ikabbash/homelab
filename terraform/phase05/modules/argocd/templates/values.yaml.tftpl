@@ -7,8 +7,31 @@ global:
 configs:
   params:
     server.insecure: true
+  rbac:
+    policy.csv: |
+        g, argocd-admins, role:admin
+        g, argocd-viewers, role:readonly
   cm:
+    admin.enabled: "false"
     exec.enabled: "true"
+    url: https://${argocd_address}
+    dex.config: |
+        connectors:
+        - config:
+            issuer: ${argocd_issuer_url}
+            clientID: ${argocd_client_id}
+            clientSecret: $dex.authentik.clientSecret
+            insecureEnableGroups: true
+            scopes:
+              - openid
+              - profile
+              - email
+          name: authentik
+          type: oidc
+          id: authentik
+  secret:
+    extra:
+      dex.authentik.clientSecret: ${argocd_client_secret}
 
 server:
   ingress:
@@ -75,4 +98,4 @@ notifications:
       memory: 128Mi
 
 dex:
-  enabled: false
+  enabled: true

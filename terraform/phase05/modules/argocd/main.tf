@@ -1,7 +1,3 @@
-locals {
-  argocd_address = "${var.argocd_subdomain}.${var.homelab_domain}"
-}
-
 resource "helm_release" "argocd" {
   name             = "argocd"
   repository       = "https://argoproj.github.io/argo-helm"
@@ -13,7 +9,10 @@ resource "helm_release" "argocd" {
 
   values = [
     templatefile("${path.module}/templates/values.yaml.tftpl", {
-      argocd_address = local.argocd_address
+      argocd_address       = var.argocd_address
+      argocd_client_id     = var.argocd_client_id
+      argocd_client_secret = var.argocd_client_secret
+      argocd_issuer_url    = var.argocd_issuer_url
     })
   ]
 }
@@ -21,7 +20,7 @@ resource "helm_release" "argocd" {
 resource "kubernetes_manifest" "argocd_http_route" {
   manifest = yamldecode(templatefile("${path.module}/templates/httproute.yaml.tftpl", {
     argocd_namespace       = var.chart_namespace
-    argocd_address         = local.argocd_address
+    argocd_address         = var.argocd_address
     gateway_name           = var.gateway_name
     gateway_namespace      = var.gateway_namespace
     gateway_listener_https = var.gateway_listener_https

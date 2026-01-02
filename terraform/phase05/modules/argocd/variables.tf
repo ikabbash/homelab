@@ -11,16 +11,9 @@ variable "chart_version" {
 }
 
 # Required
-variable "homelab_domain" {
-  description = "Domain name for the homelab environment"
+variable "argocd_address" {
+  description = "Complete domain name for ArgoCD"
   type        = string
-}
-
-# Optional
-variable "argocd_subdomain" {
-  description = "Subdomain for the ArgoCD service"
-  type        = string
-  default     = "argocd"
 }
 
 # Required
@@ -38,5 +31,23 @@ variable "gateway_namespace" {
 # Required
 variable "gateway_listener_https" {
   description = "Listener name for wildcard HTTPS traffic"
+  type        = string
+}
+
+# Required
+variable "argocd_client_id" {
+  description = "OAuth2 Client ID for ArgoCD"
+  type        = string
+}
+
+# Required
+variable "argocd_client_secret" {
+  description = "OAuth2 Client Secret for ArgoCD"
+  type        = string
+}
+
+# Required
+variable "argocd_issuer_url" {
+  description = "OIDC Issuer URL for ArgoCD DEX configuration"
   type        = string
 }

@@ -49,4 +49,9 @@ module "argocd" {
   gateway_name           = local.phase02.gateway_name
   gateway_namespace      = local.phase02.gateway_namespace
   gateway_listener_https = local.phase02.gateway_listener_https
+  argocd_client_id       = module.authentik_setup.argocd_client_id
+  argocd_client_secret   = module.authentik_setup.argocd_client_secret
+  argocd_issuer_url      = module.authentik_setup.argocd_issuer_url
+
+  depends_on = [module.authentik_setup]
 }
