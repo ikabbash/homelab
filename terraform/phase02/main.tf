@@ -21,18 +21,18 @@ data "terraform_remote_state" "phase01" {
 }
 
 locals {
+  phase01       = data.terraform_remote_state.phase01.outputs
   vault_address = "${var.vault_subdomain}.${var.homelab_domain}"
 }
 
 # Setup Gateway
 module "gateway" {
-  source                 = "./modules/gateway"
-  gateway_external_ip    = var.gateway_external_ip
-  homelab_domain         = var.homelab_domain
-  cloudflare_api_token   = var.cloudflare_api_token
-  letsencrypt_email      = var.letsencrypt_email
-  cert_manager_namespace = data.terraform_remote_state.phase01.outputs.cert_manager_namespace
-  vault_address          = local.vault_address
+  source                     = "./modules/gateway"
+  gateway_external_ip        = var.gateway_external_ip
+  homelab_domain             = var.homelab_domain
+  letsencrypt_email          = var.letsencrypt_email
+  cluster_issuer_secret_name = local.phase01.cluster_issuer_secret_name
+  vault_address              = local.vault_address
 }
 
 # Deploy Vault
@@ -51,11 +51,10 @@ module "vault" {
 
 # Deploy VSO
 module "vso" {
-  source              = "./modules/vso"
-  chart_namespace     = "vault-secrets-operator-system"
-  chart_version       = "1.0.1"
-  vault_address       = local.vault_address
-  gateway_external_ip = module.gateway.gateway_external_ip
+  source          = "./modules/vso"
+  chart_namespace = "vault-secrets-operator-system"
+  chart_version   = "1.0.1"
+  vault_address   = local.vault_address
 
   depends_on = [module.vault]
 }

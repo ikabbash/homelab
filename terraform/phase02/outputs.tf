@@ -5,7 +5,7 @@ output "vault_namespace" {
 
 output "vault_address" {
   description = "Complete domain name where the Vault service will be accessible"
-  value       = "${var.vault_subdomain}.${var.homelab_domain}"
+  value       = module.vault.vault_address
 }
 
 output "vso_namespace" {

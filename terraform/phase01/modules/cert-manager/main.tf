@@ -13,3 +13,16 @@ resource "helm_release" "cert_manager" {
     })
   ]
 }
+
+resource "kubernetes_secret_v1" "cluster_issuer_secret_name" {
+  metadata {
+    name      = "cloudflare-api-token-secret"
+    namespace = var.chart_namespace
+  }
+
+  data = {
+    api-token = var.cloudflare_api_token
+  }
+
+  depends_on = [helm_release.cert_manager]
+}

@@ -1,4 +1,4 @@
-output "cert_manager_namespace" {
-  description = "The namespace where Cert Manager is deployed"
-  value       = module.cert_manager.chart_namespace
+output "cluster_issuer_secret_name" {
+  description = "Cloudflare API token Kubernetes secret name for DNS validation"
+  value       = module.cert_manager.cluster_issuer_secret_name
 }

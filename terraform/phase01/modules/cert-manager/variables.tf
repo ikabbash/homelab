@@ -9,3 +9,10 @@ variable "chart_version" {
   description = "cert-manager Helm chart version"
   type        = string
 }
+
+# Required
+variable "cloudflare_api_token" {
+  description = "Cloudflare API token for DNS validation"
+  type        = string
+  sensitive   = true
+}

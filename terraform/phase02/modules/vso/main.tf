@@ -9,8 +9,7 @@ resource "helm_release" "vso" {
 
   values = [
     templatefile("${path.module}/templates/values.yaml.tftpl", {
-      gateway_external_ip = var.gateway_external_ip
-      vault_address       = var.vault_address
+      vault_address = var.vault_address
     })
   ]
 }

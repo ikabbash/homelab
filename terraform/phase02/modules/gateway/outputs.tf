@@ -1,5 +1,5 @@
 output "cluster_issuer_name" {
-  description = "Cert Manager's Cluster Issuer name"
+  description = "Cert Manager's Cluster Issuer name for Vault certificate creation"
   value       = var.cluster_issuer_name
 }
 

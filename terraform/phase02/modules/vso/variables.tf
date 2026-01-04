@@ -16,9 +16,3 @@ variable "vault_address" {
   description = "Complete domain name where the Vault service will be accessible"
   type        = string
 }
-
-# Required
-variable "gateway_external_ip" {
-  description = "Load balancer external IP for Gateway API"
-  type        = string
-}

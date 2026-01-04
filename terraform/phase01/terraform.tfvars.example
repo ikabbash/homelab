@@ -1,1 +1,2 @@
 cluster_service_host  = "192.168.1.107"
+cloudflare_api_token  = "your-cloudflare-api-token"
