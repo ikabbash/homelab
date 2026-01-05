@@ -10,3 +10,10 @@ variable "authentik_api_token" {
   description = "Authentik admin API token for Terraform"
   type        = string
 }
+
+# Optional
+variable "argocd_subdomain" {
+  description = "Subdomain for the ArgoCD service"
+  type        = string
+  default     = "argocd"
+}

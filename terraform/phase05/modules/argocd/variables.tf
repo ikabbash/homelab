@@ -11,12 +11,6 @@ variable "chart_version" {
 }
 
 # Required
-variable "argocd_address" {
-  description = "Complete domain name for ArgoCD"
-  type        = string
-}
-
-# Required
 variable "gateway_name" {
   description = "Name of the Gateway resource"
   type        = string
@@ -31,6 +25,12 @@ variable "gateway_namespace" {
 # Required
 variable "gateway_listener_https" {
   description = "Listener name for wildcard HTTPS traffic"
+  type        = string
+}
+
+# Required
+variable "argocd_address" {
+  description = "Complete domain name for ArgoCD"
   type        = string
 }
 
