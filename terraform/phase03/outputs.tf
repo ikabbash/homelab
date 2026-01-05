@@ -3,11 +3,6 @@ output "vso_role_name" {
   value       = module.vault_setup.vso_role_name
 }
 
-output "kubernetes_auth_path" {
-  description = "Path where the VSO Kubernetes auth backend is enabled"
-  value       = module.vault_setup.kubernetes_auth_path
-}
-
 output "vso_service_account" {
   description = "VSO service account name for every namespace"
   value       = module.vault_setup.vso_service_account
