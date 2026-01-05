@@ -9,10 +9,7 @@ This phase sets up Vault using Terraform’s Vault provider to configure secret 
     - `homelab/apps/kv-secret` for application secrets.
 - Creates Kubernetes auth method at `kubernetes/vso` so VSO can authenticate with Vault.
 - Creates Vault Policies such as the VSO read-only policy.
-
-The diagram below shows a hierarchical organization of secrets, where infrastructure secrets are divided into shared and platform-specific items (such as API keys and tokens), and application secrets are isolated per application for development. For example, platform components like Authentik receive SMTP credentials from Vault via VSO, which exposes them as Kubernetes secrets using `VaultStaticSecret` from the `homelab/infra/kv-secret` KV v2 engine.
-
-<img src="../../docs/images/vault-secret-mounts.png" alt="Homelab Secrets Diagram" width="800"/>
+- Acts as the central source of truth for secrets, primarily used to generate native Kubernetes secrets via VSO.
 
 ### VSO
 - Creates a `VaultConnection` in VSO's namespace for connection definition to Vault.  
@@ -60,7 +57,6 @@ The diagram below shows a hierarchical organization of secrets, where infrastruc
     ```
 
 ## Notes
-- Multiple KV secret mounts are implemented as a best practice to minimize the blast radius in case of a misconfiguration or compromise.
 - To grant any namespace access to Vault, create `VaultAuth` and a service account (e.g., named `vso-sa`) that matches the `bound_service_account_names` in `vault_kubernetes_auth_backend_role`. This allows you to have Kubernetes secrets created using resources like `VaultStaticSecret`.
     ```yaml
     apiVersion: secrets.hashicorp.com/v1beta1
@@ -82,26 +78,6 @@ The diagram below shows a hierarchical organization of secrets, where infrastruc
 - Terraform Vault provider's drift detection is a best-effort feature and shouldn't be relied on, as its accuracy depends on provider design and server-managed values. For example, if you add `max_lease_ttl_seconds` and later remove it from your Terraform configuration, Vault won't detect the drift, and the value will remain as it was last set.
 - It's best practice to revoke Vault's root token, you can regenerate it by following this [doc](https://developer.hashicorp.com/vault/docs/troubleshoot/generate-root-token) if needed.
 - Default `VaultAuthGlobal` resources are denoted by the name `default` and are automatically referenced by all `VaultAuth` resources when `spec.vaultAuthGlobalRef.allowDefault` is set to `true` and VSO is running with the `allow-default-globals` option set in the `-global-vault-auth-options` flag (the default). This is why when creating `VaultAuth` there is no need to specify the `VaultAuthGlobal` name because it uses the `default` one ([reference](https://developer.hashicorp.com/vault/docs/deploy/kubernetes/vso/sources/vault/auth#vaultauthglobal-configuration-inheritance)).
-- You may need to create additional auth methods if there are apps that directly use Vault’s API.
-
-### Kubernetes Auth Method
-For the Kubernetes auth method (which is mainly for VSO), if Vault is running inside a Kubernetes pod you may omit the `token_reviewer_jwt` and `kubernetes_ca_cert`. Vault will automatically use the service-account token and CA certificate mounted at `/var/run/secrets/kubernetes.io/serviceaccount/`. In that case you can configure it like the following:
-```bash
-vault write auth/kubernetes/config \
-    kubernetes_host=https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_SERVICE_PORT
-```
-
-If Vault is running outside the cluster, you need to provide `token_reviewer_jwt` and `kubernetes_ca_cert` in its Kubernetes auth method configuration so Vault can validate JWTs and trust the Kubernetes API (check this [doc](https://developer.hashicorp.com/vault/docs/auth/kubernetes#configuration) for more).
-```bash
-vault write auth/kubernetes/config \
-    token_reviewer_jwt="<your reviewer service account JWT>" \
-    kubernetes_host=https://192.168.99.100:<your TCP port or blank for 443> \
-    kubernetes_ca_cert=@ca.crt
-```
-
-The config in the Kubernetes auth method tells Vault how to communicate with the Kubernetes API and verify service account tokens.
-
-The role defines which Kubernetes service accounts can authenticate and what Vault policies and permissions they receive once authenticated.
 
 ### Outputs
 - `vso_role_name`, `vso_namespace`, and `vso_service_account` are all used for Authentik's `VaultAuth` configs in `phase04` to authenticate with Vault's Kubernetes auth method.
