@@ -6,13 +6,6 @@ variable "kubeconfig_path" {
 }
 
 # Optional
-variable "authentik_subdomain" {
-  description = "Subdomain for the Authentik service"
-  type        = string
-  default     = "authentik"
-}
-
-# Optional
 variable "authentik_namespace" {
   description = "The namespace where Authentik will be deployed into"
   type        = string

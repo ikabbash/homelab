@@ -93,8 +93,8 @@ resource "kubernetes_manifest" "authentik_smtp_secret" {
       "${path.module}/templates/static-secret.yaml.tftpl",
       {
         authentik_namespace = var.chart_namespace
-        secret_name         = var.authentik_smtp_secret_name
-        vso_auth            = var.vso_auth_name
+        smtp_secret_name    = var.authentik_smtp_secret_name
+        vso_auth_name       = var.vso_auth_name
       }
     )
   )
