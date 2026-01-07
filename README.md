@@ -1,85 +1,75 @@
 # Homelab
-This repository contains a work-in-progress Kubernetes homelab setup with core infrastructure bootstrapped via Terraform and applications deployed using ArgoCD. Terraform provisions essential services like Cert Manager, Vault, and ArgoCD while ArgoCD manages the deployment of applications and ensures GitOps-driven infrastructure consistency.
-
-<!-- ## Architecture -->
-
-<!-- ## Hardware Overview -->
-
-> ⚠️ Warning  
-> The current Terraform setup is undergoing major refactoring, so this documentation may be outdated. For the last stable version, please refer to this [commit](https://github.com/ikabbash/homelab/tree/5f15149860d8bdcdec18e5c16dfadd01c0d1114f).
+This repository contains a work-in-progress Kubernetes-based homelab where core platform components are provisioned with Terraform and applications are deployed using ArgoCD. Terraform sets up essential services while ArgoCD manages application deployments and keeps the cluster aligned with a GitOps workflow.
 
 ## What's Inside
-
 <img src="docs/images/homelab-setup.png" alt="Homelab Secrets Diagram" width="800"/>
 
 The setup is split into two main parts:
-- Terraform (`terraform/`) which bootstraps the foundation in three stages (check the [doc](./terraform/README.md) for steps and explanation)
-- ArgoCD which deploys and manages applications using manifests stored in this repo
+- Terraform, which bootstraps the foundation (check the [doc](./terraform/README.md) for further details).
+- ArgoCD, which deploys and manages the applications defined in this repository.
 
-This design keeps infrastructure changes tracked and versioned, making it straightforward to reproduce the cluster elsewhere if needed (for cases like creating a separate environment for testing, moving to new hardware, and so on). Terraform handles the bootstrapping of core services that ArgoCD depends on, while ArgoCD provides GitOps for everything else.
+This design tracks and versions all infrastructure changes, making it easy to reproduce the cluster in another environment. Terraform bootstraps core services like Vault and Authentik, while ArgoCD deploys and manages applications using GitOps.
 
 ### Key Components
-- Cert Manager: Handles TLS certificate management and automation using Let's Encrypt. Configured to use Cloudflare DNS challenges for domain validation
-- Vault: Stores all secrets for the cluster. Acts as the single source of truth for sensitive data like API keys, database passwords, and service credentials
-- Vault Secrets Operator (VSO): Syncs secrets from Vault into Kubernetes Secrets, letting pods use them natively without storing secrets in repos, improving security by keeping sensitive data out of source control
-- ArgoCD: The GitOps engine that keeps the cluster in sync with this repository. Any changes pushed here get automatically reflected in the cluster
+- Cilium: Provides cluster networking, replaces kube-proxy, and implements the Gateway API used to expose services.
+- Cert Manager: Manages TLS certificates using Let’s Encrypt. DNS challenge is handled through Cloudflare.
+- Vault: Central source of truth for secrets such as API keys, database credentials, and service configuration.
+- Vault Secrets Operator (VSO): Syncs secrets from Vault into native Kubernetes Secrets so workloads can consume them without embedding sensitive data in manifests or repositories.
+- Authentik: Identity provider for authentication and SSO across cluster services.
+- ArgoCD: The GitOps engine that keeps the cluster in sync with this repository. Any changes pushed here get automatically reflected in the cluster.
+
+<!-- ### Applications Deployed -->
 
 ## Getting Started
-Follow these steps to get the homelab up and running.
+For my setup, I use Talos Linux because it’s lightweight, minimal, and built specifically for running Kubernetes. Kubernetes on Ubuntu works as well, but make sure your cluster has no CNI installed before proceeding. For Talos, you can check the [documentation](./talos/README.md) I made and use the provided script to generate machine configs for control planes and workers with preconfigured settings applied via a patch template. It saves time, and all you need to do is apply the configs onto the machines after booting Talos.
 
-### Requirements
-You'll need a few things prepared:
-- [Cilium](https://docs.cilium.io/en/stable/gettingstarted/k8s-install-default/) as the cluster's CNI (optional)
-- F5's NGINX [Ingress Controller](https://docs.nginx.com/nginx-ingress-controller/installation/installing-nic/installation-with-helm/) (you can use the Helm values below)
-  ```yaml
-  controller:
-    kind: daemonset
-    enableCertManager: true
-    enableCustomResources: true
-    enableTLSPassthrough: true
-    tlsPassThroughPort: 443
-  ```
-- A domain preferably managed through Cloudflare since that's what Cert Manager is configured to use for DNS challenges
+With the cluster ready, the next step is provisioning the platform stack with [Terraform](./terraform/README.md). Terraform lays down the base layer of the cluster by applying a series of ordered phases that install and configure components like Cilium, Cert Manager, Vault, Authentik, and ArgoCD. Each phase lives in its own directory and is meant to be applied in sequence.
 
-Since this is a single-node private homelab without proper DNS (for now), you'll need to add entries to your `/etc/hosts` file to access services:
+Once Terraform finishes laying down the core platform components, ArgoCD takes the wheel. The repository follows an App-of-Apps pattern, where syncing the root application triggers the deployment of all other applications and keeps them continuously reconciled through GitOps.
 
-```
-ip_address argocd.example.com vault.example.com etc.example.com
-```
+<!-- ### Architecture -->
 
-### Deployment
-1. Work through the Terraform projects in order (`01-core-services` → `02-vault-setup` → `03-base-services`). Each directory has its own README with specific instructions
-2. After Terraform completes, ArgoCD will be available and can start managing the applications
+<!-- ### Hardware Used -->
 
-## Notes
-- All storage currently resides on the local node using Kubernetes `hostPath`
-- In case no one told you before, always back up your data before upgrading anything. For example, Vault does not make backward-compatibility guarantees for its data store so you better take backups
+### Notes
+- The current design is based on a single-node cluster and uses Kubernetes `hostPath` for persistent storage on the local node, with plans to introduce a scalable storage solution later.
+- In case no one told you, always back up your data before upgrading anything. For example, Vault does not guarantee backward compatibility for its data store, so having a backup is essential.
+- Internal service domains (e.g. `authentik.homelab.example.com`) are resolved locally by mapping `*.homelab.example.com` to the Gateway service IP, either via CoreDNS or a network-level DNS, avoiding public DNS and per-pod host aliases in a private home network.
+  - Example below modifies CoreDNS' `ConfigMap`.
+    ```
+    template IN A homelab.example.com {
+      match \.homelab\.example\.com
+      answer "{{ .Name }} 60 IN A <GATEWAY_SVC_IP>"
+      fallthrough
+    }
+    ```
 
 ## To-do
-What's planned for the homelab as it evolves. The ideas below may change and more may be added.
+What's planned for the homelab as it evolves. Ideas below may change and more may be added.
 
 ### Infra
 - [x] Learn and setup Talos
 - [ ] Deploy the following with ArgoCD
   - [ ] [homepage](https://github.com/gethomepage/homepage)
-  - [ ] Scheduled backups
   - [ ] [n8n](https://docs.n8n.io/hosting/)
   - [ ] [FreshRSS](https://freshrss.org/)
   - [ ] [Karakeep](https://github.com/karakeep-app/karakeep)
+  - [ ] [bentopdf](https://github.com/alam00000/bentopdf)
   - [ ] [changedetection.io](https://github.com/dgtlmoon/changedetection.io/)
   - [ ] [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack)
   - [ ] [Grafana Loki](https://grafana.com/docs/loki/latest/setup/install/helm/)
-  - [ ] [SonarQube](https://github.com/SonarSource/helm-chart-sonarqube)
-- [ ] Monitoring and health checks
-- [ ] DNS server
-- [ ] Storage scalability (e.g. OpenEBS, Rook with Ceph, etc.)
-- [ ] Setup [CloudNativePG](https://cloudnative-pg.io/)
+- [ ] Monitoring, health checks and alerts
+- [ ] Pi-hole
 - [x] Migrate from NGINX Ingress Controller to Cilium's Gateway API
 
+### Scalability
+- [ ] Turn the cluster into a 3 nodes cluster (buy 3 mini-PCs)
+- [ ] Storage scalability (e.g. OpenEBS, Rook with Ceph, etc.)
+- [ ] Setup [CloudNativePG](https://cloudnative-pg.io/)
+
 ### Security
-- [ ] Deploy [Authentik](https://github.com/goauthentik/helm/blob/main/charts/authentik/README.md) using Terraform
-  - [ ] Integrate SSO across platforms
-  - [ ] Protect web apps with [M2M](https://youtu.be/bS_Pey6yAjA?si=fuhExwsYiVCINHAl)
+- [x] Deploy [Authentik](https://github.com/goauthentik/helm/blob/main/charts/authentik/README.md) using Terraform
+  - [x] Integrate SSO across platforms
 - [ ] Setup audits (plan storage and retention accordingly)
   - [ ] Kubernetes audits
   - [ ] Vault audit logging 
@@ -87,7 +77,7 @@ What's planned for the homelab as it evolves. The ideas below may change and mor
 - [x] Define and enforce pod security contexts  
 - [ ] Cilium network policies
   - [ ] Default deny all traffic between namespaces
-- [ ] Scheduled jobs to scan containers for vulnerabilities
+- [ ] Jobs to scan containers for vulnerabilities
 
 ### n8n
 - [ ] RSS feed summarizer
