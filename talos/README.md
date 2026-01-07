@@ -22,7 +22,7 @@ talosctl get admissioncontrolconfigs.kubernetes.talos.dev admission-control -o y
 ### Requirements
 Make sure the following are installed and accessible:
 - `talosctl`: For generating and managing Talos cluster configurations
-- `yq`: For editing YAML files from the command line (used by the `setup.sh` script)
+- `yq`: For editing YAML files from the command line (used by the `talos-config-gen.sh` script)
 
 You may need to update the following variables in the script:
 - `CLUSTER_NAME`: Your desired cluster name
@@ -85,7 +85,7 @@ filesystem:
 After Talos is installed and the node has booted, you can confirm both volumes were provisioned correctly using `talosctl get volumestatus` (after finishing the next steps, that is).
 
 ### Applying Configs
-After you've generated your nodes' configs using `setup.sh`, you'll be installing Talos on each node using `talosctl apply-config`.
+After you've generated your nodes' configs using `talos-config-gen.sh`, you'll be installing Talos on each node using `talosctl apply-config`.
 
 You can run the commands below if you want easier access while working with the cluster. It’s up to you whether you prefer using these environment variables or merging the `talosconfig` and `kubeconfig` into your home directory:
 ```bash
@@ -150,45 +150,7 @@ talosctl apply-config --insecure \
 kubectl get nodes
 ```
 
-### Networking and Ingress
-After installing Talos and getting your nodes running, you need to set up a CNI. Cilium is the choice here. Install Cilium ([Reference](https://docs.siderolabs.com/kubernetes-guides/cni/deploying-cilium)) using Helm:
-```bash
-# If you have only one control plane node, use the control plane node's IP instead
-helm upgrade -i cilium cilium/cilium \
-  --version 1.18.3 \
-  --namespace kube-system \
-  --set k8sServiceHost=$VIRTUAL_IP \
-  -f helm/cilium-values.yaml
-```
-
-In the values file, kube-proxy is disabled and `l2announcements` is enabled to allow Layer 2 network announcements for reaching the ingress controller's load balancer IP address.
-
-Finally, install the ingress controller. F5's [NGINX Ingress Controller](https://docs.nginx.com/nginx-ingress-controller/install/helm/) is used here with TLS passthrough enabled:
-```bash
-helm upgrade -i nginx-ingress \
-  --version 2.3.1 \
-  --namespace nginx-ingress \
-  --create-namespace \
-  --set controller.service.externalIPs={$LOAD_BALANCER_IP} \
-  -f helm/nginx-values.yaml \
-  oci://ghcr.io/nginx/charts/nginx-ingress
-```
-
-Create the L2 announcement policy to advertise the ingress controller's load balancer IP on your local network:
-```yaml
-apiVersion: "cilium.io/v2alpha1"
-kind: CiliumL2AnnouncementPolicy
-metadata:
-  name: nginx-ingress-l2-policy
-  namespace: nginx-ingress
-spec:
-  externalIPs: true
-  loadBalancerIPs: true
-  interfaces:
-    - '^(eth0|ens.*|enp[0-9s]+)$'
-```
-
-And you should be done! The cluster is ready to be used.
+Next, you’ll set up the CNI and platform components. Apply the [Terraform](../terraform/README.md) configuration to deploy the CNI along with components like cert-manager, ArgoCD, and others.
 
 ### Commands
 ```bash

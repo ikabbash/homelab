@@ -1,9 +1,0 @@
-controller:
-  kind: daemonset
-  service:
-    create: true
-    type: "LoadBalancer"
-  enableCertManager: true
-  enableCustomResources: true
-  enableTLSPassthrough: true
-  tlsPassThroughPort: 443
