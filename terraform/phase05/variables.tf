@@ -13,7 +13,7 @@ variable "authentik_api_token" {
 
 # Optional
 variable "argocd_subdomain" {
-  description = "Subdomain for the ArgoCD service"
+  description = "Subdomain for the Argo CD service"
   type        = string
   default     = "argocd"
 }

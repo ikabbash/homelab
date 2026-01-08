@@ -1,12 +1,12 @@
 # Required
 variable "chart_namespace" {
-  description = "The Kubernetes namespace to deploy ArgoCD into"
+  description = "The Kubernetes namespace to deploy Argo CD into"
   type        = string
 }
 
 # Required
 variable "chart_version" {
-  description = "Version of the ArgoCD Helm chart"
+  description = "Version of the Argo CD Helm chart"
   type        = string
 }
 
@@ -30,24 +30,24 @@ variable "gateway_listener_https" {
 
 # Required
 variable "argocd_address" {
-  description = "Complete domain name for ArgoCD"
+  description = "Complete domain name for Argo CD"
   type        = string
 }
 
 # Required
 variable "argocd_client_id" {
-  description = "OAuth2 Client ID for ArgoCD"
+  description = "OAuth2 Client ID for Argo CD"
   type        = string
 }
 
 # Required
 variable "argocd_client_secret" {
-  description = "OAuth2 Client Secret for ArgoCD"
+  description = "OAuth2 Client Secret for Argo CD"
   type        = string
 }
 
 # Required
 variable "argocd_issuer_url" {
-  description = "OIDC Issuer URL for ArgoCD DEX configuration"
+  description = "OIDC Issuer URL for Argo CD DEX configuration"
   type        = string
 }

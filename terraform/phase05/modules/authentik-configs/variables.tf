@@ -1,6 +1,6 @@
 # Required
 variable "argocd_address" {
-  description = "Complete domain name for ArgoCD"
+  description = "Complete domain name for Argo CD"
   type        = string
 }
 

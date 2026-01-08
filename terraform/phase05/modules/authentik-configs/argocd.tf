@@ -33,7 +33,7 @@ resource "authentik_provider_oauth2" "argocd" {
 }
 
 resource "authentik_application" "argocd" {
-  name               = "ArgoCD"
+  name               = "Argo CD"
   slug               = "argocd"
   protocol_provider  = authentik_provider_oauth2.argocd.id
   open_in_new_tab    = true

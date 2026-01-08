@@ -1,12 +1,12 @@
 # Terraform
-Terraform is used to provision and manage the cluster’s foundational platform components, such as Cilium, Vault, Cert Manager, Authentik, and ArgoCD. These services form a base layer that other workloads depend on. These services are intentionally managed outside of ArgoCD to avoid dependency ordering issues and manual setup steps.
+Terraform is used to provision and manage the cluster’s foundational platform components, such as Cilium, Vault, Cert Manager, Authentik, and Argo CD. These services form a base layer that other workloads depend on. These services are intentionally managed outside of Argo CD to avoid dependency ordering issues and manual setup steps.
 
-Some components introduce circular dependencies when managed purely through GitOps. For example, ArgoCD benefits from having SSO available immediately, which depends on Authentik. Authentik, in turn, requires secrets sourced from Vault. Managing these components through Terraform allows the entire foundation to be provisioned deterministically and with minimal manual intervention.
+Some components introduce circular dependencies when managed purely through GitOps. For example, Argo CD benefits from having SSO available immediately, which depends on Authentik. Authentik, in turn, requires secrets sourced from Vault. Managing these components through Terraform allows the entire foundation to be provisioned deterministically and with minimal manual intervention.
 
 ## Platform Provisioning
 <img src="../docs/images/homelab-setup.png" alt="Homelab Secrets Diagram" width="800"/>
 
-This architecture cleanly separates responsibilities between Terraform and ArgoCD. Terraform provisions and maintains the core services that other workloads rely on, while ArgoCD handles continuous deployment of applications.
+This architecture cleanly separates responsibilities between Terraform and Argo CD. Terraform provisions and maintains the core services that other workloads rely on, while Argo CD handles continuous deployment of applications.
 
 Vault and Authentik configurations are intentionally managed through Terraform to keep their setup consistent and versioned. This approach also makes it straightforward to recreate the cluster in another environment, such as for testing or migrating to new hardware.
 
@@ -16,7 +16,7 @@ Components are provisioned through five Terraform projects (phases), which must 
 - `phase02`: Creates a single Gateway and deploys Vault along with the Vault Secrets Operator (VSO).
 - `phase03`: Manages Vault configuration as code and creates VSO connection resources for global authentication.
 - `phase04`: Deploys PostgreSQL and Authentik as the central identity provider and SSO solution.
-- `phase05`: Manages Authentik configuration as code, sets up applications and providers for SSO integration, and deploys ArgoCD with SSO enabled.
+- `phase05`: Manages Authentik configuration as code, sets up applications and providers for SSO integration, and deploys Argo CD with SSO enabled.
 
 ### Prerequisites
 - Terraform 1.0+.

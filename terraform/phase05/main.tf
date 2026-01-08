@@ -41,7 +41,7 @@ module "authentik_setup" {
   argocd_address      = local.argocd_address
 }
 
-# Deploy ArgoCD
+# Deploy Argo CD
 module "argocd" {
   source                 = "./modules/argocd"
   chart_namespace        = "argocd"

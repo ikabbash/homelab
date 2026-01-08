@@ -150,7 +150,7 @@ talosctl apply-config --insecure \
 kubectl get nodes
 ```
 
-Next, you’ll set up the CNI and platform components. Apply the [Terraform](../terraform/README.md) configuration to deploy the CNI along with components like cert-manager, ArgoCD, and others.
+Next, you’ll set up the CNI and platform components. Apply the [Terraform](../terraform/README.md) configuration to deploy the CNI along with components like cert-manager, Argo CD, and others.
 
 ### Commands
 ```bash
