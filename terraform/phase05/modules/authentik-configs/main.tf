@@ -40,3 +40,11 @@ data "authentik_property_mapping_provider_scope" "scope_email" {
 data "authentik_property_mapping_provider_scope" "scope_profile" {
   name = "authentik default OAuth Mapping: OpenID 'profile'"
 }
+
+resource "authentik_group" "homelab_admins" {
+  name = "homelab-admins"
+}
+
+resource "authentik_group" "homelab_viewers" {
+  name = "homelab-viewers"
+}

@@ -42,11 +42,3 @@ resource "authentik_application" "argocd" {
 
   depends_on = [authentik_provider_oauth2.argocd]
 }
-
-resource "authentik_group" "argocd_admins" {
-  name = "argocd-admins"
-}
-
-resource "authentik_group" "argocd_viewers" {
-  name = "argocd-viewers"
-}

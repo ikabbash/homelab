@@ -28,8 +28,8 @@ data "terraform_remote_state" "phase04" {
 }
 
 locals {
-  phase02 = data.terraform_remote_state.phase02.outputs
-  phase04 = data.terraform_remote_state.phase04.outputs
+  phase02        = data.terraform_remote_state.phase02.outputs
+  phase04        = data.terraform_remote_state.phase04.outputs
   argocd_address = "${var.argocd_subdomain}.${local.phase02.homelab_domain}"
 }
 
