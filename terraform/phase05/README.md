@@ -20,7 +20,7 @@ This phase configures Authentik applications and providers (e.g. OIDC) for SSO a
 2. Copy your API token from Authentik and add it as the value for `authentik_api_token` in `terraform.tfvars`.
 3. Initialize Terraform `terraform init`.
 4. Deploy Authentik configuration and ArgoCD using `terraform apply`.
-5. Add your user to the `argocd-admin` group in Authentik:
+5. Add your user to the `homelab-admins` group in Authentik:
     - Admin interface -> Directory -> Groups.
 6. Visit ArgoCD and congratulations, the Terraform part is done.
 
@@ -28,7 +28,7 @@ This phase configures Authentik applications and providers (e.g. OIDC) for SSO a
 - ArgoCD does not create a default admin user, as this is disabled in the Helm chart.
 - Additional providers and applications within Authentik can be managed to keep all SSO/auth flows infrastructure-as-code.  
     - For example, in the `authentik-configs` module, create `app_name.tf` to define `authentik_provider_oauth2`, `authentik_application`, and optionally `authentik_group` for the service you want to integrate.  
-- The groups defined in ArgoCD’s values file (like `argocd-admins` and `argocd-viewers`) correspond to the groups created in `authentik-configs` module, so users get the correct roles when logging in.
+- The groups defined in ArgoCD’s values file (like `homelab-admins` and `homelab-viewers`) correspond to the groups created in `authentik-configs` module, so users get the correct roles when logging in.
 - The Authentik provider is declared inside this module because it is a third‑party (non‑HashiCorp) provider.
 - Several data sources are used in the `authentik-configs` module to reference built‑in Authentik defaults (flows, scope/property mappings, certificate key pair), avoiding hard‑coding of IDs and ensuring Terraform correctly links to the necessary platform defaults. 
 
