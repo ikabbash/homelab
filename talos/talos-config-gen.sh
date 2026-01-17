@@ -83,9 +83,18 @@ for node_ip in "${CONTROL_PLANE_NODES[@]}"; do
         yq -i -y '.' "${output_file}"
     fi
 
-    # If there are no workers, make control planes schedulable
+    # If there are no workers, make control plane schedulable
     if [ -z "${WORKER_NODES+x}" ] || [ "${#WORKER_NODES[@]}" -eq 0 ]; then
         yq -i -y '.cluster.allowSchedulingOnControlPlanes = true' "${output_file}"
+    # Else, remove Ceph configs from control plane nodes configs
+    else
+        yq -i -y '.machine.kernel.modules = [{"name": "br_netfilter"}]' "${output_file}"
+        yq -i -y 'del(.machine.kubelet.extraMounts)' "${output_file}"
+        yq -i -y 'del(
+        .machine.sysctls."vm.swappiness",
+        .machine.sysctls."kernel.pid_max",
+        .machine.sysctls."fs.aio-max-nr"
+        )' "${output_file}"
     fi
 
     sed -i "s/NODE_HOSTNAME/talos-cp-${count}/g" ${output_file}
