@@ -23,12 +23,6 @@ cluster:
                 warn-version: latest
 
 machine:
-  network:
-    hostname: NODE_HOSTNAME
-    interfaces:
-      - deviceSelector:
-          physical: true # Should select any hardware network device
-        dhcp: true # Static IPs handled by DHCP
   time:
     servers:
       - time.cloudflare.com
@@ -80,3 +74,8 @@ machine:
     vm.swappiness: 0         # Disable swap - Ceph needs real RAM, not swap
     kernel.pid_max: 4194304  # Ceph creates many processes for parallel I/O operations
     fs.aio-max-nr: 1048576   # Allows more concurrent disk operations for better performance
+---
+apiVersion: v1alpha1
+kind: HostnameConfig
+auto: off
+hostname: NODE_HOSTNAME

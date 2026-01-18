@@ -12,8 +12,6 @@ The `cluster-patch.yaml` file is used as a strategic merge patch when generating
 
 Note that it's assumed that the DHCP server is configured to assign fixed IPs to the nodes based on their MAC addresses. You're welcome to make any changes to the `cluster-patch.yaml`.
 
-Cilium is used for the Kubernetes CNI and F5's NGINX Ingress Controller manages external access to cluster services in this setup.
-
 Note that the PodSecurity admission defaults are already set to restricted for all audit, enforce, and warn levels. To check after installation, execute the command below.
 ```bash
 talosctl get admissioncontrolconfigs.kubernetes.talos.dev admission-control -o yaml
@@ -27,7 +25,6 @@ Make sure the following are installed and accessible:
 You may need to update the following variables in the script:
 - `CLUSTER_NAME`: Your desired cluster name
 - `VIRTUAL_IP_ADDRESS`: The cluster API VIP for high availability (if you'll have more than one control plane node)
-- `NETWORK_GATEWAY`: Your network’s gateway address
 - `CONTROL_PLANE_NODES`: An array of control plane node IPs
 - `WORKER_NODES`: An array of worker node IPs
 
@@ -53,9 +50,9 @@ _out
 Make sure each node is running the Talos ISO because the script will prompt you to choose the installation disk for each one.
 
 ### Storage Configuration
-To have persistent data on a node, you must define a [`UserVolumeConfig` ](https://docs.siderolabs.com/talos/v1.11/reference/configuration/block/uservolumeconfig). This configuration provisions a volume from a specified disk for user-defined data.
+To have persistent data on a node, you must define a [`UserVolumeConfig` ](https://docs.siderolabs.com/talos/v1.12/reference/configuration/block/uservolumeconfig). This configuration provisions a volume from a specified disk for user-defined data.
 
-If you plan to use the same disk for both Talos and `UserVolumeConfig`, you must explicitly define a size limit for the [`EPHEMERAL`](https://docs.siderolabs.com/talos/v1.11/configure-your-talos-cluster/storage-and-disk-management/disk-management/system#ephemeral-volume) partition. By default, Talos allocates the entire disk to the `EPHEMERAL` partition (assuming you have another disk for storing data), which is used for storing container images, node logs, and etcd data (on control plane nodes).
+If you plan to use the same disk for both Talos and `UserVolumeConfig`, you must explicitly define a size limit for the [`EPHEMERAL`](https://docs.siderolabs.com/talos/v1.12/configure-your-talos-cluster/storage-and-disk-management/disk-management/system#ephemeral-volume) partition. By default, Talos allocates the entire disk to the `EPHEMERAL` partition (assuming you have another disk for storing data), which is used for storing container images, node logs, and etcd data (on control plane nodes).
 
 Important: This configuration must be applied during the initial installation of Talos, as it involves disk partitioning. It cannot be applied to a node that is already running.
 
@@ -74,6 +71,7 @@ provisioning:
 apiVersion: v1alpha1
 kind: UserVolumeConfig
 name: homelab
+volumeType: partition
 provisioning:
   diskSelector:
     match: disk.dev_path == "/dev/sda"

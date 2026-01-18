@@ -12,7 +12,6 @@ TALOSCONFIG="${CLUSTER_CONFIG_DIR}"/talosconfig
 
 PATCH_FILE="${BASE_DIR}/cluster-patch.yaml"
 VIRTUAL_IP_ADDRESS="192.168.1.200"
-NETWORK_GATEWAY="192.168.1.1" # Presuming there is only one
 
 CONTROL_PLANE_NODES=("192.168.1.107")
 # WORKER_NODES=("192.168.1.104")
@@ -77,15 +76,17 @@ for node_ip in "${CONTROL_PLANE_NODES[@]}"; do
 
     # Add VIP configs if there's more than one control plane node, else clear comments in the yaml file
     if [ ${#CONTROL_PLANE_NODES[@]} -gt 1 ]; then
-        yq -i -y '.machine.network.interfaces[0].vip.ip = "VIRTUAL_IP_ADDRESS"' "${output_file}"
-        yq -i -y '.machine.certSANs += ["VIRTUAL_IP_ADDRESS"]' "${output_file}"
+        echo -e '\n---\napiVersion: v1alpha1\nkind: Layer2VIPConfig\nname: VIRTUAL_IP_ADDRESS\nlink: "LINK_NAME"' >> "${output_file}"
+        yq -i -y 'if .machine.type then .machine.certSANs += ["VIRTUAL_IP_ADDRESS"] else . end' "${output_file}"
+        link_name=$(talosctl get links -n ${node_ip} --insecure | awk '/ether/ && /up/ && $3 ~ /^(eth[0-9]+|ens[0-9]+|enp)/ {print $3; exit}')
+        sed -i "s/LINK_NAME/${link_name}/g" ${output_file}
     else
         yq -i -y '.' "${output_file}"
     fi
 
     # If there are no workers, make control plane schedulable
     if [ -z "${WORKER_NODES+x}" ] || [ "${#WORKER_NODES[@]}" -eq 0 ]; then
-        yq -i -y '.cluster.allowSchedulingOnControlPlanes = true' "${output_file}"
+        yq -i -y 'if .machine.type then .cluster.allowSchedulingOnControlPlanes = true else . end' "${output_file}"
     # Else, remove Ceph configs from control plane nodes configs
     else
         yq -i -y '.machine.kernel.modules = [{"name": "br_netfilter"}]' "${output_file}"
@@ -122,7 +123,7 @@ if [[ -n "${WORKER_NODES}" ]]; then
         echo
 
         # Remove unneeded configs
-        yq -i -y '.machine.certSANs = []' "${output_file}"
+        yq -i -y 'if .machine.certSANs then .machine.certSANs = [] else . end' "${output_file}"
         yq -i -y 'del(.machine.features.kubernetesTalosAPIAccess)' "${output_file}"
 
         sed -i "s/NODE_HOSTNAME/talos-worker-${count}/g" ${output_file}
