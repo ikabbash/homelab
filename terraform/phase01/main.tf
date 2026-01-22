@@ -31,3 +31,12 @@ module "cert_manager" {
 
   depends_on = [module.cilium]
 }
+
+# Deploy rook-ceph
+module "rook_ceph" {
+  source          = "./modules/rook-ceph"
+  chart_namespace = "rook-ceph"
+  chart_version   = "v1.18.9"
+
+  depends_on = [module.cilium]
+}
