@@ -3,7 +3,7 @@
 set -e
 
 BASE_DIR=$(readlink -f $(dirname ${0}))
-CLUSTER_NAME="homelab-cluster"
+CLUSTER_NAME="homelab-staging"
 OUT_DIR="${BASE_DIR}/_out/${CLUSTER_NAME}"
 CONTROLPLANES_DIR="${OUT_DIR}/controlplanes"
 WORKERS_DIR="${OUT_DIR}/workers"
@@ -87,15 +87,6 @@ for node_ip in "${CONTROL_PLANE_NODES[@]}"; do
     # If there are no workers, make control plane schedulable
     if [ -z "${WORKER_NODES+x}" ] || [ "${#WORKER_NODES[@]}" -eq 0 ]; then
         yq -i -y 'if .machine.type then .cluster.allowSchedulingOnControlPlanes = true else . end' "${output_file}"
-    # Else, remove Ceph configs from control plane nodes configs
-    else
-        yq -i -y '.machine.kernel.modules = [{"name": "br_netfilter"}]' "${output_file}"
-        yq -i -y 'del(.machine.kubelet.extraMounts)' "${output_file}"
-        yq -i -y 'del(
-        .machine.sysctls."vm.swappiness",
-        .machine.sysctls."kernel.pid_max",
-        .machine.sysctls."fs.aio-max-nr"
-        )' "${output_file}"
     fi
 
     sed -i "s/NODE_HOSTNAME/talos-cp-${count}/g" ${output_file}

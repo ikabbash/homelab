@@ -40,15 +40,6 @@ machine:
   kubelet:
     extraArgs:
       rotate-certificates: true
-    # For Ceph CSI - Without this, volume mounts fail!
-    extraMounts:
-      - destination: /var/lib/kubelet  # Where kubelet stores pod data
-        type: bind                     # Bind mount type
-        source: /var/lib/kubelet       # Source directory (same as dest)
-        options:
-          - bind      # Create a bind mount
-          - rshared   # Share mount points with child mounts (Ceph CSI needs to propagate mounts to pods)
-          - rw        # Read-write access
   install:
     disk: NODE_DISK_DEVICE
     wipe: true
@@ -58,12 +49,6 @@ machine:
   kernel:
     modules:
       - name: br_netfilter  # Required for Kubernetes networking
-      - name: rbd           # RADOS Block Device - enables block storage via kernel RBD client
-      - name: dm_mod        # Device mapper (required for encryption)
-      - name: dm_crypt      # LUKS encryption support for encrypted RBD volumes
-      - name: libceph       # Core network client (some kernels don't autoload via ceph)
-      - name: ceph          # Core Ceph filesystem support (needed for CephFS kernel client)
-      - name: nbd           # Network Block Device - optional for rbd-nbd fallback
   sysctls:  # Kernel tuning parameters
     net.core.somaxconn: "65535"         # Max queued connections
     net.core.netdev_max_backlog: "4096" # Network device backlog
@@ -71,8 +56,6 @@ machine:
     # CRITICAL for Cilium eBPF because it needs relaxed rp_filter. Drop to "0" if you see asymmetric routing
     net.ipv4.conf.all.rp_filter: "2"      # Loose mode reverse path filtering
     net.ipv4.conf.default.rp_filter: "2"  # Loose mode for new interfaces
-    vm.swappiness: 0         # Disable swap - Ceph needs real RAM, not swap
-    kernel.pid_max: 4194304  # Ceph creates many processes for parallel I/O operations
     fs.aio-max-nr: 1048576   # Allows more concurrent disk operations for better performance
 ---
 apiVersion: v1alpha1
