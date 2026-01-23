@@ -40,6 +40,16 @@ machine:
   kubelet:
     extraArgs:
       rotate-certificates: true
+    extraMounts:
+      - destination: /var/local
+        type: bind
+        source: /var/local
+        options:
+          - bind
+          - rshared
+          - rw
+  nodeLabels:
+    openebs.io/engine: "mayastor"
   install:
     disk: NODE_DISK_DEVICE
     wipe: true
@@ -56,7 +66,8 @@ machine:
     # CRITICAL for Cilium eBPF because it needs relaxed rp_filter. Drop to "0" if you see asymmetric routing
     net.ipv4.conf.all.rp_filter: "2"      # Loose mode reverse path filtering
     net.ipv4.conf.default.rp_filter: "2"  # Loose mode for new interfaces
-    fs.aio-max-nr: 1048576   # Allows more concurrent disk operations for better performance
+    fs.aio-max-nr: "1048576"   # Allows more concurrent disk operations for better performance
+    vm.nr_hugepages: "1024"    # 2MiB-sized Huge Pages must be supported and enabled on the Replicated PV Mayastor storage nodes for Mayastor
 ---
 apiVersion: v1alpha1
 kind: HostnameConfig
