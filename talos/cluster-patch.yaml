@@ -59,6 +59,9 @@ machine:
   kernel:
     modules:
       - name: br_netfilter  # Required for Kubernetes networking
+      - name: nvme-tcp      # Required for OpenEBS Mayastor
+      - name: ext4          # Required for OpenEBS Mayastor
+      - name: xfs           # Required for OpenEBS Mayastor
   sysctls:  # Kernel tuning parameters
     net.core.somaxconn: "65535"         # Max queued connections
     net.core.netdev_max_backlog: "4096" # Network device backlog
