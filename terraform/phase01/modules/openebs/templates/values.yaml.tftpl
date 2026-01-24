@@ -1,0 +1,61 @@
+engines:
+  local:
+    lvm:
+      enabled: false
+    zfs:
+      enabled: false
+    rawfile:
+      enabled: false
+  replicated:
+    mayastor:
+      enabled: false # Until I get more nodes
+
+# Refer to https://github.com/openebs/dynamic-localpv-provisioner/blob/v4.2.0/deploy/helm/charts/values.yaml for complete set of values.
+localpv-provisioner:
+  rbac:
+    create: true
+  hostpathClass:
+    # Name of the default hostpath StorageClass
+    name: "${host_storage_class_name}"
+    # If true, enables creation of the openebs-hostpath StorageClass
+    enabled: true
+    # Available reclaim policies: Delete/Retain, defaults: Delete.
+    reclaimPolicy: Retain
+    # If true, sets the openebs-hostpath StorageClass as the default StorageClass
+    isDefaultClass: true
+    # Path on the host where local volumes of this storage class are mounted under.
+    # NOTE: If not specified, this defaults to the value of localpv.basePath.
+    basePath: "${host_storage_path}"
+
+# Refer to https://github.com/openebs/lvm-localpv/blob/lvm-localpv-1.6.2/deploy/helm/charts/values.yaml for complete set of values.
+lvm-localpv:
+  enabled: false
+  crds:
+    lvmLocalPv:
+      enabled: false
+
+# Refer to https://github.com/openebs/zfs-localpv/blob/v2.7.1/deploy/helm/charts/values.yaml for complete set of values.
+zfs-localpv:
+  enabled: false
+  crds:
+    zfsLocalPv:
+      enabled: false
+
+localpv:
+  enabled: true
+  basePath: "/var/openebs/local"
+
+# Refer to https://github.com/openebs/mayastor-extensions/blob/v2.8.0/chart/values.yaml for complete set of values.
+# We need to disable the init container that checks for the nvme_tcp module, since Talos has that module built-in
+# https://docs.siderolabs.com/kubernetes-guides/csi/storage#openebs-mayastor-replicated-storage
+mayastor:
+  csi:
+    node:
+      initContainers:
+        enabled: false
+
+alloy:
+  enabled: false
+
+loki:
+  enabled: false

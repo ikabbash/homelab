@@ -31,3 +31,12 @@ module "cert_manager" {
 
   depends_on = [module.cilium]
 }
+
+# Deploy OpenEBS
+module "openebs" {
+  source          = "./modules/openebs"
+  chart_namespace = "openebs"
+  chart_version   = "4.4.0"
+
+  depends_on = [module.cilium]
+}
