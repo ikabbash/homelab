@@ -7,47 +7,6 @@ resource "kubernetes_namespace_v1" "vault_namespace" {
   }
 }
 
-resource "kubernetes_persistent_volume_v1" "vault_pv" {
-  metadata {
-    name = var.vault_pv_name
-  }
-
-  spec {
-    capacity = {
-      storage = var.vault_storage_size
-    }
-    access_modes                     = ["ReadWriteOnce"]
-    persistent_volume_reclaim_policy = "Retain"
-    persistent_volume_source {
-      host_path {
-        path = "${var.homelab_data_path}/vault"
-        type = "DirectoryOrCreate"
-      }
-    }
-    claim_ref {
-      namespace = var.chart_namespace
-      name      = var.vault_pvc_name
-    }
-  }
-}
-
-resource "kubernetes_persistent_volume_claim_v1" "vault_pvc" {
-  metadata {
-    name      = var.vault_pvc_name
-    namespace = var.chart_namespace
-  }
-  spec {
-    access_modes = ["ReadWriteOnce"]
-    resources {
-      requests = {
-        storage = var.vault_storage_size
-      }
-    }
-    volume_name = kubernetes_persistent_volume_v1.vault_pv.metadata[0].name
-  }
-  depends_on = [kubernetes_namespace_v1.vault_namespace]
-}
-
 # Certificate to create TLS secret for Vault
 resource "kubernetes_manifest" "vault_certificate" {
   manifest = yamldecode(templatefile("${path.module}/templates/certificate.yaml.tftpl", {
@@ -94,12 +53,10 @@ resource "helm_release" "vault" {
       chart_namespace        = var.chart_namespace
       vault_address          = var.vault_address
       vault_certificate_name = var.vault_certificate_name
-      pvc_name               = var.vault_pvc_name
+      storage_class_name     = var.storage_class_name
+      vault_storage_size     = var.vault_storage_size
     })
   ]
 
-  depends_on = [
-    kubernetes_persistent_volume_claim_v1.vault_pvc,
-    kubernetes_manifest.vault_certificate
-  ]
+  depends_on = [kubernetes_manifest.vault_certificate]
 }

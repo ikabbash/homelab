@@ -10,7 +10,9 @@ ui:
 
 server:
   dataStorage:
-    enabled: false
+    enabled: true
+    storageClass: ${storage_class_name}
+    size: ${vault_storage_size}
   statefulSet:
     securityContext:
       pod:
@@ -50,16 +52,11 @@ server:
     VAULT_TLSKEY: "/vault/userconfig/vault-ha-tls/tls.key"
     VAULT_ADDR: https://${vault_address}:8200
   volumes:
-    - name: vault-data
-      persistentVolumeClaim:
-        claimName: ${pvc_name}
     - name: userconfig-vault-ha-tls
       secret:
         defaultMode: 420
         secretName: ${vault_certificate_name}
   volumeMounts:
-    - name: vault-data
-      mountPath: /vault/data
     - name: userconfig-vault-ha-tls
       mountPath: /vault/userconfig/vault-ha-tls
       readOnly: true

@@ -41,12 +41,12 @@ module "vault" {
   chart_namespace        = "vault"
   chart_version          = "0.31.0"
   vault_address          = local.vault_address
-  homelab_data_path      = var.homelab_data_path
   cluster_issuer_name    = module.gateway.cluster_issuer_name
   gateway_name           = module.gateway.gateway_name
   gateway_namespace      = module.gateway.gateway_namespace
   gateway_listener_http  = module.gateway.gateway_listener_http
   gateway_listener_vault = module.gateway.gateway_listener_vault
+  storage_class_name     = local.phase01.host_storage_class_name
 }
 
 # Deploy VSO

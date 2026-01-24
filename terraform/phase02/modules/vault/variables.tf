@@ -12,20 +12,6 @@ variable "chart_version" {
 }
 
 # Optional
-variable "vault_pv_name" {
-  description = "Name of the persistent volume used by Vault"
-  type        = string
-  default     = "vault-pv"
-}
-
-# Optional
-variable "vault_pvc_name" {
-  description = "Name of the persistent volume claim bound to the Vault persistent volume"
-  type        = string
-  default     = "vault-pvc"
-}
-
-# Optional
 variable "vault_storage_size" {
   description = "Storage size allocated for the Vault persistent volume"
   type        = string
@@ -39,8 +25,8 @@ variable "vault_address" {
 }
 
 # Required
-variable "homelab_data_path" {
-  description = "Base path for homelab data storage"
+variable "storage_class_name" {
+  description = "Name of the Kubernetes StorageClass used to provision Vault persistent storage"
   type        = string
 }
 
