@@ -11,8 +11,8 @@ variable "chart_version" {
 }
 
 # Required
-variable "homelab_data_path" {
-  description = "Base path for homelab data storage"
+variable "storage_class_name" {
+  description = "Name of the Kubernetes StorageClass used to provision Authentik persistent storage"
   type        = string
 }
 
@@ -21,6 +21,13 @@ variable "authentik_media_storage_size" {
   description = "Storage size for Authentik media PVC"
   type        = string
   default     = "5Gi"
+}
+
+# Optional
+variable "authentik_templates_storage_size" {
+  description = "Storage size for Authentik templates PVC"
+  type        = string
+  default     = "2Gi"
 }
 
 # Optional
@@ -35,13 +42,6 @@ variable "authentik_templates_pvc_name" {
   description = "Persistent Volume Claim name for Authentik custom templates"
   type        = string
   default     = "authentik-templates-pvc"
-}
-
-# Optional
-variable "authentik_templates_storage_size" {
-  description = "Storage size for Authentik templates PVC"
-  type        = string
-  default     = "5Gi"
 }
 
 # Required

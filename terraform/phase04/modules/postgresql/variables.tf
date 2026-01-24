@@ -18,12 +18,6 @@ variable "postgres_db" {
   default     = "authentik"
 }
 
-# Required
-variable "homelab_data_path" {
-  description = "Base path for homelab data storage"
-  type        = string
-}
-
 # Optional
 variable "postgres_storage_size" {
   description = "Storage size for PostgreSQL"
@@ -31,9 +25,8 @@ variable "postgres_storage_size" {
   default     = "5Gi"
 }
 
-# Optional
-variable "postgres_pvc_name" {
-  description = "Persistent Volume Claim name for PostgreSQL"
+# Required
+variable "storage_class_name" {
+  description = "Name of the Kubernetes StorageClass used to provision PostgreSQL persistent storage"
   type        = string
-  default     = "authentik-postgres-pvc"
 }

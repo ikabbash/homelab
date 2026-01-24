@@ -13,6 +13,13 @@ terraform {
   }
 }
 
+data "terraform_remote_state" "phase01" {
+  backend = "local"
+  config = {
+    path = "../phase01/terraform.tfstate"
+  }
+}
+
 data "terraform_remote_state" "phase02" {
   backend = "local"
   config = {
@@ -22,6 +29,7 @@ data "terraform_remote_state" "phase02" {
 
 locals {
   phase02 = data.terraform_remote_state.phase02.outputs
+  phase01 = data.terraform_remote_state.phase01.outputs
 }
 
 resource "kubernetes_namespace_v1" "authentik_namespace" {
@@ -33,7 +41,7 @@ resource "kubernetes_namespace_v1" "authentik_namespace" {
 module "postgresql" {
   source              = "./modules/postgresql"
   authentik_namespace = var.authentik_namespace
-  homelab_data_path   = local.phase02.homelab_data_path
+  storage_class_name  = local.phase01.host_storage_class_name
 
   depends_on = [kubernetes_namespace_v1.authentik_namespace]
 }
@@ -44,7 +52,7 @@ module "authentik" {
   chart_version          = "2025.10.3"
   postgres_secret_name   = module.postgresql.postgres_secret_name
   postgres_host          = module.postgresql.postgres_host
-  homelab_data_path      = local.phase02.homelab_data_path
+  storage_class_name     = local.phase01.host_storage_class_name
   homelab_domain         = local.phase02.homelab_domain
   gateway_name           = local.phase02.gateway_name
   gateway_namespace      = local.phase02.gateway_namespace

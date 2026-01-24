@@ -3,68 +3,19 @@ resource "random_password" "authentik_secret_key" {
   special = true
 }
 
-resource "kubernetes_persistent_volume_v1" "authentik_media_pv" {
-  metadata {
-    name = "authentik-media-pv"
-  }
-  spec {
-    capacity = {
-      storage = var.authentik_media_storage_size
-    }
-    access_modes                     = ["ReadWriteOnce"]
-    persistent_volume_reclaim_policy = "Retain"
-    storage_class_name               = "local-storage"
-    persistent_volume_source {
-      host_path {
-        path = "${var.homelab_data_path}/authentik/media"
-        type = "DirectoryOrCreate"
-      }
-    }
-    claim_ref {
-      namespace = var.chart_namespace
-      name      = var.authentik_media_pvc_name
-    }
-  }
-}
-
 resource "kubernetes_persistent_volume_claim_v1" "authentik_media_pvc" {
   metadata {
     name      = var.authentik_media_pvc_name
     namespace = var.chart_namespace
   }
+  wait_until_bound = false
   spec {
     access_modes       = ["ReadWriteOnce"]
-    storage_class_name = "local-storage"
+    storage_class_name = var.storage_class_name
     resources {
       requests = {
         storage = var.authentik_media_storage_size
       }
-    }
-  }
-
-  depends_on = [kubernetes_persistent_volume_v1.authentik_media_pv]
-}
-
-resource "kubernetes_persistent_volume_v1" "authentik_templates_pv" {
-  metadata {
-    name = "authentik-templates-pv"
-  }
-  spec {
-    capacity = {
-      storage = var.authentik_templates_storage_size
-    }
-    access_modes                     = ["ReadWriteOnce"]
-    persistent_volume_reclaim_policy = "Retain"
-    storage_class_name               = "local-storage"
-    persistent_volume_source {
-      host_path {
-        path = "${var.homelab_data_path}/authentik/templates"
-        type = "DirectoryOrCreate"
-      }
-    }
-    claim_ref {
-      namespace = var.chart_namespace
-      name      = var.authentik_templates_pvc_name
     }
   }
 }
@@ -74,17 +25,16 @@ resource "kubernetes_persistent_volume_claim_v1" "authentik_templates_pvc" {
     name      = var.authentik_templates_pvc_name
     namespace = var.chart_namespace
   }
+  wait_until_bound = false
   spec {
     access_modes       = ["ReadWriteOnce"]
-    storage_class_name = "local-storage"
+    storage_class_name = var.storage_class_name
     resources {
       requests = {
         storage = var.authentik_templates_storage_size
       }
     }
   }
-
-  depends_on = [kubernetes_persistent_volume_v1.authentik_templates_pv]
 }
 
 resource "kubernetes_manifest" "authentik_smtp_secret" {
@@ -136,6 +86,4 @@ resource "kubernetes_manifest" "authentik_http_route" {
     gateway_namespace      = var.gateway_namespace
     gateway_listener_https = var.gateway_listener_https
   }))
-
-  depends_on = [helm_release.authentik]
 }

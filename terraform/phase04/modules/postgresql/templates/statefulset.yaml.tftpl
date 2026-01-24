@@ -9,6 +9,16 @@ spec:
   selector:
     matchLabels:
       app: postgres
+  volumeClaimTemplates:
+    - metadata:
+        name: postgres-storage
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ${storage_class_name}
+        resources:
+          requests:
+            storage: ${postgres_storage_size}
   template:
     metadata:
       labels:
@@ -32,12 +42,16 @@ spec:
               - ALL
           ports:
             - containerPort: 5432
+          env:
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
           envFrom:
             - secretRef:
                 name: ${secret_name}
           volumeMounts:
             - name: postgres-storage
               mountPath: /var/lib/postgresql/data
+              subPath: pgdata
           resources:
             requests:
               memory: "256Mi"
@@ -61,7 +75,3 @@ spec:
                 - $(POSTGRES_USER)
             initialDelaySeconds: 5
             periodSeconds: 5
-      volumes:
-        - name: postgres-storage
-          persistentVolumeClaim:
-            claimName: ${pvc_name}
