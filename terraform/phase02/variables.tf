@@ -5,13 +5,6 @@ variable "kubeconfig_path" {
   default     = "~/.kube/config"
 }
 
-# Optional
-variable "homelab_data_path" {
-  description = "Base path for homelab data storage"
-  type        = string
-  default     = "/var/mnt/homelab"
-}
-
 # Required
 variable "homelab_domain" {
   description = "Domain name for the homelab environment"
