@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Use this script if you have KeePassXC
-# Entries will need to be stored at homelab/vault with entry names from unseal_key1 to unseal_key5
+# Entries will need to be stored at vault group (within root group) with entry names from unseal_key1 to unseal_key5
 # Usage: ./unseal.sh /path/to/keepass.kdbx
 
 set -euo pipefail
@@ -9,7 +9,7 @@ set -euo pipefail
 # /path/to/your/keepass.kdbx
 DB_FILE="$1"
 # vault unseal entries
-BASE_PATH="homelab/vault"
+BASE_PATH="vault"
 VAULT_NAMESPACE=$(terraform output -state=../phase02/terraform.tfstate -raw vault_namespace)
 
 # Prompt for master password (hidden input)
