@@ -14,7 +14,6 @@ This phase deploys Gateway resource, Vault, and Vault Secrets Operator (VSO). Al
 - Acts as the single entry point for all inbound traffic into the cluster.
 
 ### Vault
-- Creates persistent volumes for Vault data storage.
 - Creates a Cert Manager `Certificate` resource to issue the TLS secret.
     - The TLS secret is mounted into the Vault pod to enable end-to-end TLS.
 - Creates an `HTTPRoute` to handle HTTP to HTTPS redirection.

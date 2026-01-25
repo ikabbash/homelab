@@ -13,6 +13,7 @@ This design tracks and versions all infrastructure changes, making it easy to re
 ### Key Components
 - Cilium: Provides cluster networking, replaces kube-proxy, and implements the Gateway API used to expose services.
 - Cert Manager: Manages TLS certificates using Let’s Encrypt. DNS challenge is handled through Cloudflare.
+- OpenEBS: Provides dynamic persistent storage through Kubernetes-native storage classes, supporting both local and replicated volumes.
 - Vault: Central source of truth for secrets such as API keys, database credentials, and service configuration.
 - Vault Secrets Operator (VSO): Syncs secrets from Vault into native Kubernetes Secrets so workloads can consume them without embedding sensitive data in manifests or repositories.
 - Authentik: Identity provider for authentication and SSO across cluster services.
@@ -23,26 +24,13 @@ This design tracks and versions all infrastructure changes, making it easy to re
 ## Getting Started
 For my setup, I use Talos Linux because it’s lightweight, minimal, and built specifically for running Kubernetes. Kubernetes on Ubuntu works as well, but make sure your cluster has no CNI installed before proceeding. For Talos, you can check the [documentation](./talos/README.md) I made and use the provided script to generate machine configs for control planes and workers with preconfigured settings applied via a patch template. It saves time, and all you need to do is apply the configs onto the machines after booting Talos.
 
-With the cluster ready, the next step is provisioning the platform stack with [Terraform](./terraform/README.md). Terraform lays down the base layer of the cluster by applying a series of ordered phases that install and configure components like Cilium, Cert Manager, Vault, Authentik, and Argo CD. Each phase lives in its own directory and is meant to be applied in sequence.
+With the cluster ready, the next step is provisioning the platform stack with [Terraform](./terraform/README.md). Terraform lays down the base layer of the cluster by applying a series of ordered phases that install and configure components like Cilium, Cert Manager, OpenEBS, Vault, Authentik, and Argo CD. Each phase lives in its own directory and is meant to be applied in sequence.
 
 Once Terraform finishes laying down the core platform components, Argo CD takes the wheel. The repository follows an App-of-Apps pattern, where syncing the root application triggers the deployment of all other applications and keeps them continuously reconciled through GitOps.
 
 <!-- ### Architecture -->
 
 <!-- ### Hardware Used -->
-
-### Notes
-- The current design is based on a single-node cluster and uses Kubernetes `hostPath` for persistent storage on the local node, with plans to introduce a scalable storage solution later.
-- In case no one told you, always back up your data before upgrading anything. For example, Vault does not guarantee backward compatibility for its data store, so having a backup is essential.
-- Internal service domains (e.g. `authentik.homelab.example.com`) are resolved locally by mapping `*.homelab.example.com` to the Gateway service IP, either via CoreDNS or a network-level DNS, avoiding public DNS and per-pod host aliases in a private home network.
-  - Example below modifies CoreDNS' `ConfigMap`.
-    ```
-    template IN A homelab.example.com {
-      match \.homelab\.example\.com
-      answer "{{ .Name }} 60 IN A <GATEWAY_SVC_IP>"
-      fallthrough
-    }
-    ```
 
 ## To-do
 What's planned for the homelab as it evolves. Ideas below may change and more may be added.
@@ -64,7 +52,7 @@ What's planned for the homelab as it evolves. Ideas below may change and more ma
 
 ### Scalability
 - [ ] Turn the cluster into a 3 nodes cluster (buy 3 mini-PCs)
-- [ ] Storage scalability (e.g. OpenEBS, Rook with Ceph, etc.)
+- [x] Storage scalability (e.g. OpenEBS, Rook Ceph, etc.)
 - [ ] Setup [CloudNativePG](https://cloudnative-pg.io/)
 
 ### Security

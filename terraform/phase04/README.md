@@ -5,13 +5,12 @@ This phase deploys Authentik with a PostgreSQL database. Authentik is used as th
 
 ### PostgreSQL
 - Deploys PostgreSQL as a StatefulSet for Authentik data persistence.
-- Creates persistent volume to retain data.
 - Database password is randomly generated.
 - Dedicated for Authentik only.
 
 ### Authentik
 - Deploys Authentik using Helm provider.
-- Creates 2 persistent volumes: One for media and the other for templates.
+- Creates 2 persistent volume claims: One for media and the other for templates.
 - Exposes Authentik through the Gateway using an `HTTPRoute`.
 - Retrieves sensitive configuration (e.g. SMTP credentials) from Vault via VSO using `VaultStaticSecret`.
 - Serves as the central SSO solution for services within the cluster.

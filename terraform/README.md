@@ -12,7 +12,7 @@ Vault and Authentik configurations are intentionally managed through Terraform t
 
 ### Terraform Phases
 Components are provisioned through five Terraform projects (phases), which must be executed in order:
-- `phase01`: Deploys Cilium as the CNI with Gateway API enabled and deploys Cert Manager.
+- `phase01`: Deploys Cilium as the CNI with Gateway API enabled, Cert Manager, and OpenEBS to provide dynamic persistent storage (local or replicated), avoiding manual PV management.
 - `phase02`: Creates a single Gateway and deploys Vault along with the Vault Secrets Operator (VSO).
 - `phase03`: Manages Vault configuration as code and creates VSO connection resources for global authentication.
 - `phase04`: Deploys PostgreSQL and Authentik as the central identity provider and SSO solution.
@@ -25,51 +25,15 @@ Components are provisioned through five Terraform projects (phases), which must 
   - For Cert Manager's DNS challenge.
 
 ### Notes
-- This setup currently targets a single-node cluster and uses `hostPath` volumes for persistent storage.
-- Required directories and permissions must be created manually before deploying workloads that rely on persistent volumes.
-- The following script creates the necessary directories and sets proper ownership for each application. You may execute it after `phase01` is done:
-  ```bash
-  kubectl label namespace default pod-security.kubernetes.io/enforce=privileged --overwrite
-
-  kubectl apply -f - <<'EOF'
-  apiVersion: v1
-  kind: Pod
-  metadata:
-    name: dirs-creator
-  spec:
-    restartPolicy: Never
-    containers:
-    - name: dirs-creator
-      image: alpine
-      command:
-        - sh
-        - -c
-        - |
-          mkdir /var/mnt/homelab/vault
-          chown 100:1000 /var/mnt/homelab/vault
-          mkdir -p /var/mnt/homelab/authentik/postgres
-          mkdir -p /var/mnt/homelab/authentik/media
-          mkdir -p /var/mnt/homelab/authentik/templates
-          chown -R 1000:1000 /var/mnt/homelab/authentik
-          ls -l /var/mnt/homelab
-      volumeMounts:
-        - name: homelab
-          mountPath: /var/mnt/homelab
-    volumes:
-      - name: homelab
-        hostPath:
-          path: /var/mnt/homelab
-          type: Directory
-  EOF
-
-  kubectl wait --for=condition=Completed pod/dirs-creator --timeout=10s
-
-  kubectl logs dirs-creator
-
-  kubectl delete pod dirs-creator
-
-  kubectl label namespace default pod-security.kubernetes.io/enforce- --overwrite
-  ```
+- Internal service domains (e.g. `authentik.homelab.example.com`) are resolved locally by mapping `*.homelab.example.com` to the Gateway service IP, either via CoreDNS or a network-level DNS, avoiding public DNS and per-pod host aliases in a private home network.
+  - Example below modifies CoreDNS' `ConfigMap`.
+    ```
+    template IN A homelab.example.com {
+      match \.homelab\.example\.com
+      answer "{{ .Name }} 60 IN A <GATEWAY_SVC_IP>"
+      fallthrough
+    }
+    ```
 
 ### Providers Used
 - HashiCorp Kubernetes [provider](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs).

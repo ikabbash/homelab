@@ -16,6 +16,12 @@ This phase deploys Cilium as the CNI with Gateway API enabled and L2 load balanc
 - Creates Kubernetes secret with Cloudflare API token for `ClusterIssuer` in `phase02`.
 - Handles TLS certificate issuance and lifecycle management.
 
+### OpenEBS
+- Deploys OpenEBS using the Helm provider.
+- Provides storage for the cluster using the LocalPV provisioner for node-local persistent volumes.
+- Can be extended with Mayastor to support replicated and distributed storage across nodes.
+- Acts as the primary storage layer for persisting volumes.
+
 ## Steps
 1. Initialize Terraform `terraform init`.
 2. Create `terraform.tfvars`:
@@ -30,6 +36,7 @@ This phase deploys Cilium as the CNI with Gateway API enabled and L2 load balanc
 
 ### Outputs
 - `cluster_issuer_secret_name` for `ClusterIssuer` resource in `phase02`.
+- `host_storage_class_name` is used by any application that requires persistent volumes, such as Vault in `phase02` and Authentik (including its PostgreSQL database) in `phase04`.
 
 ### References
 - Cert Manager Helm values: https://artifacthub.io/packages/helm/cert-manager/cert-manager
@@ -37,3 +44,4 @@ This phase deploys Cilium as the CNI with Gateway API enabled and L2 load balanc
 - Cert Manager Cloudflare's DNS challenge: https://cert-manager.io/docs/configuration/acme/dns01/cloudflare/
 - Cilium Gateway API setup with Cert Manager: https://blog.stonegarden.dev/articles/2023/12/cilium-gateway-api
 - Cilium deployment on Talos Linux: https://docs.siderolabs.com/kubernetes-guides/cni/deploying-cilium
+- OpenEBS Helm values: https://github.com/openebs/openebs/blob/develop/charts/README.md
