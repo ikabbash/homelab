@@ -53,6 +53,12 @@ mayastor:
     node:
       initContainers:
         enabled: false
+  localpv-provisioner:
+    enabled: false
+  crds:
+    enabled: false
+  loki-stack:
+    enabled: false
 
 alloy:
   enabled: false
