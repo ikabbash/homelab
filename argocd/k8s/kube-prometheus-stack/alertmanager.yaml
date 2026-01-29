@@ -1,0 +1,40 @@
+alertmanager:
+  enabled: true
+  alertmanagerSpec:
+    replicas: 1
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 200m
+        memory: 256Mi
+    storage:
+      volumeClaimTemplate:
+        spec:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 5Gi
+          storageClassName: openebs-hostpath
+  # config:
+  #   global:
+  #     resolve_timeout: 5m
+  #     slack_api_url: 'https://hooks.slack.com/services/'
+  ingress:
+    enabled: false
+  route:
+    main:
+      enabled: true
+      apiVersion: gateway.networking.k8s.io/v1
+      kind: HTTPRoute
+      hostnames:
+        - alertmanager.homelab.ikabbash.com
+      parentRefs:
+        - name: homelab-gw
+          namespace: cilium-gateway
+          sectionName: homelab-https
+      matches:
+        - path:
+            type: PathPrefix
+            value: /

@@ -1,0 +1,37 @@
+grafana:
+  enabled: true
+  # admin:
+  #   existingSecret: "" # Create VaultStaticSecret first before Helm deployment
+  #   userKey: admin-user
+  #   passwordKey: admin-password
+  adminPassword: "password" # to do
+  defaultDashboardsTimezone: "Africa/Cairo"
+  persistence:
+    type: pvc
+    enabled: true
+    storageClassName: openebs-hostpath
+    size: 5Gi
+  ingress:
+    enabled: false
+  route:
+    main:
+      enabled: true
+      apiVersion: gateway.networking.k8s.io/v1
+      kind: HTTPRoute
+      hostnames:
+        - grafana.homelab.ikabbash.com
+      parentRefs:
+        - name: homelab-gw
+          namespace: cilium-gateway
+          sectionName: homelab-https
+      matches:
+        - path:
+            type: PathPrefix
+            value: /
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
