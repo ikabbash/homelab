@@ -69,6 +69,10 @@ server:
     limits:
       cpu: 2000m
       memory: 2Gi
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
 
 worker:
   replicas: 1
@@ -85,3 +89,7 @@ worker:
     limits:
       cpu: 2000m
       memory: 2Gi
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
