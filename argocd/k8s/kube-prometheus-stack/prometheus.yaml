@@ -1,5 +1,10 @@
 prometheus:
   prometheusSpec:
+    serviceMonitorSelector: {}  # Select all ServiceMonitors
+    serviceMonitorNamespaceSelector: {}  # From all namespaces
+    # To pickup podMonitor and serviceMonitors automatically across all namespaces
+    podMonitorSelectorNilUsesHelmValues: false
+    serviceMonitorSelectorNilUsesHelmValues: false
     retention: "10d"
     retentionSize: "50GB"
     storageSpec:
@@ -34,4 +39,4 @@ prometheus:
         - path:
             type: PathPrefix
             value: /
-    additionalScrapeConfigs: []
+  additionalScrapeConfigs: []
