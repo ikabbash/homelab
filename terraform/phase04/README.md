@@ -31,6 +31,7 @@ This phase deploys Authentik with a PostgreSQL database. Authentik is used as th
 - Authentik application SSO configuration is handled in `phase05` and is separated because Authentik must first be initialized by creating an account and an admin API token.
 - Tip: You can use [Gravatar](https://gravatar.com/) to link your email to a profile with a picture and basic info, so websites and apps can automatically display it.
     - Gravatar is a service that links your email to a profile with a picture and info, letting supported websites automatically display it.
+- Authentik can expose Prometheus metrics (requires kube-prometheus-stack) to monitor background task processing, authentication and policy flows, request performance, and so on.
 
 ### Outputs
 - `authentik_address` for `phase05` to authenticate with Authentik using API token.
