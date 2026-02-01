@@ -1,0 +1,32 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kube-prometheus-stack
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    # Reference: https://argo-cd.readthedocs.io/en/latest/user-guide/multiple_sources/#helm-value-files-from-external-git-repository
+    - repoURL: "https://prometheus-community.github.io/helm-charts"
+      chart: kube-prometheus-stack
+      targetRevision: "81.3.0"
+      helm:
+        releaseName: prometheus
+        valueFiles:
+          - $values/argocd/k8s/kube-prometheus-stack/base.yaml
+          - $values/argocd/k8s/kube-prometheus-stack/alertmanager.yaml
+          - $values/argocd/k8s/kube-prometheus-stack/prometheus.yaml
+          - $values/argocd/k8s/kube-prometheus-stack/grafana.yaml
+    - repoURL: "https://github.com/ikabbash/homelab.git"
+      targetRevision: HEAD
+      ref: values
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: monitoring
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
