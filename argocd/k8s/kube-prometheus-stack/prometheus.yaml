@@ -2,6 +2,8 @@ prometheus:
   prometheusSpec:
     serviceMonitorSelector: {}  # Select all ServiceMonitors
     serviceMonitorNamespaceSelector: {}  # From all namespaces
+    podMonitorSelector: {}
+    podMonitorNamespaceSelector: {}
     # To pickup podMonitor and serviceMonitors automatically across all namespaces
     podMonitorSelectorNilUsesHelmValues: false
     serviceMonitorSelectorNilUsesHelmValues: false
