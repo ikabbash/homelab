@@ -38,39 +38,39 @@ server:
     enabled: false
   resources:
     limits:
-      cpu: 300m
+      cpu: 500m
       memory: 1Gi
     requests:
-      cpu: 150m
-      memory: 512Mi
+      cpu: 100m
+      memory: 256Mi
 
 controller:
   resources:
     limits:
       cpu: 1000m
-      memory: 750Mi
+      memory: 1Gi
     requests:
       cpu: 250m
-      memory: 256Mi
+      memory: 512Mi
 
 repoServer:
   resources:
     limits:
-      cpu: 50m
-      memory: 128Mi
+      cpu: 500m
+      memory: 1Gi
     requests:
-      cpu: 10m
-      memory: 64Mi
+      cpu: 100m
+      memory: 256Mi
 
 redis:
   exporter:
     resources:
       limits:
-        cpu: 50m
-        memory: 64Mi
+        cpu: 200m
+        memory: 128Mi
       requests:
-        cpu: 10m
-        memory: 32Mi
+        cpu: 100m
+        memory: 64Mi
   resources:
     limits:
       cpu: 200m
@@ -99,3 +99,10 @@ notifications:
 
 dex:
   enabled: true
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 50m
+      memory: 64Mi
