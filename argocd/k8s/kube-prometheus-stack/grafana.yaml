@@ -21,7 +21,9 @@ grafana:
       hostnames:
         - grafana.homelab.ikabbash.com
       parentRefs:
-        - name: homelab-gw
+        - group: gateway.networking.k8s.io
+          kind: Gateway
+          name: homelab-gw
           namespace: cilium-gateway
           sectionName: homelab-https
       matches:
