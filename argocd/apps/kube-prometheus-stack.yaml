@@ -30,3 +30,9 @@ spec:
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true
+  # To resolve false OutOfSync issue between Argo CD and Cilium
+  # ignoreDifferences:
+  #   - group: gateway.networking.k8s.io
+  #     kind: HTTPRoute
+  #     jsonPointers:
+  #       - /spec/rules
