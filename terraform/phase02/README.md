@@ -41,6 +41,8 @@ This phase deploys Gateway resource, Vault, and Vault Secrets Operator (VSO). Al
 - HA is enabeld in Vault to be able to use Raft but replica is set to 1.
 - For TLS secrets to be created, it may take approximately 90 seconds for the `challenges.acme.cert-manager.io` to be in a valid state and create the TLS secret.
 - Requests to Vault using Vault's Kubernetes service domain (e.g. `vault.vault.svc.cluster.local`) is not supported due to TLS verification so you must use the exact domain specified in its assigned TLS certificate.
+- Vault can expose Prometheus metrics to monitor request throughput and latency, secret engine and database operations, token and policy activity, audit logging performance, and a lot of others.
+- Vault Secrets Operator can expose Prometheus metrics to monitor managed secret counts and statuses, sync operations and errors, Vault request and response performance, and other operational signals.
 
 ### Outputs
 - `vault_address` for setup scripts and VSO's `VaultConnection` manifest in `phase03`.

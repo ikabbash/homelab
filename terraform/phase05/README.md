@@ -31,6 +31,7 @@ This phase configures Authentik applications and providers (e.g. OIDC) for SSO a
 - The groups defined in Argo CD’s values file (like `homelab-admins` and `homelab-viewers`) correspond to the groups created in `authentik-configs` module, so users get the correct roles when logging in.
 - The Authentik provider is declared inside this module because it is a third‑party (non‑HashiCorp) provider.
 - Several data sources are used in the `authentik-configs` module to reference built‑in Authentik defaults (flows, scope/property mappings, certificate key pair), avoiding hard‑coding of IDs and ensuring Terraform correctly links to the necessary platform defaults. 
+- Argo CD can expose Prometheus metrics to monitor application sync and health status, controller and API server activity, repo and commit server operations, and other performance signals.
 
 ### Outputs
 - `argocd_address` shows the URL to access Argo CD.

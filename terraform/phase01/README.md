@@ -33,6 +33,10 @@ This phase deploys Cilium as the CNI with Gateway API enabled and L2 load balanc
 - Gateway API is enabled in Cilium, with Cert Manager configured to integrate with it for certificate management on Gateway resources created in later `phase02`.
 - Gateway API CRDs are applied explicitly to control versioning via Terraform within Cilium module.
 - `ClusterIssuer` is created in `phase02` because the Terraform Kubernetes provider can’t verify CRDs on first deployment.
+- Cilium can expose Prometheus metrics to monitor the state and performance of its agents, operators, Envoy/data plane, and other internal networking components for insights into connectivity, policy enforcement, and control-plane activity.
+    - Hubble can expose Prometheus metrics to monitor network behavior between pods managed by Cilium, including flow records, and protocol-specific insights.
+    - Cilium and Hubble metrics can be enabled independently of each other.
+- OpenEBS Mayastor can expose Prometheus metrics to monitor storage pool capacity and status, volume and replica I/O performance and latency, pool and volume creation/deletion activity, and related storage health indicators.
 
 ### Outputs
 - `cluster_issuer_secret_name` for `ClusterIssuer` resource in `phase02`.
