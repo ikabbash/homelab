@@ -21,6 +21,10 @@ cluster:
                 enforce-version: latest
                 warn: restricted
                 warn-version: latest
+            exemptions:
+              namespaces:
+                - openebs
+                - monitoring
 
 machine:
   time:
