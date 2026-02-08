@@ -10,7 +10,7 @@ VAULT_ADDRESS=$(terraform output -state=../phase02/terraform.tfstate -raw vault_
 VAULT_PORT="443"
 POLICY_NAME="terraform-admin"
 POLICY_FILE="terraform-admin.hcl"
-TERRAFORM_FILE="terraform.tfvars"
+AUTH_FILE="${HOME}/.vault-token"
 AUTH_PATH="approle"
 ROLE_NAME="terraform-role"
 
@@ -55,12 +55,10 @@ CREDENTIALS=$(kubectl exec -n "${VAULT_NAMESPACE}" "${VAULT_POD}" -- sh -c "
 ROLE_ID=$(echo "$CREDENTIALS" | cut -d '|' -f1)
 SECRET_ID=$(echo "$CREDENTIALS" | cut -d '|' -f2)
 
-# Create terraform.tfvars file
-cat > "$TERRAFORM_FILE" << EOF
-login_approle_role_id   = "$ROLE_ID"
-login_approle_secret_id = "$SECRET_ID"
-vault_address           = "$VAULT_ADDRESS"
-vault_port              = "$VAULT_PORT"
-EOF
+# Create file
+kubectl exec -n "${VAULT_NAMESPACE}" "${VAULT_POD}" -- sh -c \
+    "vault write -field=token auth/approle/login \
+    role_id=\"${ROLE_ID}\" \
+    secret_id=\"${SECRET_ID}\"" > "${AUTH_FILE}"
 
-echo "Setup complete. Credentials saved to: $TERRAFORM_FILE"
+echo "Setup complete. Credentials saved to: ${AUTH_FILE}"

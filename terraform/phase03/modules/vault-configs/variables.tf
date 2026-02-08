@@ -5,12 +5,6 @@ variable "kubernetes_host" {
   default     = "https://kubernetes.default.svc:443"
 }
 
-# Required
-variable "vault_port" {
-  description = "Port number on which the Vault server is running."
-  type        = number
-}
-
 # Optional
 variable "policy_directory" {
   description = "Directory containing HCL policy files"

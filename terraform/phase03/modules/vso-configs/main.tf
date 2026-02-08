@@ -3,7 +3,6 @@ resource "kubernetes_manifest" "vso_connection" {
     vso_connection_name = var.vso_connection_name
     vso_namespace       = var.vso_namespace
     vault_address       = var.vault_address
-    vault_port          = var.vault_port
   }))
 }
 

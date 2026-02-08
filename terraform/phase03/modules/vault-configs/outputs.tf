@@ -1,8 +1,3 @@
-output "vault_port" {
-  description = "Port number on which the Vault server is running."
-  value       = var.vault_port
-}
-
 output "infra_kv_mount_path" {
   description = "Path of the KV-v2 secret mount for homelab infrastructure"
   value       = vault_mount.homelab_infra_kv.path

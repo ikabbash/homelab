@@ -30,17 +30,14 @@ locals {
 
 # Setup Vault configs
 module "vault_setup" {
-  source     = "./modules/vault-configs"
-  vault_port = var.vault_port
+  source = "./modules/vault-configs"
 }
 
 # Setup VSO configs
 module "vso_setup" {
-  source        = "./modules/vso-configs"
-  vault_port    = var.vault_port
-  vault_address = local.phase02.vault_address
-  vso_namespace = local.phase02.vso_namespace
-
+  source               = "./modules/vso-configs"
+  vault_address        = local.phase02.vault_address
+  vso_namespace        = local.phase02.vso_namespace
   vso_role_name        = module.vault_setup.vso_role_name
   kubernetes_auth_path = module.vault_setup.kubernetes_auth_path
   vso_audience         = module.vault_setup.vso_audience

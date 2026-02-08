@@ -1,10 +1,4 @@
 # Required
-variable "vault_port" {
-  description = "Port number on which the Vault server is running."
-  type        = number
-}
-
-# Required
 variable "vault_address" {
   description = "Complete domain name where the Vault service will be accessible"
   type        = string

@@ -32,7 +32,7 @@ This phase sets up Vault using Terraform’s Vault provider to configure secret 
     - Or you can use `unseal.sh` script if you stored the keys in KeePassXC.
 3. Login by executing `vault login` then setup AppRole auth method for Terraform by executing `setup.sh` script.
     - You can use the root token for now, but it’s best to revoke it when you’re done.
-    - The script will automatically generate `terraform.tfvars` for you.
+    - The script will automatically generate `~/.vault-token` for you.
 4. Provision with Terraform:
     ```bash
     terraform init
@@ -78,6 +78,7 @@ This phase sets up Vault using Terraform’s Vault provider to configure secret 
 - Terraform Vault provider's drift detection is a best-effort feature and shouldn't be relied on, as its accuracy depends on provider design and server-managed values. For example, if you add `max_lease_ttl_seconds` and later remove it from your Terraform configuration, Vault won't detect the drift, and the value will remain as it was last set.
 - It's best practice to revoke Vault's root token, you can regenerate it by following this [doc](https://developer.hashicorp.com/vault/docs/troubleshoot/generate-root-token) if needed.
 - Default `VaultAuthGlobal` resources are denoted by the name `default` and are automatically referenced by all `VaultAuth` resources when `spec.vaultAuthGlobalRef.allowDefault` is set to `true` and VSO is running with the `allow-default-globals` option set in the `-global-vault-auth-options` flag (the default). This is why when creating `VaultAuth` there is no need to specify the `VaultAuthGlobal` name because it uses the `default` one ([reference](https://developer.hashicorp.com/vault/docs/deploy/kubernetes/vso/sources/vault/auth#vaultauthglobal-configuration-inheritance)).
+- Vault provider automatically checks `~/.vault-token` (where the `setup.sh` script saves the AppRole token) so the Vault client can automatically use it without requiring the token.
 
 ### Outputs
 - `vso_role_name`, `vso_namespace`, and `vso_service_account` are all used for Authentik's `VaultAuth` configs in `phase04` to authenticate with Vault's Kubernetes auth method.
