@@ -5,7 +5,7 @@ metadata:
   namespace: ${vault_namespace}
 spec:
   dnsNames:
-    - ${vault_address}
+    - ${vault_host}
   secretName: ${vault_certificate_name}
   issuerRef:
     name: ${cluster_issuer_name}

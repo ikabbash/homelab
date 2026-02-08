@@ -19,7 +19,7 @@ resource "kubernetes_manifest" "gateway" {
     cluster_issuer_name    = var.cluster_issuer_name
     gateway_external_ip    = var.gateway_external_ip
     homelab_domain         = var.homelab_domain
-    vault_address          = var.vault_address
+    vault_host             = var.vault_host
     gateway_listener_http  = var.gateway_listener_http
     gateway_listener_https = var.gateway_listener_https
     gateway_listener_vault = var.gateway_listener_vault

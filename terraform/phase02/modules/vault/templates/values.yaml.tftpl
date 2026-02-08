@@ -50,7 +50,7 @@ server:
   extraEnvironmentVars:
     VAULT_TLSCERT: "/vault/userconfig/vault-ha-tls/tls.crt"
     VAULT_TLSKEY: "/vault/userconfig/vault-ha-tls/tls.key"
-    VAULT_ADDR: https://${vault_address}:8200
+    VAULT_ADDR: https://${vault_host}:8200
   volumes:
     - name: userconfig-vault-ha-tls
       secret:
@@ -63,6 +63,6 @@ server:
   hostAliases:
     - ip: 127.0.0.1
       hostnames:
-        - ${vault_address}
+        - ${vault_host}
   ingress:
     enabled: false

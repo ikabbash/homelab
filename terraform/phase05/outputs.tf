@@ -1,4 +1,4 @@
-output "argocd_address" {
-  description = "Complete domain name for Argo CD"
-  value       = module.argocd.argocd_address
+output "argocd_host" {
+  description = "Argo CD service hostname where Argo CD will be accessible"
+  value       = module.argocd.argocd_host
 }

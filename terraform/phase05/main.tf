@@ -28,17 +28,18 @@ data "terraform_remote_state" "phase04" {
 }
 
 locals {
-  phase02        = data.terraform_remote_state.phase02.outputs
-  phase04        = data.terraform_remote_state.phase04.outputs
-  argocd_address = "${var.argocd_subdomain}.${local.phase02.homelab_domain}"
+  phase02     = data.terraform_remote_state.phase02.outputs
+  phase04     = data.terraform_remote_state.phase04.outputs
+  argocd_host = "${var.argocd_subdomain}.${local.phase02.homelab_domain}"
 }
 
 # Setup Authentik
 module "authentik_setup" {
   source              = "./modules/authentik-configs"
-  authentik_address   = local.phase04.authentik_address
+  homelab_domain      = local.phase02.homelab_domain
+  authentik_host      = local.phase04.authentik_host
   authentik_api_token = var.authentik_api_token
-  argocd_address      = local.argocd_address
+  argocd_host         = local.argocd_host
 }
 
 # Deploy Argo CD
@@ -46,7 +47,7 @@ module "argocd" {
   source                 = "./modules/argocd"
   chart_namespace        = "argocd"
   chart_version          = "9.2.3"
-  argocd_address         = local.argocd_address
+  argocd_host            = local.argocd_host
   gateway_name           = local.phase02.gateway_name
   gateway_namespace      = local.phase02.gateway_namespace
   gateway_listener_https = local.phase02.gateway_listener_https

@@ -36,7 +36,7 @@ module "vault_setup" {
 # Setup VSO configs
 module "vso_setup" {
   source               = "./modules/vso-configs"
-  vault_address        = local.phase02.vault_address
+  vault_host           = local.phase02.vault_host
   vso_namespace        = local.phase02.vso_namespace
   vso_role_name        = module.vault_setup.vso_role_name
   kubernetes_auth_path = module.vault_setup.kubernetes_auth_path

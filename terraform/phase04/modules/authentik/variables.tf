@@ -52,7 +52,7 @@ variable "postgres_secret_name" {
 
 # Required
 variable "postgres_host" {
-  description = "PostgreSQL server address "
+  description = "PostgreSQL server host"
   type        = string
 }
 

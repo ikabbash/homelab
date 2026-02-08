@@ -1,6 +1,6 @@
 # Required
-variable "vault_address" {
-  description = "Complete domain name where the Vault service will be accessible"
+variable "vault_host" {
+  description = "Vault service hostname where Vault will be accessible"
   type        = string
 }
 

@@ -29,8 +29,8 @@ variable "gateway_listener_https" {
 }
 
 # Required
-variable "argocd_address" {
-  description = "Complete domain name for Argo CD"
+variable "argocd_host" {
+  description = "Argo CD service hostname where Argo CD will be accessible"
   type        = string
 }
 

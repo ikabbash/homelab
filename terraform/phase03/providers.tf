@@ -1,4 +1,6 @@
-provider "vault" {}
+provider "vault" {
+  address = "https://${data.terraform_remote_state.phase02.outputs.vault_host}"
+}
 
 provider "helm" {
   kubernetes = {

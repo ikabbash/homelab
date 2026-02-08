@@ -9,7 +9,7 @@ spec:
       namespace: ${gateway_namespace}
       sectionName: ${gateway_listener_https}
   hostnames:
-    - "${argocd_address}" 
+    - "${argocd_host}" 
   rules:
     - matches:
         - path:

@@ -1,4 +1,4 @@
-output "authentik_address" {
-  description = "Complete domain name for Authentik"
-  value       = module.authentik.authentik_address
+output "authentik_host" {
+  description = "Authentik service hostname where Authentik will be accessible"
+  value       = module.authentik.authentik_host
 }

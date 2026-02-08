@@ -12,7 +12,7 @@ resource "kubernetes_manifest" "vault_certificate" {
   manifest = yamldecode(templatefile("${path.module}/templates/certificate.yaml.tftpl", {
     vault_certificate_name = var.vault_certificate_name
     vault_namespace        = var.chart_namespace
-    vault_address          = var.vault_address
+    vault_host             = var.vault_host
     cluster_issuer_name    = var.cluster_issuer_name
   }))
 }
@@ -21,7 +21,7 @@ resource "kubernetes_manifest" "vault_certificate" {
 resource "kubernetes_manifest" "vault_http_route" {
   manifest = yamldecode(templatefile("${path.module}/templates/httproute.yaml.tftpl", {
     vault_namespace       = var.chart_namespace
-    vault_address         = var.vault_address
+    vault_host            = var.vault_host
     gateway_name          = var.gateway_name
     gateway_namespace     = var.gateway_namespace
     gateway_listener_http = var.gateway_listener_http
@@ -32,7 +32,7 @@ resource "kubernetes_manifest" "vault_http_route" {
 resource "kubernetes_manifest" "vault_tls_route" {
   manifest = yamldecode(templatefile("${path.module}/templates/tlsroute.yaml.tftpl", {
     vault_namespace        = var.chart_namespace
-    vault_address          = var.vault_address
+    vault_host             = var.vault_host
     gateway_name           = var.gateway_name
     gateway_namespace      = var.gateway_namespace
     gateway_listener_vault = var.gateway_listener_vault
@@ -51,7 +51,7 @@ resource "helm_release" "vault" {
   values = [
     templatefile("${path.module}/templates/values.yaml.tftpl", {
       chart_namespace        = var.chart_namespace
-      vault_address          = var.vault_address
+      vault_host             = var.vault_host
       vault_certificate_name = var.vault_certificate_name
       storage_class_name     = var.storage_class_name
       vault_storage_size     = var.vault_storage_size

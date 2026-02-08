@@ -1,12 +1,18 @@
 # Required
-variable "argocd_address" {
-  description = "Complete domain name for Argo CD"
+variable "homelab_domain" {
+  description = "Domain name for the homelab environment"
   type        = string
 }
 
 # Required
-variable "authentik_address" {
-  description = "Complete domain name for Authentik"
+variable "argocd_host" {
+  description = "Argo CD service hostname where Argo CD will be accessible"
+  type        = string
+}
+
+# Required
+variable "authentik_host" {
+  description = "Authentik service hostname where Authentik will be accessible"
   type        = string
 }
 

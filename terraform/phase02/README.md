@@ -45,7 +45,7 @@ This phase deploys Gateway resource, Vault, and Vault Secrets Operator (VSO). Al
 - Vault Secrets Operator can expose Prometheus metrics to monitor managed secret counts and statuses, sync operations and errors, Vault request and response performance, and other operational signals.
 
 ### Outputs
-- `vault_address` for setup scripts and VSO's `VaultConnection` manifest in `phase03`.
+- `vault_host` for setup scripts and VSO's `VaultConnection` manifest in `phase03`.
 - `vault_namespace` for setup scripts in `phase03`.
 - `vso_namespace` for VSO to create `VaultConnection` and `VaultAuthGlobal` in `phase03`, and for `VaultAuth` creation in phase04 using `vaultAuthGlobalRef`.
 - `gateway_name`, `gateway_namespace`, and `gateway_listener_https` for `HTTPRoute` resources in `phase04` and `phase05` for Authentik and Argo CD.

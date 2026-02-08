@@ -18,7 +18,7 @@ This phase deploys Authentik with a PostgreSQL database. Authentik is used as th
 ## Steps
 1. Initialize Terraform `terraform init`.
 2. Deploy using `terraform apply`.
-3. Complete the initial Authentik setup by creating an account at `https://your-authentik-address.com/if/flow/initial-setup/`.
+3. Complete the initial Authentik setup by creating an account at `https://your-authentik-host.com/if/flow/initial-setup/`.
     - You'll want to change the username after creating the account.
 
 ## Notes
@@ -34,7 +34,7 @@ This phase deploys Authentik with a PostgreSQL database. Authentik is used as th
 - Authentik can expose Prometheus metrics (requires kube-prometheus-stack) to monitor background task processing, authentication and policy flows, request performance, and so on.
 
 ### Outputs
-- `authentik_address` for `phase05` to authenticate with Authentik using API token.
+- `authentik_host` for `phase05` to authenticate with Authentik using API token.
 
 ### References
 - Authentik configurations: https://docs.goauthentik.io/install-config/configuration/

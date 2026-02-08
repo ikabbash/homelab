@@ -11,5 +11,5 @@ output "argocd_client_secret" {
 
 output "argocd_issuer_url" {
   description = "OIDC Issuer URL for Argo CD Dex configuration"
-  value       = "https://${var.authentik_address}/application/o/${authentik_application.argocd.slug}/"
+  value       = "https://${var.authentik_host}/application/o/${authentik_application.argocd.slug}/"
 }

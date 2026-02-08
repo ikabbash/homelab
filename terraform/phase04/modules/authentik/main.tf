@@ -81,7 +81,7 @@ resource "helm_release" "authentik" {
 resource "kubernetes_manifest" "authentik_http_route" {
   manifest = yamldecode(templatefile("${path.module}/templates/httproute.yaml.tftpl", {
     authentik_namespace    = var.chart_namespace
-    authentik_address      = "${var.authentik_subdomain}.${var.homelab_domain}"
+    authentik_host         = "${var.authentik_subdomain}.${var.homelab_domain}"
     gateway_name           = var.gateway_name
     gateway_namespace      = var.gateway_namespace
     gateway_listener_https = var.gateway_listener_https

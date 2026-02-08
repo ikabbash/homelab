@@ -1,5 +1,5 @@
 global:
-  domain: ${argocd_address}
+  domain: ${argocd_host}
   logging:
     format: text
     level: info
@@ -14,7 +14,7 @@ configs:
   cm:
     admin.enabled: "false"
     exec.enabled: "true"
-    url: https://${argocd_address}
+    url: https://${argocd_host}
     dex.config: |
         connectors:
         - config:

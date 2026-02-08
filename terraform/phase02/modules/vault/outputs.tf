@@ -3,7 +3,7 @@ output "vault_namespace" {
   value       = var.chart_namespace
 }
 
-output "vault_address" {
-  description = "Complete domain name where the Vault service will be accessible"
-  value       = var.vault_address
+output "vault_host" {
+  description = "Vault service hostname where Vault will be accessible"
+  value       = var.vault_host
 }

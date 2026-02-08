@@ -2,7 +2,7 @@ resource "kubernetes_manifest" "vso_connection" {
   manifest = yamldecode(templatefile("${path.module}/templates/connection.yaml.tftpl", {
     vso_connection_name = var.vso_connection_name
     vso_namespace       = var.vso_namespace
-    vault_address       = var.vault_address
+    vault_host          = var.vault_host
   }))
 }
 

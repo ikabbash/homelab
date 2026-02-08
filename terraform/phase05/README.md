@@ -34,7 +34,7 @@ This phase configures Authentik applications and providers (e.g. OIDC) for SSO a
 - Argo CD can expose Prometheus metrics to monitor application sync and health status, controller and API server activity, repo and commit server operations, and other performance signals.
 
 ### Outputs
-- `argocd_address` shows the URL to access Argo CD.
+- `argocd_host` shows the host to access Argo CD.
 
 ### References
 - Authentik SSO integration with Argo CD: https://integrations.goauthentik.io/infrastructure/argocd/

@@ -9,7 +9,7 @@ spec:
       namespace: ${gateway_namespace}
       sectionName: ${gateway_listener_vault}
   hostnames:
-    - "${vault_address}"
+    - "${vault_host}"
   rules:
     - backendRefs:
         - kind: Service
