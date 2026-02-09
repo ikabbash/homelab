@@ -1,0 +1,14 @@
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultAuth
+metadata:
+  name: default
+  namespace: monitoring
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+spec:
+  kubernetes:
+    role: default
+    serviceAccount: vso-sa
+  vaultAuthGlobalRef:
+    allowDefault: true
+    namespace: vault-secrets-operator-system
