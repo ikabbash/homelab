@@ -13,8 +13,12 @@ terraform {
 }
 
 provider "authentik" {
-  url   = "https://${var.authentik_address}"
+  url   = "https://${var.authentik_host}"
   token = var.authentik_api_token
+}
+
+data "authentik_flow" "default-provider-authorization-implicit-consent" {
+  slug = "default-provider-authorization-implicit-consent"
 }
 
 data "authentik_flow" "default-authorization-flow" {
