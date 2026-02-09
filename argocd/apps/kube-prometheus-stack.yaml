@@ -7,16 +7,19 @@ spec:
   project: default
   sources:
     # Reference: https://argo-cd.readthedocs.io/en/latest/user-guide/multiple_sources/#helm-value-files-from-external-git-repository
+    - repoURL: "https://github.com/ikabbash/homelab.git"
+      targetRevision: HEAD
+      path: argocd/k8s/kube-prometheus-stack/manifests
     - repoURL: "https://prometheus-community.github.io/helm-charts"
       chart: kube-prometheus-stack
       targetRevision: "81.3.0"
       helm:
         releaseName: prometheus
         valueFiles:
-          - $values/argocd/k8s/kube-prometheus-stack/base.yaml
-          - $values/argocd/k8s/kube-prometheus-stack/alertmanager.yaml
-          - $values/argocd/k8s/kube-prometheus-stack/prometheus.yaml
-          - $values/argocd/k8s/kube-prometheus-stack/grafana.yaml
+          - $values/argocd/k8s/kube-prometheus-stack/values/base.yaml
+          - $values/argocd/k8s/kube-prometheus-stack/values/alertmanager.yaml
+          - $values/argocd/k8s/kube-prometheus-stack/values/prometheus.yaml
+          - $values/argocd/k8s/kube-prometheus-stack/values/grafana.yaml
     - repoURL: "https://github.com/ikabbash/homelab.git"
       targetRevision: HEAD
       ref: values
@@ -29,7 +32,7 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
-      - ServerSideApply=true
+      - ServerSideApply=true # Due to large CRDs
   # To resolve false OutOfSync issue between Argo CD and Cilium
   # ignoreDifferences:
   #   - group: gateway.networking.k8s.io
