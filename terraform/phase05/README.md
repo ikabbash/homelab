@@ -4,9 +4,10 @@ This phase configures Authentik applications and providers (e.g. OIDC) for SSO a
 ## Modules
 
 ### Authentik Configs
-- Configures Authentik resources including providers, applications, and groups for each application’s SSO integration.
+- Configures Authentik resources including providers and applications for each application’s SSO integration.
 - Each application’s Authentik configuration is managed in a separate file within the module (e.g., Argo CD resources are defined in `argocd.tf`).
 - Manages the creation of Authentik providers and applications for each service that will be integrated with SSO or other authentication flows.
+- Stores the Authentik provider’s client ID and client secret in Vault so applications can read them through Vault Secrets Operator (they're in the state file anyway).
 
 ### Argo CD
 - Deploys Argo CD using Helm.
@@ -38,6 +39,7 @@ This phase configures Authentik applications and providers (e.g. OIDC) for SSO a
 
 ### References
 - Authentik SSO integration with Argo CD: https://integrations.goauthentik.io/infrastructure/argocd/
+- Authentik SSO integration with Grafana: https://integrations.goauthentik.io/monitoring/grafana/
 - Authentik Terraform OAuth2 provider resource: https://registry.terraform.io/providers/goauthentik/authentik/latest/docs/resources/provider_oauth2
 - Authentik Terraform application resource: https://registry.terraform.io/providers/goauthentik/authentik/latest/docs/resources/application
 - Authentik Terraform group resource: https://registry.terraform.io/providers/goauthentik/authentik/latest/docs/resources/group
