@@ -1,10 +1,7 @@
 grafana:
   enabled: true
-  # admin:
-  #   existingSecret: "" # Create VaultStaticSecret first before Helm deployment
-  #   userKey: admin-user
-  #   passwordKey: admin-password
-  adminPassword: "password" # to do
+  initChownData:
+    enabled: false
   defaultDashboardsTimezone: "Africa/Cairo"
   persistence:
     type: pvc
@@ -19,7 +16,7 @@ grafana:
       apiVersion: gateway.networking.k8s.io/v1
       kind: HTTPRoute
       hostnames:
-        - grafana.homelab.ikabbash.com
+        - grafana.{{ .Values.global.shared.domain }}
       parentRefs:
         - group: gateway.networking.k8s.io
           kind: Gateway

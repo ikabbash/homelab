@@ -16,7 +16,7 @@ alertmanager:
           resources:
             requests:
               storage: 5Gi
-          storageClassName: openebs-hostpath
+          storageClassName: "openebs-hostpath"
   # config:
   #   global:
   #     resolve_timeout: 5m
@@ -29,7 +29,7 @@ alertmanager:
       apiVersion: gateway.networking.k8s.io/v1
       kind: HTTPRoute
       hostnames:
-        - alertmanager.homelab.ikabbash.com
+        - alertmanager.{{ .Values.global.shared.domain }}
       parentRefs:
         - group: gateway.networking.k8s.io
           kind: Gateway

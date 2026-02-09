@@ -32,7 +32,7 @@ prometheus:
       apiVersion: gateway.networking.k8s.io/v1
       kind: HTTPRoute
       hostnames:
-        - prometheus.homelab.ikabbash.com
+        - prometheus.{{ .Values.global.shared.domain }}
       parentRefs:
         - group: gateway.networking.k8s.io
           kind: Gateway
@@ -44,3 +44,10 @@ prometheus:
             type: PathPrefix
             value: /
   additionalScrapeConfigs: []
+    # - job_name: 'custom-app'
+    #   kubernetes_sd_configs:
+    #     - role: pod
+    #   relabel_configs:
+    #     - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+    #       action: keep
+    #       regex: true

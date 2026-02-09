@@ -1,6 +1,10 @@
 namespaceOverride: "monitoring"
 fullnameOverride: "prom-stack"
 
+global:
+  shared:
+    domain: "homelab.ikabbash.com"
+
 prometheusOperator:
   enabled: true
   resources:
@@ -19,3 +23,6 @@ kubeStateMetrics:
 
 kubeProxy:
   enabled: false
+
+defaultRules:
+  create: true
