@@ -21,7 +21,17 @@ nodeExporter:
 kubeStateMetrics:
   enabled: true
 
+# Replaced by Cilium
 kubeProxy:
+  enabled: false
+
+kubeControllerManager:
+  enabled: false
+
+kubeScheduler:
+  enabled: false
+
+kubeEtcd:
   enabled: false
 
 defaultRules:
