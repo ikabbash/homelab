@@ -29,3 +29,9 @@ variable "vault_subdomain" {
   type        = string
   default     = "vault"
 }
+
+# Required
+variable "enable_monitoring" {
+  description = "Enables monitoring integration. Requires Prometheus Operator to be deployed first"
+  type        = bool
+}

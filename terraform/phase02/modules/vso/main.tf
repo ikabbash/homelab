@@ -9,7 +9,8 @@ resource "helm_release" "vso" {
 
   values = [
     templatefile("${path.module}/templates/values.yaml.tftpl", {
-      vault_host = var.vault_host
+      vault_host        = var.vault_host
+      enable_monitoring = var.enable_monitoring
     })
   ]
 }

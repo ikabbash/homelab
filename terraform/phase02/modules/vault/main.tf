@@ -55,6 +55,7 @@ resource "helm_release" "vault" {
       vault_certificate_name = var.vault_certificate_name
       storage_class_name     = var.storage_class_name
       vault_storage_size     = var.vault_storage_size
+      enable_monitoring      = var.enable_monitoring
     })
   ]
 

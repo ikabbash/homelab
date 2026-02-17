@@ -41,10 +41,22 @@ server:
           cluster_address = "[::]:8201"
           tls_cert_file = "/vault/userconfig/vault-ha-tls/tls.crt"
           tls_key_file  = "/vault/userconfig/vault-ha-tls/tls.key"
+        %{ if enable_monitoring }
+          telemetry {
+            unauthenticated_metrics_access = true
+          }
         }
+      
+        telemetry {
+          prometheus_retention_time = "12h"
+          disable_hostname = true
+        }
+        %{ endif }
+
         storage "raft" {
           path = "/vault/data"
         }
+
         # disable_mlock = true # already enabled by default
         service_registration "kubernetes" {}
   extraEnvironmentVars:
@@ -66,3 +78,12 @@ server:
         - ${vault_host}
   ingress:
     enabled: false
+
+%{ if enable_monitoring }
+serverTelemetry:
+  serviceMonitor:
+    enabled: true
+  prometheusRules:
+    enabled: false
+    rules: []
+%{ endif }

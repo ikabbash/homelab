@@ -1,3 +1,4 @@
 homelab_domain        = "homelab.example.com"
 gateway_external_ip   = "192.168.1.108"
 letsencrypt_email     = "hamada@example.com"
+enable_monitoring     = false

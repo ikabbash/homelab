@@ -47,14 +47,16 @@ module "vault" {
   gateway_listener_http  = module.gateway.gateway_listener_http
   gateway_listener_vault = module.gateway.gateway_listener_vault
   storage_class_name     = local.phase01.host_storage_class_name
+  enable_monitoring      = var.enable_monitoring
 }
 
 # Deploy VSO
 module "vso" {
-  source          = "./modules/vso"
-  chart_namespace = "vault-secrets-operator-system"
-  chart_version   = "1.0.1"
-  vault_host      = local.vault_host
+  source            = "./modules/vso"
+  chart_namespace   = "vault-secrets-operator-system"
+  chart_version     = "1.0.1"
+  vault_host        = local.vault_host
+  enable_monitoring = var.enable_monitoring
 
   depends_on = [module.vault]
 }

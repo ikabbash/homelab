@@ -66,3 +66,9 @@ variable "gateway_listener_vault" {
   description = "Listener name for Vault TLS passthrough"
   type        = string
 }
+
+# Required
+variable "enable_monitoring" {
+  description = "Enables monitoring integration. Requires Prometheus Operator to be deployed first"
+  type        = bool
+}

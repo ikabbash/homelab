@@ -22,3 +22,9 @@ controller:
       drop:
         - ALL
     readOnlyRootFilesystem: false
+
+%{ if enable_monitoring }
+telemetry:
+  serviceMonitor:
+    enabled: true
+%{ endif }

@@ -16,3 +16,9 @@ variable "vault_host" {
   description = "Vault service hostname where Vault will be accessible"
   type        = string
 }
+
+# Required
+variable "enable_monitoring" {
+  description = "Enables monitoring integration. Requires Prometheus Operator to be deployed first"
+  type        = bool
+}
