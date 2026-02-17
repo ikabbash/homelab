@@ -88,3 +88,9 @@ grafana:
       argocd:
         url: https://raw.githubusercontent.com/argoproj/argo-cd/master/examples/dashboard.json
         datasource: Prometheus
+      cilium:
+        url: https://raw.githubusercontent.com/cilium/cilium/main/install/kubernetes/cilium/files/cilium-agent/dashboards/cilium-dashboard.json
+        datasource: Prometheus
+      hubble:
+        url: https://raw.githubusercontent.com/cilium/cilium/main/install/kubernetes/cilium/files/hubble/dashboards/hubble-dashboard.json
+        datasource: Prometheus
