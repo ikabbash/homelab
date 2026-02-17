@@ -20,6 +20,7 @@ module "cilium" {
   chart_version        = "1.18.5"
   gateway_api_version  = "v1.2.0"
   cluster_service_host = var.cluster_service_host
+  enable_monitoring    = var.enable_monitoring
 }
 
 # Deploy cert-manager

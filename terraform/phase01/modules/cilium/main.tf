@@ -31,7 +31,8 @@ resource "helm_release" "cilium" {
 
   values = [
     templatefile("${path.module}/templates/values.yaml.tftpl", {
-      cluster_host = var.cluster_service_host
+      cluster_host      = var.cluster_service_host
+      enable_monitoring = var.enable_monitoring
     })
   ]
 

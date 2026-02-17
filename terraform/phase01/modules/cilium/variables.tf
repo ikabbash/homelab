@@ -21,3 +21,9 @@ variable "gateway_api_version" {
   description = "Kubernetes Gateway API CRDs version"
   type        = string
 }
+
+# Required
+variable "enable_monitoring" {
+  description = "Enables monitoring integration. Requires Prometheus Operator to be deployed first"
+  type        = bool
+}
