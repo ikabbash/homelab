@@ -34,6 +34,7 @@ Components are provisioned through five Terraform projects (phases), which must 
       fallthrough
     }
     ```
+- To enable monitoring for Cilium, Vault, VSO, and Argo CD, set `enable_monitoring = true` in each component’s `terraform.tfvars` file in `phase01`, `phase02`, and `phase05`. Do this only after kube-prometheus-stack has been deployed through Argo CD.
 
 ### Providers Used
 - HashiCorp Kubernetes [provider](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs).
