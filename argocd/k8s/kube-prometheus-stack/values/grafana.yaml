@@ -85,3 +85,6 @@ grafana:
       vault:
         gnetId: 12904
         datasource: Prometheus
+      argocd:
+        url: https://raw.githubusercontent.com/argoproj/argo-cd/master/examples/dashboard.json
+        datasource: Prometheus
