@@ -43,6 +43,12 @@ server:
     requests:
       cpu: 100m
       memory: 256Mi
+  %{ if enable_monitoring }
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+  %{ endif }
 
 controller:
   resources:
@@ -52,6 +58,12 @@ controller:
     requests:
       cpu: 250m
       memory: 512Mi
+  %{ if enable_monitoring }
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+  %{ endif }
 
 repoServer:
   resources:
@@ -61,6 +73,12 @@ repoServer:
     requests:
       cpu: 100m
       memory: 256Mi
+  %{ if enable_monitoring }
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+  %{ endif }
 
 redis:
   exporter:
@@ -78,6 +96,12 @@ redis:
     requests:
       cpu: 100m
       memory: 64Mi
+  %{ if enable_monitoring }
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+  %{ endif }
 
 applicationSet:
   resources:
@@ -87,6 +111,12 @@ applicationSet:
     requests:
       cpu: 250m
       memory: 256Mi
+  %{ if enable_monitoring }
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+  %{ endif }
 
 notifications:
   resources:
@@ -96,6 +126,12 @@ notifications:
     requests:
       cpu: 100m
       memory: 128Mi
+  %{ if enable_monitoring }
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+  %{ endif }
 
 dex:
   enabled: true
@@ -106,3 +142,9 @@ dex:
     requests:
       cpu: 50m
       memory: 64Mi
+  %{ if enable_monitoring }
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+  %{ endif }

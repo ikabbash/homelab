@@ -54,6 +54,7 @@ module "argocd" {
   argocd_client_id       = module.authentik_setup.argocd_client_id
   argocd_client_secret   = module.authentik_setup.argocd_client_secret
   argocd_issuer_url      = module.authentik_setup.argocd_issuer_url
+  enable_monitoring      = var.enable_monitoring
 
   depends_on = [module.authentik_setup]
 }

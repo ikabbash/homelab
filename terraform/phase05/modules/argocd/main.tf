@@ -13,6 +13,7 @@ resource "helm_release" "argocd" {
       argocd_client_id     = var.argocd_client_id
       argocd_client_secret = var.argocd_client_secret
       argocd_issuer_url    = var.argocd_issuer_url
+      enable_monitoring    = var.enable_monitoring
     })
   ]
 }

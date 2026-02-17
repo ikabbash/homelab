@@ -51,3 +51,9 @@ variable "argocd_issuer_url" {
   description = "OIDC Issuer URL for Argo CD DEX configuration"
   type        = string
 }
+
+# Required
+variable "enable_monitoring" {
+  description = "Enables monitoring integration. Requires Prometheus Operator to be deployed first"
+  type        = bool
+}
