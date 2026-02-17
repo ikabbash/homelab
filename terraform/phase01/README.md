@@ -7,6 +7,7 @@ This phase deploys Cilium as the CNI with Gateway API enabled and L2 load balanc
 - Deploys Cilium using the Helm provider.
 - Replaces kube-proxy, enables Gateway API support and L2 announcements for LoadBalancer services.
     - Assuming you're using Talos Linux with kube-proxy not deployed.
+- Deploys Hubble and Hubble relay for observability.
 - Also installs Gateway API CRDs required for Gateway and Route resources.
 - Acts as the cluster networking layer and Gateway API implementation.
 
@@ -37,6 +38,20 @@ This phase deploys Cilium as the CNI with Gateway API enabled and L2 load balanc
     - Hubble can expose Prometheus metrics to monitor network behavior between pods managed by Cilium, including flow records, and protocol-specific insights.
     - Cilium and Hubble metrics can be enabled independently of each other.
 - OpenEBS Mayastor can expose Prometheus metrics to monitor storage pool capacity and status, volume and replica I/O performance and latency, pool and volume creation/deletion activity, and related storage health indicators.
+- Use the commands below to access Hubble:
+    ```bash
+    # Forward the Hubble service to your local machine
+    cilium hubble port-forward
+
+    # Check if Hubble is running correctly
+    hubble status
+
+    # Stream live network flow logs
+    hubble observe
+
+    # Open the Hubble web UI
+    cilium hubble ui
+    ```
 
 ### Outputs
 - `cluster_issuer_secret_name` for `ClusterIssuer` resource in `phase02`.
@@ -48,4 +63,5 @@ This phase deploys Cilium as the CNI with Gateway API enabled and L2 load balanc
 - Cert Manager Cloudflare's DNS challenge: https://cert-manager.io/docs/configuration/acme/dns01/cloudflare/
 - Cilium Gateway API setup with Cert Manager: https://blog.stonegarden.dev/articles/2023/12/cilium-gateway-api
 - Cilium deployment on Talos Linux: https://docs.siderolabs.com/kubernetes-guides/cni/deploying-cilium
+- Cilium Hubble TLS: https://docs.cilium.io/en/stable/observability/hubble/configuration/tls/
 - OpenEBS Helm values: https://github.com/openebs/openebs/blob/develop/charts/README.md
