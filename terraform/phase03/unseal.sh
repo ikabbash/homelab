@@ -8,9 +8,10 @@ set -euo pipefail
 
 # /path/to/your/keepass.kdbx
 DB_FILE="$1"
+BASE_DIR=$(readlink -f $(dirname ${0}))
 # vault unseal entries
 BASE_PATH="vault"
-VAULT_NAMESPACE=$(terraform output -state=../phase02/terraform.tfstate -raw vault_namespace)
+VAULT_NAMESPACE=$(terraform output -state=${BASE_DIR}/../phase02/terraform.tfstate -raw vault_namespace)
 
 # Prompt for master password (hidden input)
 read -s -p "Master password for ${DB_FILE}: " MASTER_PW
