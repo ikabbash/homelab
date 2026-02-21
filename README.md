@@ -44,16 +44,10 @@ What's planned for the homelab as it evolves. Ideas below may change and more ma
   - [ ] [Karakeep](https://github.com/karakeep-app/karakeep)
   - [ ] [bentopdf](https://github.com/alam00000/bentopdf)
   - [ ] [changedetection.io](https://github.com/dgtlmoon/changedetection.io/)
-  - [ ] [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack)
+  - [x] [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack)
   - [ ] [Grafana Loki](https://grafana.com/docs/loki/latest/setup/install/helm/)
-- [ ] Monitoring, health checks and alerts
 - [ ] Pi-hole
 - [x] Migrate from NGINX Ingress Controller to Cilium's Gateway API
-
-### Scalability
-- [ ] Turn the cluster into a 3 nodes cluster (buy 3 mini-PCs)
-- [x] Storage scalability (e.g. OpenEBS, Rook Ceph, etc.)
-- [ ] Setup [CloudNativePG](https://cloudnative-pg.io/)
 
 ### Security
 - [x] Deploy [Authentik](https://github.com/goauthentik/helm/blob/main/charts/authentik/README.md) using Terraform
@@ -64,7 +58,7 @@ What's planned for the homelab as it evolves. Ideas below may change and more ma
   - [ ] Send logs to a central server
 - [x] Define and enforce pod security contexts  
 - [ ] Cilium network policies
-  - [ ] Default deny all traffic between namespaces
+- [ ] Protect web UIs using Authentik [Proxy Provider](https://docs.goauthentik.io/add-secure-apps/providers/proxy/forward_auth/) (Prometheus UI, Alertmanager UI, etc.)
 - [ ] Jobs to scan containers for vulnerabilities
 
 ### n8n
