@@ -48,9 +48,11 @@ This phase sets up Vault using Terraform’s Vault provider to configure secret 
     vault kv put homelab/infra/kv-secret/platforms/shared/smtp \
         smtp_host='smtp.example.com' \
         smtp_port='587' \
+        smtp_endpoint='smtp.example.com:587' \
         smtp_username='your_smtp_username' \
         smtp_password='your_smtp_password' \
-        smtp_from='your_smtp_from_email'
+        smtp_from_address='homelab@example.com' \
+        smtp_receiver='hamada@example.com
     
     # To confirm
     vault kv get homelab/infra/kv-secret/platforms/shared/smtp
