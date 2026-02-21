@@ -18,6 +18,20 @@ variable "vault_storage_size" {
   default     = "10Gi"
 }
 
+# Optional
+variable "vault_audit_storage_size" {
+  description = "Storage size allocated for the Vault audit device persistent volume"
+  type        = string
+  default     = "10Gi"
+}
+
+# Optional
+variable "vault_audit_file_path" {
+  description = "Mount path where the Vault audit log file will be stored"
+  type        = string
+  default     = "/var/log/vault"
+}
+
 # Required
 variable "vault_host" {
   description = "Vault service hostname where Vault will be accessible"

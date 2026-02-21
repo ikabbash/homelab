@@ -12,7 +12,12 @@ server:
   dataStorage:
     enabled: true
     storageClass: ${storage_class_name}
-    size: ${vault_storage_size}
+    size: ${storage_size}
+  auditStorage:
+    enabled: true
+    storageClass: ${storage_class_name}
+    size: ${audit_storage_size}
+    mountPath: ${audit_file_path}
   statefulSet:
     securityContext:
       pod:

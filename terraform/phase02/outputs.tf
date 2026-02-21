@@ -8,6 +8,11 @@ output "vault_host" {
   value       = module.vault.vault_host
 }
 
+output "vault_audit_file_path" {
+  description = "Mount path where the Vault audit log file will be stored"
+  value       = module.vault.vault_audit_file_path
+}
+
 output "vso_namespace" {
   description = "The namespace where VSO is deployed"
   value       = module.vso.vso_namespace
