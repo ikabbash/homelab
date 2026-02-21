@@ -11,3 +11,9 @@ variable "policy_directory" {
   type        = string
   default     = "./modules/vault-configs/policies"
 }
+
+# Required
+variable "audit_file_path" {
+  description = "Mount path where the Vault audit log file will be stored"
+  type        = string
+}

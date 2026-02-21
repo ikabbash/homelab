@@ -30,7 +30,8 @@ locals {
 
 # Setup Vault configs
 module "vault_setup" {
-  source = "./modules/vault-configs"
+  source          = "./modules/vault-configs"
+  audit_file_path = local.phase02.vault_audit_file_path
 }
 
 # Setup VSO configs

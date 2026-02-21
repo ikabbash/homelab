@@ -39,3 +39,15 @@ resource "vault_kubernetes_auth_backend_role" "vso_role" {
   audience                         = "vault"
   depends_on                       = [vault_policy.vso_policy, vault_kubernetes_auth_backend_config.vso_config]
 }
+
+resource "vault_audit" "file" {
+  type = "file"
+  options = {
+    file_path = "${var.audit_file_path}/audit.log"
+    # Whether to hide token accessor in the logs or not
+    hmac_accessor = "false"
+    # To reduce the volume of log data produced by API list
+    elide_list_responses = "true"
+    format               = "json"
+  }
+}
