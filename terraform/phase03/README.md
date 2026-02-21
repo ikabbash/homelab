@@ -9,6 +9,7 @@ This phase sets up Vault using Terraform’s Vault provider to configure secret 
     - `homelab/apps/kv-secret` for application secrets.
 - Creates Kubernetes auth method at `kubernetes/vso` so VSO can authenticate with Vault.
 - Creates Vault Policies such as the VSO read-only policy.
+- Creates a file audit device for audit log storage.
 - Acts as the central source of truth for secrets, primarily used to generate native Kubernetes secrets via VSO.
 
 ### VSO
