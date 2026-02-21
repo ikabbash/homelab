@@ -30,3 +30,11 @@ path "auth/kubernetes/vso/*" {
 path "homelab/infra/kv-secret/*" {
   capabilities = ["create", "update", "delete", "read"]
 }
+
+# Access to audit
+path "sys/audit/*" {
+  capabilities = ["create", "update", "read", "list", "delete", "sudo"]
+}
+path "sys/audit" {
+  capabilities = ["read", "list", "sudo"]
+}
