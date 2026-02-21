@@ -8,6 +8,7 @@ grafana:
     enabled: true
     storageClassName: openebs-hostpath
     size: 5Gi
+
   ingress:
     enabled: false
   route:
@@ -27,6 +28,7 @@ grafana:
         - path:
             type: PathPrefix
             value: /
+
   resources:
     requests:
       cpu: 100m
@@ -42,6 +44,12 @@ grafana:
       defaultMode: 0440
       mountPath: /etc/secrets/grafana
       readOnly: true
+    - name: smtp-secret-mount
+      secretName: grafana-smtp-secret
+      defaultMode: 0440
+      mountPath: /etc/secrets/smtp
+      readOnly: true
+
   grafana.ini:
     server:
       root_url: "https://grafana.{{ .Values.global.shared.domain }}"
@@ -67,6 +75,25 @@ grafana:
       api_url: "https://authentik.{{ .Values.global.shared.domain }}/application/o/userinfo/"
       # JMESPath expression
       role_attribute_path: contains(groups, 'homelab-admins') && 'Admin' || contains(groups, 'homelab-viewers') && 'Viewer' || 'None'
+    smtp:
+      enabled: true
+      host: $__file{/etc/secrets/smtp/smtp_endpoint}
+      user: $__file{/etc/secrets/smtp/smtp_username}
+      password: $__file{/etc/secrets/smtp/smtp_password}
+      from_address: $__file{/etc/secrets/smtp/smtp_from_address}
+
+  alerting:
+    contactpoints.yaml:
+      apiVersion: 1
+      contactPoints:
+        - orgId: 1
+          name: email-alerts
+          receivers:
+            - uid: email-receiver
+              type: email
+              settings:
+                addresses: $__file{/etc/secrets/smtp/smtp_receiver}
+
   dashboardProviders:
     dashboardproviders.yaml:
       apiVersion: 1
