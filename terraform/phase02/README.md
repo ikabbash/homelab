@@ -19,6 +19,7 @@ This phase deploys Gateway resource, Vault, and Vault Secrets Operator (VSO). Al
 - Creates an `HTTPRoute` to handle HTTP to HTTPS redirection.
 - Creates a `TLSRoute` for Vault to enable TLS passthrough.
 - Deploys Vault using Helm provider with a Raft storage backend and the UI enabled.
+- Creates a CronJob for Vault audit log file rotation.
 - Provides centralized secrets management with secure access through the Gateway.
     - Used primarily to store sensitive data such as API keys, passwords, and other credentials for applications.
 
@@ -43,6 +44,7 @@ This phase deploys Gateway resource, Vault, and Vault Secrets Operator (VSO). Al
 - Requests to Vault using Vault's Kubernetes service domain (e.g. `vault.vault.svc.cluster.local`) is not supported due to TLS verification so you must use the exact domain specified in its assigned TLS certificate.
 - Vault can expose Prometheus metrics to monitor request throughput and latency, secret engine and database operations, token and policy activity, audit logging performance, and a lot of others.
 - Vault Secrets Operator can expose Prometheus metrics to monitor managed secret counts and statuses, sync operations and errors, Vault request and response performance, and other operational signals.
+- A CronJob is used to manage Vault's audit device log file rotation since Vault is deployed as a single node instance. Note that this approach is not scalable, so if you plan to run multiple Vault replicas, a sidecar container per pod is recommended.
 
 ### Outputs
 - `vault_host` for setup scripts and VSO's `VaultConnection` manifest in `phase03`.

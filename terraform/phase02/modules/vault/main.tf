@@ -63,3 +63,37 @@ resource "helm_release" "vault" {
 
   depends_on = [kubernetes_manifest.vault_certificate]
 }
+
+# logrotate config for Vault audit file CronJob
+resource "kubernetes_config_map_v1" "vault_audit_logrotate_config" {
+  metadata {
+    name      = "vault-audit-logrotate-config"
+    namespace = var.chart_namespace
+  }
+
+  data = {
+    "vault-audit" = <<-EOT
+      ${var.vault_audit_file_path}/audit.log {
+          weekly
+          rotate 4
+          compress
+          delaycompress
+          missingok
+          notifempty
+          copytruncate
+          dateext
+          dateformat -%Y-%m-%d
+      }
+    EOT
+  }
+}
+
+# Vault audit file rotation CronJob
+resource "kubernetes_manifest" "vault_audit_logrotate_cronjob" {
+  manifest = yamldecode(templatefile("${path.module}/templates/cronjob.yaml.tftpl", {
+    vault_namespace = var.chart_namespace
+    audit_file_path = var.vault_audit_file_path
+  }))
+
+  depends_on = [helm_release.vault, kubernetes_config_map_v1.vault_audit_logrotate_config]
+}

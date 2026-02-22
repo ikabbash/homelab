@@ -1,0 +1,51 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: vault-audit-logrotate
+  namespace: ${vault_namespace}
+spec:
+  schedule: "0 0 * * 0"  # every Sunday midnight
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 2
+  failedJobsHistoryLimit: 2
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          securityContext:
+            runAsUser: 100
+            runAsGroup: 1000
+            fsGroup: 1000
+            seccompProfile:
+              type: RuntimeDefault
+          containers:
+            - name: logrotate
+              image: ikabbash/logrotate:alpine-3.23.3
+              securityContext:
+                runAsNonRoot: true
+                allowPrivilegeEscalation: false
+                capabilities:
+                  drop:
+                    - ALL
+                readOnlyRootFilesystem: false
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  echo "Running logrotate - $(date)"
+                  logrotate -v -s ${audit_file_path}/logrotate.status /etc/logrotate.d/vault-audit
+                  echo "Done - $(date)"
+              volumeMounts:
+                - name: audit-logs
+                  mountPath: ${audit_file_path}
+                - name: logrotate-config
+                  mountPath: /etc/logrotate.d/vault-audit
+                  subPath: vault-audit
+          volumes:
+            - name: audit-logs
+              persistentVolumeClaim:
+                claimName: audit-vault-0
+            - name: logrotate-config
+              configMap:
+                name: vault-audit-logrotate-config
