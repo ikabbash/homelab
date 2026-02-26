@@ -142,6 +142,26 @@ dex:
     requests:
       cpu: 50m
       memory: 64Mi
+  initContainers:
+    - name: oidc-readiness
+      image: curlimages/curl:latest
+      command:
+        - sh
+        - -c
+        - |
+          until curl -sf authentik-server.authentik.svc.cluster.local/-/health/ready/; do
+            echo "Waiting for Authentik OIDC..."
+            sleep 5
+          done
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        seccompProfile:
+          type: RuntimeDefault
+        capabilities:
+          drop: ["ALL"]
   %{ if enable_monitoring }
   metrics:
     enabled: true
