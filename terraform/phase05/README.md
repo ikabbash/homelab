@@ -38,6 +38,7 @@ This phase configures Authentik applications and providers (e.g. OIDC) for SSO a
 - `argocd_host` shows the host to access Argo CD.
 
 ### References
+- Argo CD Helm values: https://artifacthub.io/packages/helm/argo/argo-cd
 - Authentik SSO integration with Argo CD: https://integrations.goauthentik.io/infrastructure/argocd/
 - Authentik SSO integration with Grafana: https://integrations.goauthentik.io/monitoring/grafana/
 - Authentik Terraform OAuth2 provider resource: https://registry.terraform.io/providers/goauthentik/authentik/latest/docs/resources/provider_oauth2
