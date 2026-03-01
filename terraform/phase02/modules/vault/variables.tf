@@ -44,41 +44,18 @@ variable "storage_class_name" {
   type        = string
 }
 
-# Required
-variable "cluster_issuer_name" {
-  description = "The name of the ClusterIssuer from cert-manager module"
+# Optional
+variable "vault_ca_secret_name" {
+  description = ""
   type        = string
+  default     = "vault-ca-secret"
 }
 
 # Optional
-variable "vault_certificate_name" {
-  description = "Name of the Kubernetes TLS secret used by Vault"
+variable "vault_tls_secret_name" {
+  description = ""
   type        = string
-  default     = "vault-server-tls"
-}
-
-# Required
-variable "gateway_name" {
-  description = "Name of the Gateway resource"
-  type        = string
-}
-
-# Required
-variable "gateway_namespace" {
-  description = "Namespace of the Gateway resource"
-  type        = string
-}
-
-# Required
-variable "gateway_listener_http" {
-  description = "Listener name for HTTP traffic"
-  type        = string
-}
-
-# Required
-variable "gateway_listener_vault" {
-  description = "Listener name for Vault TLS passthrough"
-  type        = string
+  default     = "vault-tls-secret"
 }
 
 # Required

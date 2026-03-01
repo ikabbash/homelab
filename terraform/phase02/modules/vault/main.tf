@@ -1,41 +1,58 @@
 resource "kubernetes_namespace_v1" "vault_namespace" {
   metadata {
     name = var.chart_namespace
-    labels = {
-      route-access = "vault"
+  }
+}
+
+# Self-signed issuer
+resource "kubernetes_manifest" "vault_selfsigned_issuer" {
+  manifest = {
+    apiVersion = "cert-manager.io/v1"
+    kind       = "Issuer"
+    metadata = {
+      name      = "vault-selfsigned-issuer"
+      namespace = var.chart_namespace
+    }
+    spec = {
+      selfSigned = {}
     }
   }
 }
 
-# Certificate to create TLS secret for Vault
+# Certificate to CA
+resource "kubernetes_manifest" "vault_ca_certificate" {
+  manifest = yamldecode(templatefile("${path.module}/templates/certificate-ca.yaml.tftpl", {
+    vault_namespace = var.chart_namespace
+    issuer_name     = kubernetes_manifest.vault_selfsigned_issuer.manifest.metadata.name
+    secret_name     = var.vault_ca_secret_name
+  }))
+}
+
+resource "kubernetes_manifest" "vault_ca_issuer" {
+  manifest = {
+    apiVersion = "cert-manager.io/v1"
+    kind       = "Issuer"
+    metadata = {
+      name      = "vault-ca-issuer"
+      namespace = var.chart_namespace
+    }
+    spec = {
+      ca = {
+        secretName = var.vault_ca_secret_name
+      }
+    }
+  }
+
+  depends_on = [kubernetes_manifest.vault_ca_certificate]
+}
+
+# Vault TLS
 resource "kubernetes_manifest" "vault_certificate" {
-  manifest = yamldecode(templatefile("${path.module}/templates/certificate.yaml.tftpl", {
-    vault_certificate_name = var.vault_certificate_name
-    vault_namespace        = var.chart_namespace
-    vault_host             = var.vault_host
-    cluster_issuer_name    = var.cluster_issuer_name
-  }))
-}
-
-# HTTP route to redirect to HTTPS
-resource "kubernetes_manifest" "vault_http_route" {
-  manifest = yamldecode(templatefile("${path.module}/templates/httproute.yaml.tftpl", {
-    vault_namespace       = var.chart_namespace
-    vault_host            = var.vault_host
-    gateway_name          = var.gateway_name
-    gateway_namespace     = var.gateway_namespace
-    gateway_listener_http = var.gateway_listener_http
-  }))
-}
-
-# TLS Passthrough for Vault (end-to-end TLS)
-resource "kubernetes_manifest" "vault_tls_route" {
-  manifest = yamldecode(templatefile("${path.module}/templates/tlsroute.yaml.tftpl", {
-    vault_namespace        = var.chart_namespace
-    vault_host             = var.vault_host
-    gateway_name           = var.gateway_name
-    gateway_namespace      = var.gateway_namespace
-    gateway_listener_vault = var.gateway_listener_vault
+  manifest = yamldecode(templatefile("${path.module}/templates/certificate-vault.yaml.tftpl", {
+    vault_namespace = var.chart_namespace
+    issuer_name     = kubernetes_manifest.vault_selfsigned_issuer.manifest.metadata.name
+    vault_host      = var.vault_host
+    secret_name     = var.vault_tls_secret_name
   }))
 }
 
@@ -50,14 +67,15 @@ resource "helm_release" "vault" {
 
   values = [
     templatefile("${path.module}/templates/values.yaml.tftpl", {
-      chart_namespace        = var.chart_namespace
-      vault_host             = var.vault_host
-      vault_certificate_name = var.vault_certificate_name
-      storage_class_name     = var.storage_class_name
-      storage_size           = var.vault_storage_size
-      audit_storage_size     = var.vault_audit_storage_size
-      audit_file_path        = var.vault_audit_file_path
-      enable_monitoring      = var.enable_monitoring
+      chart_namespace       = var.chart_namespace
+      vault_host            = var.vault_host
+      vault_tls_secret_name = var.vault_tls_secret_name
+      vault_ca_secret_name  = var.vault_ca_secret_name
+      storage_class_name    = var.storage_class_name
+      storage_size          = var.vault_storage_size
+      audit_storage_size    = var.vault_audit_storage_size
+      audit_file_path       = var.vault_audit_file_path
+      enable_monitoring     = var.enable_monitoring
     })
   ]
 
