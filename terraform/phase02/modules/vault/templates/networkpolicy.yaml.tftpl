@@ -3,25 +3,49 @@ kind: CiliumNetworkPolicy
 metadata:
   name: vault-network-policy
   namespace: ${vault_namespace}
-spec:
-  endpointSelector:
+specs:
+  # Default deny for all pods in the namespace
+  - endpointSelector: {}
+    ingress:
+      - {}
+    egress:
+      - {}
+  - endpointSelector:
     matchLabels:
       app.kubernetes.io/name: vault
-  ingress:
-    # For Prometheus serviceMonitor
-    - fromEndpoints:
-        - matchLabels:
-            io.kubernetes.pod.namespace: monitoring
-            app.kubernetes.io/name: prometheus
-      toPorts:
-        - ports:
-            - port: "8200"
-              protocol: TCP
-    # For Gateway API
-    - fromEntities:
-        - ingress
-      toPorts:
-        - ports:
-            - port: "8200"
-              protocol: TCP
-  egress: []
+    ingress:
+      # For Prometheus serviceMonitor
+      - fromEndpoints:
+          - matchLabels:
+              io.kubernetes.pod.namespace: monitoring
+              app.kubernetes.io/name: prometheus
+        toPorts:
+          - ports:
+              - port: "8200"
+                protocol: TCP
+      # For Gateway API
+      - fromEntities:
+          - ingress
+        toPorts:
+          - ports:
+              - port: "8200"
+                protocol: TCP
+    egress:
+      - toEndpoints:
+          - matchLabels:
+              io.kubernetes.pod.namespace: kube-system
+              k8s-app: kube-dns
+        toPorts:
+          - ports:
+              - port: "53"
+                protocol: UDP
+              - port: "53"
+                protocol: TCP
+      - toEntities:
+          - kube-apiserver
+        toPorts:
+          - ports:
+              - port: "443"
+                protocol: TCP
+              - port: "6443"
+                protocol: TCP

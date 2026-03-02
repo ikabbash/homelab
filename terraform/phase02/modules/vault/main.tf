@@ -97,3 +97,13 @@ resource "kubernetes_manifest" "vault_audit_logrotate_cronjob" {
 
   depends_on = [helm_release.vault, kubernetes_config_map_v1.vault_audit_logrotate_config]
 }
+
+resource "kubernetes_manifest" "vault_network_policy" {
+  manifest = yamldecode(templatefile("${path.module}/templates/networkpolicy.yaml.tftpl", {
+    vault_namespace = var.chart_namespace
+  }))
+  field_manager {
+    name            = "terraform"
+    force_conflicts = true
+  }
+}
