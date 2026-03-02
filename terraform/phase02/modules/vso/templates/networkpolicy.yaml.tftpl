@@ -1,0 +1,59 @@
+apiVersion: "cilium.io/v2"
+kind: CiliumNetworkPolicy
+metadata:
+  name: vso-network-policy
+  namespace: ${vso_namespace}
+specs:
+  # Default deny for all pods in the namespace
+  - endpointSelector: {}
+    ingress:
+      - {}
+    egress:
+      - {}
+  # VSO specific rules
+  - endpointSelector:
+      matchLabels:
+        app.kubernetes.io/name: vault-secrets-operator
+    ingress:
+      # Prometheus serviceMonitor
+      - fromEndpoints:
+          - matchLabels:
+              io.kubernetes.pod.namespace: monitoring
+              app.kubernetes.io/name: prometheus
+        toPorts:
+          - ports:
+              - port: "8443"
+                protocol: TCP
+      - fromEntities:
+          - kube-apiserver
+        toPorts:
+          - ports:
+              - port: "6443"
+                protocol: TCP
+    egress:
+      - toEntities:
+          - kube-apiserver
+        toPorts:
+          - ports:
+              - port: "443"
+                protocol: TCP
+              - port: "6443"
+                protocol: TCP
+      - toEndpoints:
+          - matchLabels:
+              io.kubernetes.pod.namespace: vault
+              app.kubernetes.io/name: ${vault_namespace}
+        toPorts:
+          - ports:
+              - port: "8200"
+                protocol: TCP
+      - toEndpoints:
+          - matchLabels:
+              io.kubernetes.pod.namespace: kube-system
+              k8s-app: kube-dns
+        toPorts:
+          - ports:
+              - port: "53"
+                protocol: UDP
+              - port: "53"
+                protocol: TCP

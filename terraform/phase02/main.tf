@@ -56,6 +56,7 @@ module "vso" {
   chart_namespace   = "vault-secrets-operator-system"
   chart_version     = "1.0.1"
   vault_host        = local.vault_host
+  vault_namespace   = module.vault.vault_namespace
   enable_monitoring = var.enable_monitoring
 
   depends_on = [module.vault]

@@ -22,3 +22,9 @@ variable "enable_monitoring" {
   description = "Enables monitoring integration. Requires Prometheus Operator to be deployed first"
   type        = bool
 }
+
+# Required
+variable "vault_namespace" {
+  description = "The namespace where Vault is deployed"
+  type        = string
+}

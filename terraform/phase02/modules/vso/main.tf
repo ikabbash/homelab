@@ -14,3 +14,14 @@ resource "helm_release" "vso" {
     })
   ]
 }
+
+resource "kubernetes_manifest" "vso_network_policy" {
+  manifest = yamldecode(templatefile("${path.module}/templates/networkpolicy.yaml.tftpl", {
+    vso_namespace   = var.chart_namespace
+    vault_namespace = var.vault_namespace
+  }))
+  field_manager {
+    name            = "terraform"
+    force_conflicts = true
+  }
+}
