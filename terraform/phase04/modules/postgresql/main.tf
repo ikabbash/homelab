@@ -42,3 +42,9 @@ resource "kubernetes_manifest" "postgres_statefulset" {
     secret_name           = kubernetes_secret.postgres_credentials.metadata[0].name
   }))
 }
+
+resource "kubernetes_manifest" "postgres_network_policy" {
+  manifest = yamldecode(templatefile("${path.module}/templates/networkpolicy.yaml.tftpl", {
+    authentik_namespace = var.authentik_namespace
+  }))
+}

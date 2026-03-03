@@ -40,7 +40,7 @@ resource "kubernetes_persistent_volume_claim_v1" "authentik_templates_pvc" {
 resource "kubernetes_manifest" "authentik_smtp_secret" {
   manifest = yamldecode(
     templatefile(
-      "${path.module}/templates/static-secret.yaml.tftpl",
+      "${path.module}/templates/vaultstaticsecret.yaml.tftpl",
       {
         authentik_namespace = var.chart_namespace
         smtp_secret_name    = var.authentik_smtp_secret_name
@@ -68,6 +68,7 @@ resource "helm_release" "authentik" {
       postgres_secret_name = var.postgres_secret_name
       smtp_secret_name     = var.authentik_smtp_secret_name
       postgres_host        = var.postgres_host
+      enable_monitoring    = var.enable_monitoring
     })
   ]
 
@@ -86,4 +87,15 @@ resource "kubernetes_manifest" "authentik_http_route" {
     gateway_namespace      = var.gateway_namespace
     gateway_listener_https = var.gateway_listener_https
   }))
+}
+
+resource "kubernetes_manifest" "authentik_network_policy" {
+  manifest = yamldecode(templatefile("${path.module}/templates/networkpolicy.yaml.tftpl", {
+    authentik_namespace = var.chart_namespace
+    smtp_host           = var.smtp_host
+  }))
+  field_manager {
+    name            = "terraform"
+    force_conflicts = true
+  }
 }

@@ -69,6 +69,12 @@ server:
     limits:
       cpu: 2000m
       memory: 2Gi
+  %{ if enable_monitoring }
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+  %{ endif }
 
 worker:
   replicas: 1
@@ -85,3 +91,9 @@ worker:
     limits:
       cpu: 2000m
       memory: 2Gi
+  %{ if enable_monitoring }
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+  %{ endif }

@@ -1,0 +1,89 @@
+apiVersion: "cilium.io/v2"
+kind: CiliumNetworkPolicy
+metadata:
+  name: authentik-network-policy
+  namespace: ${authentik_namespace}
+specs:
+  # Default deny for all pods in the namespace
+  - endpointSelector: {}
+    ingress:
+      - {}
+    egress:
+      - {}
+  - endpointSelector:
+    matchLabels:
+      app.kubernetes.io/instance: authentik
+    ingress:
+      # For Prometheus serviceMonitor
+      - fromEndpoints:
+          - matchLabels:
+              io.kubernetes.pod.namespace: monitoring
+              app.kubernetes.io/name: prometheus
+        toPorts:
+          - ports:
+              - port: "9300"
+                protocol: TCP
+      # For Gateway API
+      - fromEntities:
+          - ingress
+        toPorts:
+          - ports:
+              - port: "443"
+                protocol: TCP
+          - ports:
+              - port: "80"
+                protocol: TCP
+          - ports:
+              - port: "9000"
+                protocol: TCP
+      - fromEndpoints:
+          - matchLabels:
+              io.kubernetes.pod.namespace: argocd
+              app.kubernetes.io/component: dex-server
+          - matchLabels:
+              io.kubernetes.pod.namespace: monitoring
+              app.kubernetes.io/name: grafana
+        toPorts:
+          - ports:
+              - port: "9000"
+                protocol: TCP
+    egress:
+      - toEndpoints:
+          - matchLabels:
+              io.kubernetes.pod.namespace: kube-system
+              k8s-app: kube-dns
+        toPorts:
+          - ports:
+              - port: "53"
+                protocol: ANY
+            rules:
+              dns:
+              - matchPattern: "*"
+      - toEntities:
+          - kube-apiserver
+        toPorts:
+          - ports:
+              - port: "443"
+                protocol: TCP
+              - port: "6443"
+                protocol: TCP
+      - toEndpoints:
+          - matchLabels:
+              app: postgres
+        toPorts:
+          - ports:
+              - port: "5432"
+                protocol: TCP
+      - toFQDNs:
+          - matchName: "secure.gravatar.com"
+          - matchName: "version.goauthentik.io"
+        toPorts:
+          - ports:
+              - port: "443"
+                protocol: TCP
+      - toFQDNs:
+          - matchName: ${smtp_host}
+        toPorts:
+          - ports:
+              - port: "587"
+                protocol: TCP

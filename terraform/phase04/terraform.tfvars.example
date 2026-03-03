@@ -1,0 +1,2 @@
+smtp_host         = "smtp.example.com"
+enable_monitoring = false

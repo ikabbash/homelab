@@ -18,3 +18,15 @@ variable "vso_auth_name" {
   type        = string
   default     = "default"
 }
+
+# Required
+variable "smtp_host" {
+  description = "SMTP host used for Authentik"
+  type        = string
+}
+
+# Required
+variable "enable_monitoring" {
+  description = "Enables monitoring integration. Requires Prometheus Operator to be deployed first"
+  type        = bool
+}

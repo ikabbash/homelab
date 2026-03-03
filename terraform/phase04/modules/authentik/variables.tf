@@ -89,7 +89,7 @@ variable "gateway_listener_https" {
 
 # Optional
 variable "authentik_smtp_secret_name" {
-  description = ""
+  description = "Name of the Kubernetes secret created by VSO"
   type        = string
   default     = "authentik-smtp-secret"
 }
@@ -98,4 +98,16 @@ variable "authentik_smtp_secret_name" {
 variable "vso_auth_name" {
   description = "Vault Secrets Operator's Auth manifest name"
   type        = string
+}
+
+# Required
+variable "smtp_host" {
+  description = "SMTP host used for Authentik"
+  type        = string
+}
+
+# Required
+variable "enable_monitoring" {
+  description = "Enables monitoring integration. Requires Prometheus Operator to be deployed first"
+  type        = bool
 }

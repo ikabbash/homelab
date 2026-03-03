@@ -58,6 +58,8 @@ module "authentik" {
   gateway_namespace      = local.phase02.gateway_namespace
   gateway_listener_https = local.phase02.gateway_listener_https
   vso_auth_name          = var.vso_auth_name
+  smtp_host              = var.smtp_host
+  enable_monitoring      = var.enable_monitoring
 
   depends_on = [module.postgresql]
 }
