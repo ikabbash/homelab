@@ -1,0 +1,98 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: kube-prometheus-stack
+  namespace: monitoring
+specs:
+  # Alertmanager
+  - endpointSelector:
+      matchLabels:
+        app.kubernetes.io/name: alertmanager
+        alertmanager: prom-stack-alertmanager
+    ingress:
+      - fromEndpoints:
+          - matchLabels:
+              app.kubernetes.io/name: prometheus
+              prometheus: prom-stack-prometheus
+        toPorts:
+          - ports:
+              - port: "9093"
+                protocol: TCP
+              - port: "8080"
+                protocol: TCP
+      - fromEntities:
+          - ingress
+        toPorts:
+          - ports:
+              - port: "9093"
+                protocol: TCP
+
+  # Prometheus Operator
+  - endpointSelector:
+      matchLabels:
+        app.kubernetes.io/name: kube-prometheus-stack-prometheus-operator
+        app.kubernetes.io/component: prometheus-operator
+    ingress:
+      # Kubernetes API server → Operator webhook (ValidatingWebhookConfiguration)
+      - fromEntities:
+          - kube-apiserver
+        toPorts:
+          - ports:
+              - port: "10250"
+                protocol: TCP
+      - fromEndpoints:
+          - matchLabels:
+              app.kubernetes.io/name: prometheus
+              prometheus: prom-stack-prometheus
+        toPorts:
+          - ports:
+              - port: "8080"
+                protocol: TCP
+          - ports:
+              - port: "10250"
+                protocol: TCP
+
+  # Prometheus
+  - endpointSelector:
+      matchLabels:
+        app.kubernetes.io/name: prometheus
+        prometheus: prom-stack-prometheus
+    ingress:
+      - fromEndpoints:
+          - matchLabels:
+              app.kubernetes.io/name: grafana
+              app.kubernetes.io/instance: kube-prometheus-stack
+        toPorts:
+          - ports:
+              - port: "9090"
+                protocol: TCP
+      - fromEntities:
+          - ingress
+        toPorts:
+          - ports:
+              - port: "9090"
+                protocol: TCP
+
+  # Grafana
+  - endpointSelector:
+      matchLabels:
+        app.kubernetes.io/name: grafana
+        app.kubernetes.io/instance: kube-prometheus-stack
+    ingress:
+      - fromEndpoints:
+          - matchLabels:
+              io.kubernetes.pod.namespace: authentik
+              app.kubernetes.io/instance: authentik
+          - matchLabels:
+              app.kubernetes.io/name: prometheus
+              prometheus: prom-stack-prometheus
+        toPorts:
+          - ports:
+              - port: "3000"
+                protocol: TCP
+      - fromEntities:
+          - ingress
+        toPorts:
+          - ports:
+              - port: "3000"
+                protocol: TCP
