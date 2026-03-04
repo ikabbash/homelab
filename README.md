@@ -52,13 +52,10 @@ What's planned for the homelab as it evolves. Ideas below may change and more ma
 ### Security
 - [x] Deploy [Authentik](https://github.com/goauthentik/helm/blob/main/charts/authentik/README.md) using Terraform
   - [x] Integrate SSO across platforms
-- [ ] Setup audits (plan storage and retention accordingly)
-  - [ ] Kubernetes audits
-  - [ ] Vault audit logging 
-  - [ ] Send logs to a central server
 - [x] Define and enforce pod security contexts  
-- [ ] Cilium network policies
-- [ ] Protect web UIs using Authentik [Proxy Provider](https://docs.goauthentik.io/add-secure-apps/providers/proxy/forward_auth/) (Prometheus UI, Alertmanager UI, etc.)
+- [x] Cilium network policies
+- [ ] Cluster audit logging and alerting
+- [ ] Protect web UIs using Authentik [Proxy Provider](https://docs.goauthentik.io/add-secure-apps/providers/proxy/forward_auth/)
 - [ ] Jobs to scan containers for vulnerabilities
 
 ### n8n
