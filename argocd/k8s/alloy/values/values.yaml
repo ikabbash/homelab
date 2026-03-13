@@ -1,0 +1,68 @@
+namespaceOverride: monitoring
+
+alloy:
+  configMap:
+    create: false
+    name: alloy-config
+    key: config.hcl
+  listenAddr: 0.0.0.0
+  storagePath: /var/mnt/homelab/alloy-wal
+  mounts:
+    # Mount /var/log from the **host** into the container for log collection
+    varlog: false
+    # Mount /var/lib/docker/containers from the host into the container for log collection
+    dockercontainers: false
+    extra:
+      - name: alloy-wal
+        mountPath: /var/mnt/homelab/alloy-wal
+        readOnly: false
+  enableReporting: false
+  securityContext:
+    runAsUser: 473
+    runAsGroup: 473
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    readOnlyRootFilesystem: false
+    runAsNonRoot: true
+  resources:
+    requests:
+      cpu: "200m"
+      memory: "256Mi"
+    limits:
+      cpu: "1000m"
+      memory: "1Gi"
+
+controller:
+  type: daemonset
+  tolerations:
+    - key: node-role.kubernetes.io/control-plane
+      operator: Exists
+      effect: NoSchedule
+  volumes:
+    extra:
+      - name: alloy-wal
+        hostPath:
+          path: /var/mnt/homelab/alloy-wal
+          type: DirectoryOrCreate
+  initContainers:
+    - name: wal-setup
+      image: busybox
+      command: ["sh", "-c", "chown -R 473:473 /var/mnt/homelab/alloy-wal"]
+      volumeMounts:
+        - name: alloy-wal
+          mountPath: /var/mnt/homelab/alloy-wal
+      securityContext:
+        runAsUser: 0
+
+configReloader:
+  securityContext:
+    runAsUser: 65534
+    runAsGroup: 65534
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
