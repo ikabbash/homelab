@@ -83,6 +83,34 @@ server:
         - ${vault_host}
   ingress:
     enabled: false
+  # Sidecar container to tail the Vault audit log
+  extraContainers:
+    - name: audit-log-tailer
+      image: alpine:3.23.3
+      command:
+        - /bin/sh
+        - -c
+        - |
+          AUDIT_LOG="${audit_file_path}/audit.log"
+          echo "Waiting for audit log file..."
+          until [ -f "$AUDIT_LOG" ]; do
+            sleep 5
+          done
+          echo "Audit log found, starting tail..."
+          tail -F "$AUDIT_LOG"
+      volumeMounts:
+        - name: audit
+          mountPath: ${audit_file_path}
+          readOnly: true
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 100
+        runAsGroup: 1000
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+        readOnlyRootFilesystem: true
 
 %{ if enable_monitoring }
 serverTelemetry:
