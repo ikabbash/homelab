@@ -1,5 +1,7 @@
 namespaceOverride: monitoring
 
+# Note: User and group 65534 were chosen to be able to read Kubernetes audit log file
+
 alloy:
   configMap:
     create: false
@@ -16,10 +18,13 @@ alloy:
       - name: alloy-wal
         mountPath: /var/mnt/homelab/alloy-wal
         readOnly: false
+      - name: kubernetes-audit-logs
+        mountPath: /var/log/audit/kube/kube-apiserver.log
+        readOnly: true
   enableReporting: false
   securityContext:
-    runAsUser: 473
-    runAsGroup: 473
+    runAsUser: 65534
+    runAsGroup: 65534
     allowPrivilegeEscalation: false
     capabilities:
       drop:
@@ -46,10 +51,13 @@ controller:
         hostPath:
           path: /var/mnt/homelab/alloy-wal
           type: DirectoryOrCreate
+      - name: kubernetes-audit-logs
+        hostPath:
+          path: /var/log/audit/kube/kube-apiserver.log
   initContainers:
     - name: wal-setup
       image: busybox
-      command: ["sh", "-c", "chown -R 473:473 /var/mnt/homelab/alloy-wal"]
+      command: ["sh", "-c", "chown -R 65534:65534 /var/mnt/homelab/alloy-wal"]
       volumeMounts:
         - name: alloy-wal
           mountPath: /var/mnt/homelab/alloy-wal
