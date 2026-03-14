@@ -25,7 +25,115 @@ cluster:
               namespaces:
                 - openebs
                 - monitoring
-
+    auditPolicy:
+      apiVersion: audit.k8s.io/v1
+      kind: Policy
+      rules:
+        # Pod exec/attach/portforward
+        - level: RequestResponse
+          omitStages: ["RequestReceived"]
+          resources:
+            - group: ""
+              resources: ["pods/exec", "pods/attach", "pods/portforward"]
+          verbs: ["create", "get"]
+        # Node proxy
+        - level: RequestResponse
+          omitStages: ["RequestReceived"]
+          resources:
+            - group: ""
+              resources: ["nodes/proxy"]
+          verbs: ["*"]
+        # Secrets Metadata only for most verbs (using RequestResponse will cause data leakage)
+        - level: Metadata
+          omitStages: ["RequestReceived"]
+          resources:
+            - group: ""
+              resources: ["secrets"]
+          verbs: ["get", "list", "create", "update", "patch", "delete"]
+        # Cilium network policy changes (security relevant)
+        - level: RequestResponse
+          omitStages: ["RequestReceived"]
+          resources:
+            - group: "cilium.io"
+              resources:
+                - ciliumnetworkpolicies
+                - ciliumclusterwidenetworkpolicies
+          verbs: ["create", "update", "patch", "delete"]
+        # RBAC changes
+        - level: RequestResponse
+          omitStages: ["RequestReceived"]
+          resources:
+            - group: "rbac.authorization.k8s.io"
+              resources:
+                - roles
+                - rolebindings
+                - clusterroles
+                - clusterrolebindings
+          verbs: ["create", "update", "patch", "delete"]
+        # Privilege escalation signals
+        - level: RequestResponse
+          omitStages: ["RequestReceived"]
+          resources:
+            - group: ""
+              resources: ["serviceaccounts/token"]
+          verbs: ["create"]
+        - level: Metadata
+          omitStages: ["RequestReceived"]
+          resources:
+            - group: "certificates.k8s.io"
+              resources: ["certificatesigningrequests"]
+          verbs: ["create", "update", "delete"]
+        # Workload writes
+        - level: Metadata
+          omitStages: ["RequestReceived"]
+          resources:
+            - group: "apps"
+              resources: ["deployments", "daemonsets", "statefulsets", "replicasets"]
+            - group: "batch"
+              resources: ["jobs", "cronjobs"]
+          verbs: ["create", "update", "patch", "delete"]
+        # Admin and cluster-admin user writes
+        - level: RequestResponse
+          omitStages: ["RequestReceived"]
+          users: ["admin"]
+          verbs: ["create", "update", "patch", "delete"]
+        - level: RequestResponse
+          omitStages: ["RequestReceived"]
+          userGroups: ["system:masters"]
+          verbs: ["create", "update", "patch", "delete"]
+        # Drop noisy system/health traffic
+        - level: None
+          users:
+            - "system:serviceaccount:kube-system:cilium"
+            - "system:serviceaccount:kube-system:cilium-operator"
+          verbs: ["get", "list", "watch"]
+        - level: None
+          resources:
+            - group: "cilium.io"
+              resources:
+                - ciliumnetworkpolicies
+                - ciliumclusterwidenetworkpolicies
+                - ciliumendpoints
+                - ciliumnodes
+                - ciliumidentities
+          verbs: ["get", "list", "watch"]
+        - level: None
+          users:
+            - "system:apiserver"
+            - "system:kube-scheduler"
+            - "system:kube-controller-manager"
+          verbs: ["get", "list", "watch"]
+        - level: None
+          userGroups: ["system:nodes"]
+          verbs: ["get", "list", "watch"]
+        - level: None
+          nonResourceURLs:
+            - /healthz*
+            - /readyz*
+            - /livez*
+            - /metrics
+        # Drop everything else
+        - level: None
 machine:
   time:
     servers:
