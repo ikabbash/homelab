@@ -43,13 +43,20 @@ cluster:
             - group: ""
               resources: ["nodes/proxy"]
           verbs: ["*"]
-        # Secrets Metadata only for most verbs (using RequestResponse will cause data leakage)
+        # Secrets Metadata only for most verbs while dropping VSO's (using RequestResponse will cause data leakage)
+        - level: None
+          users:
+            - "system:serviceaccount:vault-secrets-operator-system:vault-secrets-operator-controller-manager"
+          resources:
+            - group: ""
+              resources: ["secrets"]
+          verbs: ["get", "list", "watch"]
         - level: Metadata
           omitStages: ["RequestReceived"]
           resources:
             - group: ""
               resources: ["secrets"]
-          verbs: ["get", "list", "create", "update", "patch", "delete"]
+          verbs: ["get", "list", "watch","create", "update", "patch", "delete"]
         # Cilium network policy changes (security relevant)
         - level: RequestResponse
           omitStages: ["RequestReceived"]
@@ -75,6 +82,12 @@ cluster:
           omitStages: ["RequestReceived"]
           resources:
             - group: ""
+              resources: ["serviceaccounts"]
+          verbs: ["create", "update", "patch", "delete"]
+        - level: RequestResponse
+          omitStages: ["RequestReceived"]
+          resources:
+            - group: ""
               resources: ["serviceaccounts/token"]
           verbs: ["create"]
         - level: Metadata
@@ -84,6 +97,12 @@ cluster:
               resources: ["certificatesigningrequests"]
           verbs: ["create", "update", "delete"]
         # Workload writes
+        - level: RequestResponse
+          omitStages: ["RequestReceived"]
+          resources:
+            - group: ""
+              resources: ["pods"]
+          verbs: ["create"]
         - level: Metadata
           omitStages: ["RequestReceived"]
           resources:
