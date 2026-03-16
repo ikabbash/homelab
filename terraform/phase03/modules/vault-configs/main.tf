@@ -51,3 +51,18 @@ resource "vault_audit" "file" {
     format               = "json"
   }
 }
+
+resource "vault_auth_backend" "userpass" {
+  type        = "userpass"
+  path        = "userpass"
+  description = "Userpass auth method for human admin access"
+}
+
+resource "vault_policy" "admin" {
+  name = "admin"
+  policy = <<-EOT
+    path "*" {
+      capabilities = ["create", "read", "update", "delete", "list", "sudo"]
+    }
+  EOT
+}

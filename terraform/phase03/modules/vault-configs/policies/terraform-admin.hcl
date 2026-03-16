@@ -18,6 +18,10 @@ path "sys/policies/acl/*" {
 path "sys/mounts/auth/*" {
   capabilities = ["list", "read"]
 }
+# Userpass
+path "sys/auth/userpass" {
+  capabilities = ["create", "update", "delete", "sudo"]
+}
 # Kubernetes auth setup
 path "sys/auth/kubernetes/vso" {
   capabilities = ["create", "update", "delete", "sudo"]

@@ -58,6 +58,18 @@ This phase sets up Vault using Terraform’s Vault provider to configure secret 
     # To confirm
     vault kv get homelab/infra/kv-secret/platforms/shared/smtp
     ```
+    - Check the repo's Vault [doc](../../docs/vault.md#secrets-to-create) for the list of additional secrets that need to be created.
+6. Create admin user (called admin), login with it, then revoke root token.
+    ```bash
+    # Create user
+    vault write auth/userpass/users/admin policies="admin" password="YourStrongPassword"
+
+    # Login
+    vault login -method=userpass username=admin
+
+    # Revoke root token
+    vault token revoke <root-token>
+    ```
 
 ## Notes
 - To grant any namespace access to Vault, create `VaultAuth` and a service account (e.g., named `vso-sa`) that matches the `bound_service_account_names` in `vault_kubernetes_auth_backend_role`. This allows you to have Kubernetes secrets created using resources like `VaultStaticSecret`.
