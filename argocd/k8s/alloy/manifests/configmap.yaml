@@ -165,31 +165,5 @@ data:
           }
         }
 
-        stage.json {
-          expressions = {
-            verb             = "verb",
-            level            = "level",
-            username         = "user.username",
-            resource         = "objectRef.resource",
-            subresource      = "objectRef.subresource",
-            object_namespace = "objectRef.namespace",
-            apigroup         = "objectRef.apiGroup",
-            response_code    = "responseStatus.code",
-          }
-        }
-
-        stage.labels {
-          values = {
-            verb             = "verb",
-            audit_level      = "level",
-            username         = "username",
-            resource         = "resource",
-            subresource      = "subresource",
-            object_namespace = "object_namespace",
-            apigroup         = "apigroup",
-            response_code    = "response_code",
-          }
-        }
-
         forward_to = [loki.write.default.receiver]
       }

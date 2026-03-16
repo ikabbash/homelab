@@ -13,9 +13,13 @@ data:
             expr: |
               sum by (username, object_namespace, cluster, verb) (
                 count_over_time(
-                  {job="kubernetes/audit", apigroup="rbac.authorization.k8s.io"}
+                  {job="kubernetes/audit"}
                   | json
+                  | objectRef_apiGroup = "rbac.authorization.k8s.io"
                   | verb =~ "create|update|patch|delete"
+                  | label_format username=user_username,
+                                  object_namespace=objectRef_namespace,
+                                  verb=verb
                   [5m]
                 )
               ) > 0
@@ -29,8 +33,13 @@ data:
             expr: |
               sum by (username, object_namespace, subresource, cluster) (
                 count_over_time(
-                  {job="kubernetes/audit", resource="pods", subresource=~"exec|attach|portforward"}
+                  {job="kubernetes/audit"}
                   | json
+                  | objectRef_resource = "pods"
+                  | objectRef_subresource =~ "exec|attach|portforward"
+                  | label_format username=user_username,
+                                  object_namespace=objectRef_namespace,
+                                  subresource=objectRef_subresource
                   [5m]
                 )
               ) > 0
@@ -44,10 +53,13 @@ data:
             expr: |
               sum by (username, object_namespace, cluster) (
                 count_over_time(
-                  {job="kubernetes/audit", resource="pods"}
+                  {job="kubernetes/audit"}
                   | json
+                  | objectRef_resource = "pods"
                   | verb = "create"
                   | annotations_pod_security_kubernetes_io_audit_violations != ""
+                  | label_format username=user_username,
+                                  object_namespace=objectRef_namespace
                   [5m]
                 )
               ) > 0
@@ -61,11 +73,14 @@ data:
             expr: |
               sum by (username, object_namespace, object_name, cluster) (
                 count_over_time(
-                  {job="kubernetes/audit", resource="pods"}
-                  | json objectRef_name="objectRef.name"
+                  {job="kubernetes/audit"}
+                  | json
+                  | objectRef_resource = "pods"
                   | verb = "create"
-                  | username != "system:serviceaccount:kube-system:job-controller"
-                  | label_format object_name=objectRef_name
+                  | user_username != "system:serviceaccount:kube-system:job-controller"
+                  | label_format username=user_username,
+                                  object_namespace=objectRef_namespace,
+                                  object_name=objectRef_name
                   [5m]
                 )
               ) > 0
