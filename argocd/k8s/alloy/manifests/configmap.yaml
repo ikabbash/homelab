@@ -3,6 +3,8 @@ kind: ConfigMap
 metadata:
   name: alloy-config
   namespace: monitoring
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
 data:
   config.hcl: |
       loki.write "default" {
