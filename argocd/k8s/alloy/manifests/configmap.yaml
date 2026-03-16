@@ -155,11 +155,37 @@ data:
         forward_to = [loki.process.audit_logs.receiver]
       }
 
-      // loki.process adds static labels before forwarding to Loki.
+      // loki.process adds static labels before forwarding to Loki as well as JSON parsing.
       loki.process "audit_logs" {
         stage.static_labels {
           values = {
             cluster = "homelab-cluster",
+          }
+        }
+
+        stage.json {
+          expressions = {
+            verb             = "verb",
+            level            = "level",
+            username         = "user.username",
+            resource         = "objectRef.resource",
+            subresource      = "objectRef.subresource",
+            object_namespace = "objectRef.namespace",
+            apigroup         = "objectRef.apiGroup",
+            response_code    = "responseStatus.code",
+          }
+        }
+
+        stage.labels {
+          values = {
+            verb             = "verb",
+            audit_level      = "level",
+            username         = "username",
+            resource         = "resource",
+            subresource      = "subresource",
+            object_namespace = "object_namespace",
+            apigroup         = "apigroup",
+            response_code    = "response_code",
           }
         }
 
