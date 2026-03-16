@@ -75,3 +75,15 @@ data:
             annotations:
               summary: "New pod created by {{ $labels.username }}"
               description: "User {{ $labels.username }} created pod '{{ $labels.object_name }}' in namespace {{ $labels.object_namespace }} on {{ $labels.cluster }}"
+      - name: log-ingestion-health
+        interval: 2m
+        rules:
+          - alert: LokiAlloyLogsNotReceived
+            expr: |
+              absent_over_time({cluster="homelab-cluster"}[5m])
+            for: 5m
+            labels:
+              severity: critical
+            annotations:
+              summary: "No logs received from Alloy on {{ $labels.cluster }}"
+              description: "Loki has not received any logs from Alloy in '{{ $labels.cluster }}' in the last 5 minutes."
