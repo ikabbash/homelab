@@ -49,6 +49,15 @@ specs:
           - ports:
               - port: "6443"
                 protocol: TCP
+      - toEndpoints:
+          - matchLabels:
+              app.kubernetes.io/name: alertmanager
+              alertmanager: prom-stack-alertmanager
+              io.kubernetes.pod.namespace: monitoring
+        toPorts:
+          - ports:
+              - port: "9093"
+                protocol: TCP
 
   # Loki Canary
   - endpointSelector:

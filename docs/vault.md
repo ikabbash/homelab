@@ -56,5 +56,6 @@ The Vault secrets listed here are required for platform components and applicati
         smtp_username='your_smtp_username' \
         smtp_password='your_smtp_password' \
         smtp_from_address='homelab@example.com' \
-        smtp_receiver='hamada@example.com
+        smtp_receiver='hamada@example.com \
+        discord_webhook_url='your_discord_webhook'
     ```

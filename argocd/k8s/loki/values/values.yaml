@@ -11,6 +11,14 @@ singleBinary:
     limits:
       cpu: 500m
       memory: 2Gi
+  extraVolumes:
+    - name: loki-rules
+      configMap:
+        name: loki-rules
+  extraVolumeMounts:
+    - name: loki-rules
+      mountPath: /var/loki/rules/fake  # "fake" is the default tenant when auth_enabled: false
+      readOnly: true
 
 loki:
   auth_enabled: false
@@ -47,8 +55,12 @@ loki:
   compactor:
     retention_enabled: true
     delete_request_store: filesystem
-  ruler:
+  rulerConfig:
     enable_api: true
+    alertmanager_url: http://prom-stack-alertmanager.monitoring.svc.cluster.local:9093
+    enable_alertmanager_v2: true
+    external_labels:
+      source: loki
   analytics:
     reporting_enabled: false
   memberlist:
