@@ -90,6 +90,98 @@ data:
             annotations:
               summary: "New pod created by {{ $labels.username }}"
               description: "User {{ $labels.username }} created pod '{{ $labels.object_name }}' in namespace {{ $labels.object_namespace }} on {{ $labels.cluster }}"
+      - name: vault-audit
+        interval: 1m
+        rules:
+          - alert: VaultRootTokenCreated
+            expr: |
+              sum(
+                count_over_time(
+                  {job="vault/audit-log-tailer"}
+                  | json
+                  | type = "response"
+                  | request_path = "sys/generate-root/update"
+                  | response_data_complete = "true"
+                  [5m]
+                )
+              ) > 0
+            for: 0m
+            labels:
+              severity: critical
+            annotations:
+              summary: "Vault root token was created on {{ $labels.cluster }}"
+              description: "A root token creation was detected in Vault audit logs on {{ $labels.cluster }}."
+          - alert: VaultRootTokenUsed
+            expr: |
+              sum(
+                count_over_time(
+                  {job="vault/audit-log-tailer"}
+                  | json
+                  | type = "request"
+                  | auth_display_name = "root"
+                  [5m]
+                )
+              ) > 0
+            for: 0m
+            labels:
+              severity: critical
+            annotations:
+              summary: "Vault root token was used on {{ $labels.cluster }}"
+              description: "A request was made using a root token in Vault on {{ $labels.cluster }}."
+          - alert: VaultAuthFailureSpike
+            expr: |
+              sum(
+                count_over_time(
+                  {job="vault/audit-log-tailer"}
+                  | json
+                  | type = "response"
+                  | request_path =~ "auth/.*"
+                  | error =~ "permission denied|invalid credentials"
+                  [5m]
+                )
+              ) > 5
+            for: 2m
+            labels:
+              severity: warning
+            annotations:
+              summary: "Vault authentication failure spike on {{ $labels.cluster }}"
+              description: "More than 5 Vault auth failures detected in the last 5 minutes on {{ $labels.cluster }}."
+          - alert: VaultPermissionDeniedSpike
+            expr: |
+              sum(
+                count_over_time(
+                  {job="vault/audit-log-tailer"}
+                  | json
+                  | type = "response"
+                  | request_path !~ "auth/.*"
+                  | error = "permission denied"
+                  [5m]
+                )
+              ) > 5
+            for: 2m
+            labels:
+              severity: warning
+            annotations:
+              summary: "Vault permission denied spike on {{ $labels.cluster }}"
+              description: "More than 5 permission denied errors detected in the last 5 minutes on {{ $labels.cluster }}."
+          - alert: VaultAuditConfigModified
+            expr: |
+              sum(
+                count_over_time(
+                  {job="vault/audit-log-tailer"}
+                  | json
+                  | type = "request"
+                  | request_path =~ "sys/audit.*"
+                  | request_operation =~ "create|update|delete"
+                  [5m]
+                )
+              ) > 0
+            for: 0m
+            labels:
+              severity: info
+            annotations:
+              summary: "Vault audit configuration was modified on {{ $labels.cluster }}"
+              description: "A change to Vault's audit configuration was detected on {{ $labels.cluster }}."
       - name: log-ingestion-health
         interval: 2m
         rules:
