@@ -6,6 +6,7 @@ metadata:
 data:
   alert-rules.yaml: |
     groups:
+
       - name: kubernetes-audit
         interval: 1m
         rules:
@@ -90,12 +91,13 @@ data:
             annotations:
               summary: "New pod created by {{ $labels.username }}"
               description: "User {{ $labels.username }} created pod '{{ $labels.object_name }}' in namespace {{ $labels.object_namespace }} on {{ $labels.cluster }}"
+
       - name: vault-audit
         interval: 1m
         rules:
           - alert: VaultRootTokenCreated
             expr: |
-              sum(
+              sum by (cluster) (
                 count_over_time(
                   {job="vault/audit-log-tailer"}
                   | json
@@ -110,10 +112,10 @@ data:
               severity: critical
             annotations:
               summary: "Vault root token was created on {{ $labels.cluster }}"
-              description: "A root token creation was detected in Vault audit logs on {{ $labels.cluster }}."
+              description: "A root token creation was detected in Vault audit logs on {{ $labels.cluster }}"
           - alert: VaultRootTokenUsed
             expr: |
-              sum(
+              sum by (cluster) (
                 count_over_time(
                   {job="vault/audit-log-tailer"}
                   | json
@@ -127,16 +129,18 @@ data:
               severity: critical
             annotations:
               summary: "Vault root token was used on {{ $labels.cluster }}"
-              description: "A request was made using a root token in Vault on {{ $labels.cluster }}."
+              description: "A request was made using a root token in Vault on {{ $labels.cluster }}"
           - alert: VaultAuthFailureSpike
             expr: |
-              sum(
+              sum by (auth_method, auth_path, cluster) (
                 count_over_time(
                   {job="vault/audit-log-tailer"}
                   | json
                   | type = "response"
                   | request_path =~ "auth/.*"
                   | error =~ "permission denied|invalid credentials"
+                  | label_format auth_method=request_mount_type,
+                                  auth_path=request_path
                   [5m]
                 )
               ) > 5
@@ -144,17 +148,19 @@ data:
             labels:
               severity: warning
             annotations:
-              summary: "Vault authentication failure spike on {{ $labels.cluster }}"
-              description: "More than 5 Vault auth failures detected in the last 5 minutes on {{ $labels.cluster }}."
+              summary: "Vault auth failure spike via {{ $labels.auth_method }} on {{ $labels.cluster }}"
+              description: "More than 5 {{ $labels.auth_method }} auth failures at '{{ $labels.auth_path }}' in the last 5 minutes on {{ $labels.cluster }}"
           - alert: VaultPermissionDeniedSpike
             expr: |
-              sum(
+              sum by (denied_path, operation, cluster) (
                 count_over_time(
                   {job="vault/audit-log-tailer"}
                   | json
                   | type = "response"
                   | request_path !~ "auth/.*"
                   | error = "permission denied"
+                  | label_format denied_path=request_path,
+                                  operation=request_operation
                   [5m]
                 )
               ) > 5
@@ -163,16 +169,19 @@ data:
               severity: warning
             annotations:
               summary: "Vault permission denied spike on {{ $labels.cluster }}"
-              description: "More than 5 permission denied errors detected in the last 5 minutes on {{ $labels.cluster }}."
+              description: "More than 5 permission denied errors for '{{ $labels.operation }}' on '{{ $labels.denied_path }}' in the last 5 minutes on {{ $labels.cluster }}"
           - alert: VaultAuditConfigModified
             expr: |
-              sum(
+              sum by (actor, audit_device, action, cluster) (
                 count_over_time(
                   {job="vault/audit-log-tailer"}
                   | json
                   | type = "request"
                   | request_path =~ "sys/audit.*"
                   | request_operation =~ "create|update|delete"
+                  | label_format actor=auth_display_name,
+                                  audit_device=request_path,
+                                  action=request_operation
                   [5m]
                 )
               ) > 0
@@ -181,7 +190,26 @@ data:
               severity: info
             annotations:
               summary: "Vault audit configuration was modified on {{ $labels.cluster }}"
-              description: "A change to Vault's audit configuration was detected on {{ $labels.cluster }}."
+              description: "{{ if $labels.actor }}{{ $labels.actor }}{{ else }}unauthenticated{{ end }} performed '{{ $labels.action }}' on '{{ $labels.audit_device }}' on {{ $labels.cluster }}"
+          - alert: VaultAuthConfigModified
+            expr: |
+              sum by (cluster) (
+                count_over_time(
+                  {job="vault/audit-log-tailer"}
+                  | json
+                  | type = "request"
+                  | request_path =~ "sys/auth.*"
+                  | request_operation =~ "create|update|delete"
+                  [5m]
+                )
+              ) > 0
+            for: 0m
+            labels:
+              severity: warning
+            annotations:
+              summary: "Vault auth configuration was modified on {{ $labels.cluster }}"
+              description: "A change to Vault's auth configuration was detected on {{ $labels.cluster }}"
+
       - name: log-ingestion-health
         interval: 2m
         rules:
