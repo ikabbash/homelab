@@ -12,9 +12,9 @@ spec:
       path: argocd/k8s/kube-prometheus-stack/manifests
     - repoURL: "https://prometheus-community.github.io/helm-charts"
       chart: kube-prometheus-stack
-      targetRevision: "81.3.0"
+      targetRevision: "82.10.5"
       helm:
-        releaseName: prometheus
+        releaseName: kube-prometheus-stack
         valueFiles:
           - $values/argocd/k8s/kube-prometheus-stack/values/base.yaml
           - $values/argocd/k8s/kube-prometheus-stack/values/alertmanager.yaml
@@ -29,13 +29,7 @@ spec:
   syncPolicy:
     automated:
       prune: true
-      selfHeal: true
+      selfHeal: false
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true # Due to large CRDs
-  # To resolve false OutOfSync issue between Argo CD and Cilium
-  # ignoreDifferences:
-  #   - group: gateway.networking.k8s.io
-  #     kind: HTTPRoute
-  #     jsonPointers:
-  #       - /spec/rules
