@@ -26,7 +26,7 @@ data:
               ) > 0
             for: 0m
             labels:
-              severity: critical
+              severity: warning
             annotations:
               summary: "RBAC modification on {{ $labels.object_resource }}/{{ $labels.object_name }}"
               description: "User {{ $labels.username }} modified {{ $labels.object_resource }}/{{ $labels.object_name }}"
