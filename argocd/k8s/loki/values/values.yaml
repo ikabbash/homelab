@@ -66,6 +66,17 @@ loki:
   memberlist:
     join_members: []
 
+monitoring:
+  serviceMonitor:
+    enabled: true
+  rules:
+    enabled: true
+    alerting: true
+    labels:
+      release: kube-prometheus-stack
+  dashboards:
+    enabled: false
+
 lokiCanary:
   enabled: true
 gateway:

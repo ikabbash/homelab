@@ -25,6 +25,10 @@ specs:
           - ports:
               - port: "3100"
                 protocol: TCP
+      - fromEndpoints:
+          - matchLabels:
+              io.kubernetes.pod.namespace: monitoring
+              app.kubernetes.io/name: prometheus
     egress:
       # Loki memberlist
       - toEndpoints:
@@ -65,7 +69,10 @@ specs:
         app.kubernetes.io/component: canary
         app.kubernetes.io/name: loki
     ingress:
-      - {}
+      - fromEndpoints:
+          - matchLabels:
+              io.kubernetes.pod.namespace: monitoring
+              app.kubernetes.io/name: prometheus
     egress:
       - toEndpoints:
           - matchLabels:
