@@ -12,16 +12,15 @@ data:
         rules:
           - alert: KubernetesAuditRBACModification
             expr: |
-              sum by (username, object_namespace, cluster, verb) (
+              sum by (username, object_resource, object_name) (
                 count_over_time(
                   {job="kubernetes/audit"}
                   | json
                   | objectRef_apiGroup = "rbac.authorization.k8s.io"
-                  | json verb_extracted="verb"
-                  | verb_extracted =~ "create|update|patch|delete"
+                  | verb =~ "create|update|patch|delete"
                   | label_format username=user_username,
-                                  object_namespace=objectRef_namespace,
-                                  verb=verb_extracted
+                                  object_resource=objectRef_resource,
+                                  object_name=objectRef_name
                   [5m]
                 )
               ) > 0
@@ -29,11 +28,11 @@ data:
             labels:
               severity: critical
             annotations:
-              summary: "RBAC {{ $labels.verb }} by {{ $labels.username }}"
-              description: "User {{ $labels.username }} performed '{{ $labels.verb }}' on a RBAC resource in namespace {{ $labels.object_namespace }} on {{ $labels.cluster }}"
+              summary: "RBAC modification on {{ $labels.object_resource }}/{{ $labels.object_name }}"
+              description: "User {{ $labels.username }} modified {{ $labels.object_resource }}/{{ $labels.object_name }}"
           - alert: KubernetesAuditExecAttachPortforward
             expr: |
-              sum by (username, object_namespace, subresource, cluster) (
+              sum by (username, object_namespace, subresource) (
                 count_over_time(
                   {job="kubernetes/audit"}
                   | json
@@ -50,10 +49,10 @@ data:
               severity: warning
             annotations:
               summary: "kubectl {{ $labels.subresource }} by {{ $labels.username }}"
-              description: "User {{ $labels.username }} used '{{ $labels.subresource }}' on a pod in namespace {{ $labels.object_namespace }} on {{ $labels.cluster }}"
+              description: "User {{ $labels.username }} used '{{ $labels.subresource }}' on a pod in namespace {{ $labels.object_namespace }}"
           - alert: KubernetesAuditPrivilegedPodCreated
             expr: |
-              sum by (username, object_namespace, cluster) (
+              sum by (username, object_namespace) (
                 count_over_time(
                   {job="kubernetes/audit"}
                   | json
@@ -70,10 +69,10 @@ data:
               severity: critical
             annotations:
               summary: "Privileged pod created by {{ $labels.username }}"
-              description: "User {{ $labels.username }} created a pod with privileged security settings in namespace {{ $labels.object_namespace }} on {{ $labels.cluster }}"
+              description: "User {{ $labels.username }} created a pod with privileged security settings in namespace {{ $labels.object_namespace }}"
           - alert: KubernetesAuditWorkloadCreated
             expr: |
-              sum by (username, object_namespace, object_name, cluster) (
+              sum by (username, object_namespace, object_name) (
                 count_over_time(
                   {job="kubernetes/audit"}
                   | json
@@ -91,49 +90,45 @@ data:
               severity: info
             annotations:
               summary: "New pod created by {{ $labels.username }}"
-              description: "User {{ $labels.username }} created pod '{{ $labels.object_name }}' in namespace {{ $labels.object_namespace }} on {{ $labels.cluster }}"
+              description: "User {{ $labels.username }} created pod '{{ $labels.object_name }}' in namespace {{ $labels.object_namespace }}"
 
       - name: vault-audit
         interval: 1m
         rules:
           - alert: VaultRootTokenCreated
             expr: |
-              sum by (cluster) (
-                count_over_time(
-                  {job="vault/audit-log-tailer"}
-                  | json
-                  | type = "response"
-                  | request_path = "sys/generate-root/update"
-                  | response_data_complete = "true"
-                  [5m]
-                )
+              count_over_time(
+                {job="vault/audit-log-tailer"}
+                | json
+                | type = "response"
+                | request_path = "sys/generate-root/update"
+                | response_data_complete = "true"
+                [5m]
               ) > 0
             for: 0m
             labels:
               severity: critical
             annotations:
-              summary: "Vault root token was created on {{ $labels.cluster }}"
-              description: "A root token creation was detected in Vault audit logs on {{ $labels.cluster }}"
+              summary: "Vault root token was created"
+              description: "A root token creation was detected in Vault audit logs"
           - alert: VaultRootTokenUsed
             expr: |
-              sum by (cluster) (
-                count_over_time(
-                  {job="vault/audit-log-tailer"}
-                  | json
-                  | type = "request"
-                  | auth_display_name = "root"
-                  [5m]
-                )
+              count_over_time(
+                {job="vault/audit-log-tailer"}
+                | json
+                | type = "request"
+                | auth_display_name = "root"
+                [5m]
               ) > 0
             for: 0m
             labels:
               severity: critical
             annotations:
-              summary: "Vault root token was used on {{ $labels.cluster }}"
-              description: "A request was made using a root token in Vault on {{ $labels.cluster }}"
+              summary: "Vault root token was used"
+              description: "A request was made using a root token in Vault"
           - alert: VaultAuthFailureSpike
             expr: |
-              sum by (auth_method, auth_path, cluster) (
+              sum by (auth_method, auth_path) (
                 count_over_time(
                   {job="vault/audit-log-tailer"}
                   | json
@@ -149,11 +144,11 @@ data:
             labels:
               severity: warning
             annotations:
-              summary: "Vault auth failure spike via {{ $labels.auth_method }} on {{ $labels.cluster }}"
-              description: "More than 5 {{ $labels.auth_method }} auth failures at '{{ $labels.auth_path }}' in the last 5 minutes on {{ $labels.cluster }}"
+              summary: "Vault auth failure spike via {{ $labels.auth_method }}"
+              description: "More than 5 {{ $labels.auth_method }} auth failures at '{{ $labels.auth_path }}' in the last 5 minutes"
           - alert: VaultPermissionDeniedSpike
             expr: |
-              sum by (denied_path, operation, cluster) (
+              sum by (denied_path, operation) (
                 count_over_time(
                   {job="vault/audit-log-tailer"}
                   | json
@@ -169,11 +164,11 @@ data:
             labels:
               severity: warning
             annotations:
-              summary: "Vault permission denied spike on {{ $labels.cluster }}"
-              description: "More than 5 permission denied errors for '{{ $labels.operation }}' on '{{ $labels.denied_path }}' in the last 5 minutes on {{ $labels.cluster }}"
+              summary: "Vault permission denied spike"
+              description: "More than 5 permission denied errors for '{{ $labels.operation }}' on '{{ $labels.denied_path }}' in the last 5 minutes"
           - alert: VaultAuditConfigModified
             expr: |
-              sum by (actor, audit_device, action, cluster) (
+              sum by (actor, audit_device, action) (
                 count_over_time(
                   {job="vault/audit-log-tailer"}
                   | json
@@ -190,26 +185,24 @@ data:
             labels:
               severity: info
             annotations:
-              summary: "Vault audit configuration was modified on {{ $labels.cluster }}"
-              description: "{{ if $labels.actor }}{{ $labels.actor }}{{ else }}unauthenticated{{ end }} performed '{{ $labels.action }}' on '{{ $labels.audit_device }}' on {{ $labels.cluster }}"
+              summary: "Vault audit configuration was modified"
+              description: "{{ if $labels.actor }}{{ $labels.actor }}{{ else }}unauthenticated{{ end }} performed '{{ $labels.action }}' on '{{ $labels.audit_device }}'"
           - alert: VaultAuthConfigModified
             expr: |
-              sum by (cluster) (
-                count_over_time(
-                  {job="vault/audit-log-tailer"}
-                  | json
-                  | type = "request"
-                  | request_path =~ "sys/auth.*"
-                  | request_operation =~ "create|update|delete"
-                  [5m]
-                )
+              count_over_time(
+                {job="vault/audit-log-tailer"}
+                | json
+                | type = "request"
+                | request_path =~ "sys/auth.*"
+                | request_operation =~ "create|update|delete"
+                [5m]
               ) > 0
             for: 0m
             labels:
               severity: warning
             annotations:
-              summary: "Vault auth configuration was modified on {{ $labels.cluster }}"
-              description: "A change to Vault's auth configuration was detected on {{ $labels.cluster }}"
+              summary: "Vault auth configuration was modified"
+              description: "A change to Vault's auth configuration was detected"
 
       - name: log-ingestion-health
         interval: 2m
@@ -221,5 +214,5 @@ data:
             labels:
               severity: critical
             annotations:
-              summary: "No logs received from Alloy on {{ $labels.cluster }}"
-              description: "Loki has not received any logs from Alloy in '{{ $labels.cluster }}' in the last 5 minutes."
+              summary: "No logs received from Alloy"
+              description: "Loki has not received any logs from Alloy in the last 5 minutes"
