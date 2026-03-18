@@ -74,3 +74,8 @@ configReloader:
         - ALL
     readOnlyRootFilesystem: true
     runAsNonRoot: true
+
+serviceMonitor:
+  enabled: true
+  additionalLabels:
+    release: kube-prometheus-stack

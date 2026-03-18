@@ -9,7 +9,10 @@ spec:
       app.kubernetes.io/instance: alloy
       io.kubernetes.pod.namespace: monitoring
   ingress:
-    - {}
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: monitoring
+            app.kubernetes.io/name: prometheus
   egress:
     - toEndpoints:
         - matchLabels:
