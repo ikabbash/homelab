@@ -49,7 +49,7 @@ module "postgresql" {
 module "authentik" {
   source                 = "./modules/authentik"
   chart_namespace        = var.authentik_namespace
-  chart_version          = "2025.10.3"
+  chart_version          = "2026.2.1"
   postgres_secret_name   = module.postgresql.postgres_secret_name
   postgres_host          = module.postgresql.postgres_host
   storage_class_name     = local.phase01.host_storage_class_name
