@@ -10,6 +10,8 @@ The setup is split into two main parts:
 
 This design tracks and versions all infrastructure changes, making it easy to reproduce the cluster in another environment. Terraform bootstraps core services like Vault and Authentik, while Argo CD deploys and manages applications using GitOps.
 
+The observability stack is built on kube-prometheus-stack, Loki, and Alloy, covering metrics, logs, and alerting across the cluster. Everything is wired into Grafana for dashboards and log exploration.
+
 ### Key Components
 - Cilium: Provides cluster networking, replaces kube-proxy, and implements the Gateway API used to expose services.
 - Cert Manager: Manages TLS certificates using Let’s Encrypt. DNS challenge is handled through Cloudflare.
@@ -19,18 +21,12 @@ This design tracks and versions all infrastructure changes, making it easy to re
 - Authentik: Identity provider for authentication and SSO across cluster services.
 - Argo CD: The GitOps engine that keeps the cluster in sync with this repository. Any changes pushed here get automatically reflected in the cluster.
 
-<!-- ### Applications Deployed -->
-
 ## Getting Started
 For my setup, I use Talos Linux because it’s lightweight, minimal, and built specifically for running Kubernetes. Kubernetes on Ubuntu works as well, but make sure your cluster has no CNI installed before proceeding. For Talos, you can check the [documentation](./talos/README.md) I made and use the provided script to generate machine configs for control planes and workers with preconfigured settings applied via a patch template. It saves time, and all you need to do is apply the configs onto the machines after booting Talos.
 
 With the cluster ready, the next step is provisioning the platform stack with [Terraform](./terraform/README.md). Terraform lays down the base layer of the cluster by applying a series of ordered phases that install and configure components like Cilium, Cert Manager, OpenEBS, Vault, Authentik, and Argo CD. Each phase lives in its own directory and is meant to be applied in sequence.
 
 Once Terraform finishes laying down the core platform components, Argo CD takes the wheel. The repository follows an App-of-Apps pattern, where syncing the root application triggers the deployment of all other applications and keeps them continuously reconciled through GitOps.
-
-<!-- ### Architecture -->
-
-<!-- ### Hardware Used -->
 
 ## To-do
 What's planned for the homelab as it evolves. Ideas below may change and more may be added.
@@ -45,17 +41,20 @@ What's planned for the homelab as it evolves. Ideas below may change and more ma
   - [ ] [bentopdf](https://github.com/alam00000/bentopdf)
   - [ ] [changedetection.io](https://github.com/dgtlmoon/changedetection.io/)
   - [x] [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack)
-  - [ ] [Grafana Loki](https://grafana.com/docs/loki/latest/setup/install/helm/)
+  - [x] [Grafana Loki](https://grafana.com/docs/loki/latest/setup/install/helm/)
+  - [x] [Grafana Alloy](https://grafana.com/docs/alloy/latest/set-up/install/kubernetes/)
 - [ ] Pi-hole
 - [x] Migrate from NGINX Ingress Controller to Cilium's Gateway API
+- [ ] Move to Mayastor after expanding the cluster with additional nodes
+- [ ] Data backup and restore plan
 
 ### Security
 - [x] Deploy [Authentik](https://github.com/goauthentik/helm/blob/main/charts/authentik/README.md) using Terraform
   - [x] Integrate SSO across platforms
 - [x] Define and enforce pod security contexts  
 - [x] Cilium network policies
-- [ ] Cluster audit logging and alerting
-- [ ] Protect web UIs using Authentik [Proxy Provider](https://docs.goauthentik.io/add-secure-apps/providers/proxy/forward_auth/)
+- [x] Cluster audit logging and alerting
+- [ ] Protect web UIs/app using Authentik [Proxy Provider](https://docs.goauthentik.io/add-secure-apps/providers/proxy/forward_auth/)
 - [ ] Jobs to scan containers for vulnerabilities
 
 ### n8n
