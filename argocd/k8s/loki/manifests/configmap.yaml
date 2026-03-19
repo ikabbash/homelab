@@ -31,8 +31,8 @@ data:
             labels:
               severity: critical
             annotations:
-              summary: "RBAC {{ $labels.verb }} by {{ $labels.username }}"
-              description: "User {{ $labels.username }} performed '{{ $labels.verb }}' on a RBAC resource in namespace {{ $labels.object_namespace }} on {{ $labels.cluster }}"
+              summary: "RBAC {{ $labels.verb }} by {{ $labels.username }}."
+              description: "User {{ $labels.username }} performed '{{ $labels.verb }}' on a RBAC resource in namespace {{ $labels.object_namespace }} on {{ $labels.cluster }}."
           - alert: KubernetesAuditExecAttachPortforward
             expr: |
               sum by (username, object_namespace, subresource, cluster) (
@@ -51,8 +51,8 @@ data:
             labels:
               severity: warning
             annotations:
-              summary: "kubectl {{ $labels.subresource }} by {{ $labels.username }}"
-              description: "User {{ $labels.username }} used '{{ $labels.subresource }}' on a pod in namespace {{ $labels.object_namespace }} on {{ $labels.cluster }}"
+              summary: "kubectl {{ $labels.subresource }} by {{ $labels.username }}."
+              description: "User {{ $labels.username }} used '{{ $labels.subresource }}' on a pod in namespace {{ $labels.object_namespace }} on {{ $labels.cluster }}."
           - alert: KubernetesAuditPrivilegedPodCreated
             expr: |
               sum by (username, object_namespace, cluster) (
@@ -71,8 +71,8 @@ data:
             labels:
               severity: critical
             annotations:
-              summary: "Privileged pod created by {{ $labels.username }}"
-              description: "User {{ $labels.username }} created a pod with privileged security settings in namespace {{ $labels.object_namespace }} on {{ $labels.cluster }}"
+              summary: "Privileged pod created by {{ $labels.username }}."
+              description: "User {{ $labels.username }} created a pod with privileged security settings in namespace {{ $labels.object_namespace }} on {{ $labels.cluster }}."
           - alert: KubernetesAuditWorkloadCreated
             expr: |
               sum by (username, object_namespace, object_name, cluster) (
@@ -84,7 +84,7 @@ data:
                   | user_username != "system:serviceaccount:kube-system:job-controller"
                   | label_format username=user_username,
                                   object_namespace=objectRef_namespace,
-                                  object_name=objectRef_name
+                                  object_name=responseObject_metadata_name
                   [5m]
                 )
               ) > 0
@@ -92,8 +92,8 @@ data:
             labels:
               severity: info
             annotations:
-              summary: "New pod created by {{ $labels.username }}"
-              description: "User {{ $labels.username }} created pod '{{ $labels.object_name }}' in namespace {{ $labels.object_namespace }} on {{ $labels.cluster }}"
+              summary: "New pod created by {{ $labels.username }}."
+              description: "User {{ $labels.username }} created pod '{{ $labels.object_name }}' in namespace {{ $labels.object_namespace }} on {{ $labels.cluster }}."
 
       - name: vault-audit
         interval: 1m
@@ -114,8 +114,8 @@ data:
             labels:
               severity: critical
             annotations:
-              summary: "Vault root token was created on {{ $labels.cluster }}"
-              description: "A root token creation was detected in Vault audit logs on {{ $labels.cluster }}"
+              summary: "Vault root token was created on {{ $labels.cluster }}."
+              description: "A root token creation was detected in Vault audit logs on {{ $labels.cluster }}."
           - alert: VaultRootTokenUsed
             expr: |
               sum by (cluster) (
@@ -131,8 +131,8 @@ data:
             labels:
               severity: critical
             annotations:
-              summary: "Vault root token was used on {{ $labels.cluster }}"
-              description: "A request was made using a root token in Vault on {{ $labels.cluster }}"
+              summary: "Vault root token was used on {{ $labels.cluster }}."
+              description: "A request was made using a root token in Vault on {{ $labels.cluster }}."
           - alert: VaultAuthFailureSpike
             expr: |
               sum by (auth_method, auth_path, cluster) (
@@ -151,8 +151,8 @@ data:
             labels:
               severity: warning
             annotations:
-              summary: "Vault auth failure spike via {{ $labels.auth_method }} on {{ $labels.cluster }}"
-              description: "More than 5 {{ $labels.auth_method }} auth failures at '{{ $labels.auth_path }}' in the last 5 minutes on {{ $labels.cluster }}"
+              summary: "Vault auth failure spike via {{ $labels.auth_method }} on {{ $labels.cluster }}."
+              description: "More than 5 {{ $labels.auth_method }} auth failures at '{{ $labels.auth_path }}' in the last 5 minutes on {{ $labels.cluster }}."
           - alert: VaultPermissionDeniedSpike
             expr: |
               sum by (denied_path, operation, cluster) (
@@ -171,8 +171,8 @@ data:
             labels:
               severity: warning
             annotations:
-              summary: "Vault permission denied spike on {{ $labels.cluster }}"
-              description: "More than 5 permission denied errors for '{{ $labels.operation }}' on '{{ $labels.denied_path }}' in the last 5 minutes on {{ $labels.cluster }}"
+              summary: "Vault permission denied spike on {{ $labels.cluster }}."
+              description: "More than 5 permission denied errors for '{{ $labels.operation }}' on '{{ $labels.denied_path }}' in the last 5 minutes on {{ $labels.cluster }}."
           - alert: VaultAuditConfigModified
             expr: |
               sum by (actor, audit_device, action, cluster) (
@@ -192,8 +192,8 @@ data:
             labels:
               severity: info
             annotations:
-              summary: "Vault audit configuration was modified on {{ $labels.cluster }}"
-              description: "{{ if $labels.actor }}{{ $labels.actor }}{{ else }}unauthenticated{{ end }} performed '{{ $labels.action }}' on '{{ $labels.audit_device }}' on {{ $labels.cluster }}"
+              summary: "Vault audit configuration was modified on {{ $labels.cluster }}."
+              description: "{{ if $labels.actor }}{{ $labels.actor }}{{ else }}unauthenticated{{ end }} performed '{{ $labels.action }}' on '{{ $labels.audit_device }}' on {{ $labels.cluster }}."
           - alert: VaultAuthConfigModified
             expr: |
               sum by (cluster) (
@@ -210,8 +210,8 @@ data:
             labels:
               severity: warning
             annotations:
-              summary: "Vault auth configuration was modified on {{ $labels.cluster }}"
-              description: "A change to Vault's auth configuration was detected on {{ $labels.cluster }}"
+              summary: "Vault auth configuration was modified on {{ $labels.cluster }}."
+              description: "A change to Vault's auth configuration was detected on {{ $labels.cluster }}."
 
       - name: log-ingestion-health
         interval: 2m
@@ -223,5 +223,5 @@ data:
             labels:
               severity: critical
             annotations:
-              summary: "No logs received from Alloy on {{ $labels.cluster }}"
+              summary: "No logs received from Alloy on {{ $labels.cluster }}."
               description: "Loki has not received any logs from Alloy in '{{ $labels.cluster }}' in the last 5 minutes."
