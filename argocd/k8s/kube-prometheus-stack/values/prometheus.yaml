@@ -7,6 +7,8 @@ prometheus:
     # To pickup podMonitor and serviceMonitors automatically across all namespaces
     podMonitorSelectorNilUsesHelmValues: false
     serviceMonitorSelectorNilUsesHelmValues: false
+    externalLabels:
+      cluster: "homelab-cluster" 
     retention: "10d"
     retentionSize: "50GB"
     storageSpec:
