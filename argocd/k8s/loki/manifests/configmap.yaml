@@ -19,6 +19,8 @@ data:
                   | objectRef_apiGroup = "rbac.authorization.k8s.io"
                   | json verb_extracted="verb"
                   | verb_extracted =~ "create|update|patch|delete"
+                  | user_username !~ "system:serviceaccount:argocd:.*"
+                  | user_username != "system:serviceaccount:kube-system:generic-garbage-collector"
                   | label_format username=user_username,
                                   object_namespace=objectRef_namespace,
                                   verb=verb_extracted
