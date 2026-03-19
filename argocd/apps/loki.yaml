@@ -1,0 +1,31 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: loki
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    # Reference: https://argo-cd.readthedocs.io/en/latest/user-guide/multiple_sources/#helm-value-files-from-external-git-repository
+    - repoURL: "https://github.com/ikabbash/homelab.git"
+      targetRevision: HEAD
+      path: argocd/k8s/loki/manifests
+    - repoURL: "https://grafana-community.github.io/helm-charts"
+      chart: loki
+      targetRevision: "6.57.0"
+      helm:
+        releaseName: loki
+        valueFiles:
+          - $values/argocd/k8s/loki/values/values.yaml
+    - repoURL: "https://github.com/ikabbash/homelab.git"
+      targetRevision: HEAD
+      ref: values
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: monitoring
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: false
+    syncOptions:
+      - CreateNamespace=true
