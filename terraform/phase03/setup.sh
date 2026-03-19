@@ -36,8 +36,8 @@ kubectl exec -n "${VAULT_NAMESPACE}" "${VAULT_POD}" -- sh -c "
     # Create AppRole role
     vault write auth/${AUTH_PATH}/role/${ROLE_NAME} \
         token_policies=${POLICY_NAME} \
-        token_ttl=5m \
-        token_max_ttl=1h \
+        token_ttl=1h \
+        token_max_ttl=2h \
         secret_id_ttl=4h \
         secret_id_num_uses=0
 "
