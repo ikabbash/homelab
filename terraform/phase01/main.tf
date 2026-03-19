@@ -17,8 +17,8 @@ terraform {
 module "cilium" {
   source               = "./modules/cilium"
   chart_namespace      = "kube-system"
-  chart_version        = "1.18.5"
-  gateway_api_version  = "v1.2.0"
+  chart_version        = "1.19.1"
+  gateway_api_version  = "v1.4.1"
   cluster_service_host = var.cluster_service_host
   enable_monitoring    = var.enable_monitoring
 }
@@ -27,7 +27,7 @@ module "cilium" {
 module "cert_manager" {
   source               = "./modules/cert-manager"
   chart_namespace      = "cert-manager"
-  chart_version        = "v1.19.0"
+  chart_version        = "v1.20.0"
   cloudflare_api_token = var.cloudflare_api_token
 
   depends_on = [module.cilium]
