@@ -39,7 +39,7 @@ module "gateway" {
 module "vault" {
   source                 = "./modules/vault"
   chart_namespace        = "vault"
-  chart_version          = "0.31.0"
+  chart_version          = "0.32.0"
   vault_host             = local.vault_host
   cluster_issuer_name    = module.gateway.cluster_issuer_name
   gateway_name           = module.gateway.gateway_name
@@ -54,7 +54,7 @@ module "vault" {
 module "vso" {
   source            = "./modules/vso"
   chart_namespace   = "vault-secrets-operator-system"
-  chart_version     = "1.0.1"
+  chart_version     = "1.3.0"
   vault_host        = local.vault_host
   vault_namespace   = module.vault.vault_namespace
   enable_monitoring = var.enable_monitoring

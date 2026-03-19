@@ -55,3 +55,16 @@ specs:
           - ports:
               - port: "53"
                 protocol: ANY
+  # upgrade-crds job
+  - endpointSelector:
+      matchLabels:
+        job-name: upgrade-crds-vault-secrets-operator
+    egress:
+      - toEntities:
+          - kube-apiserver
+        toPorts:
+          - ports:
+              - port: "443"
+                protocol: TCP
+              - port: "6443"
+                protocol: TCP
