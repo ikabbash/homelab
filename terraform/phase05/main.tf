@@ -46,7 +46,7 @@ module "authentik_setup" {
 module "argocd" {
   source                 = "./modules/argocd"
   chart_namespace        = "argocd"
-  chart_version          = "9.2.3"
+  chart_version          = "9.4.14"
   argocd_host            = local.argocd_host
   gateway_name           = local.phase02.gateway_name
   gateway_namespace      = local.phase02.gateway_namespace
