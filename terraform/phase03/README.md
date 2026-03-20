@@ -44,19 +44,20 @@ This phase sets up Vault using Terraform’s Vault provider to configure secret 
     vault secrets list
     vault auth list
     ```
-5. Store required secrets in Vault, such as SMTP credentials for Authentik. 
+5. Store required secrets in Vault, such as SMTP credentials. 
     ```bash
-    vault kv put homelab/infra/kv-secret/platforms/shared/smtp \
+    vault kv put homelab/infra/kv-secret/shared/notifications \
         smtp_host='smtp.example.com' \
         smtp_port='587' \
         smtp_endpoint='smtp.example.com:587' \
         smtp_username='your_smtp_username' \
         smtp_password='your_smtp_password' \
         smtp_from_address='homelab@example.com' \
-        smtp_receiver='hamada@example.com
+        smtp_receiver='hamada@example.com \
+        discord_webhook_url='your_discord_webhook'
     
     # To confirm
-    vault kv get homelab/infra/kv-secret/platforms/shared/smtp
+    vault kv get homelab/infra/kv-secret/shared/notifications
     ```
     - Check the repo's Vault [doc](../../docs/vault.md#secrets-to-create) for the list of additional secrets that need to be created.
 6. Create admin user (called admin), login with it, then revoke root token.

@@ -33,23 +33,9 @@ Authentication roles then define which Kubernetes service accounts are allowed t
 ## Secrets to Create
 The Vault secrets listed here are required for platform components and applications to access the credentials they need to operate properly.
 
-- SMTP for Authentik:
+- Path for all shared notification/alerting credentials (SMTP, webhooks, etc.):
     ```bash
-    vault kv put homelab/infra/kv-secret/platforms/shared/smtp \
-        smtp_host='smtp.example.com' \
-        smtp_port='587' \
-        smtp_endpoint='smtp.example.com:587' \
-        smtp_username='your_smtp_username' \
-        smtp_password='your_smtp_password' \
-        smtp_from_address='homelab@example.com' \
-        smtp_receiver='hamada@example.com
-
-    # To confirm
-    vault kv get homelab/infra/kv-secret/platforms/shared/smtp
-    ```
-- Secrets for Prometheus Alertmanager config (SMTP, Slack, etc.):
-    ```bash
-    vault kv put homelab/infra/kv-secret/platforms/alertmanager \
+    vault kv put homelab/infra/kv-secret/shared/notifications \
         smtp_host='smtp.example.com' \
         smtp_port='587' \
         smtp_endpoint='smtp.example.com:587' \
@@ -58,4 +44,7 @@ The Vault secrets listed here are required for platform components and applicati
         smtp_from_address='homelab@example.com' \
         smtp_receiver='hamada@example.com \
         discord_webhook_url='your_discord_webhook'
+
+    # To confirm
+    vault kv get homelab/infra/kv-secret/shared/notifications
     ```
