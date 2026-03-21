@@ -52,7 +52,7 @@ This phase sets up Vault using Terraform’s Vault provider to configure secret 
         smtp_endpoint='smtp.example.com:587' \
         smtp_username='your_smtp_username' \
         smtp_password='your_smtp_password' \
-        smtp_from_address='homelab@example.com' \
+        smtp_domain='example.com' \
         smtp_receiver='hamada@example.com \
         discord_webhook_url='your_discord_webhook'
     

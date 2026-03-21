@@ -33,6 +33,11 @@ Authentication roles then define which Kubernetes service accounts are allowed t
 ## Secrets to Create
 The Vault secrets listed here are required for platform components and applications to access the credentials they need to operate properly.
 
+To confirm on any path, you can use the following command as an example:
+```bash
+vault kv get homelab/infra/kv-secret/shared/notifications
+```
+
 - Path for all shared notification/alerting credentials (SMTP, webhooks, etc.):
     ```bash
     vault kv put homelab/infra/kv-secret/shared/notifications \
@@ -41,10 +46,12 @@ The Vault secrets listed here are required for platform components and applicati
         smtp_endpoint='smtp.example.com:587' \
         smtp_username='your_smtp_username' \
         smtp_password='your_smtp_password' \
-        smtp_from_address='homelab@example.com' \
+        smtp_domain='example.com' \
         smtp_receiver='hamada@example.com \
         discord_webhook_url='your_discord_webhook'
-
-    # To confirm
-    vault kv get homelab/infra/kv-secret/shared/notifications
+    ```
+- Path for LLM API keys:
+    ```bash
+    vault kv put homelab/infra/kv-secret/llms \
+        gemini_api_key='your_gemini_api_key'
     ```
