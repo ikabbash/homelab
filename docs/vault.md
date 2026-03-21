@@ -55,3 +55,10 @@ vault kv get homelab/infra/kv-secret/shared/notifications
     vault kv put homelab/infra/kv-secret/llms \
         gemini_api_key='your_gemini_api_key'
     ```
+- Path for Karakeep:
+    ```bash
+    vault kv put homelab/apps/kv-secret/karakeep \
+        NEXTAUTH_SECRET=$(openssl rand -base64 36) \
+        MEILI_MASTER_KEY=$(openssl rand -base64 36 | tr -dc 'A-Za-z0-9') \
+        NEXT_PUBLIC_SECRET=$(openssl rand -base64 36)
+    ```
