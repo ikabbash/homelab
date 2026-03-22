@@ -1,0 +1,17 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: changedetection
+  namespace: changedetection
+specs:
+  - endpointSelector:
+      matchLabels:
+        app: changedetection
+    ingress:
+      - fromEntities:
+          - ingress
+  - endpointSelector: {}
+    ingress:
+      - {}
+    egress:
+      - {}

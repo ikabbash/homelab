@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: changedetection
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    - repoURL: "https://github.com/ikabbash/homelab.git"
+      targetRevision: HEAD
+      path: argocd/k8s/changedetection
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: changedetection
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: false
+    syncOptions:
+      - CreateNamespace=true
