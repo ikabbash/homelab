@@ -36,17 +36,6 @@ specs:
           - ports:
               - port: "9000"
                 protocol: TCP
-      - fromEndpoints:
-          - matchLabels:
-              io.kubernetes.pod.namespace: argocd
-              app.kubernetes.io/component: dex-server
-          - matchLabels:
-              io.kubernetes.pod.namespace: monitoring
-              app.kubernetes.io/name: grafana
-        toPorts:
-          - ports:
-              - port: "9000"
-                protocol: TCP
     egress:
       - toEndpoints:
           - matchLabels:
