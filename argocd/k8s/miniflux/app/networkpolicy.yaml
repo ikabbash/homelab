@@ -1,0 +1,20 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: miniflux-network-policy
+  namespace: miniflux
+specs:
+  - endpointSelector:
+      matchLabels:
+        app: miniflux
+    ingress:
+      - fromEntities:
+          - ingress
+    egress:
+      - toEntities:
+          - all
+  - endpointSelector: {}
+    ingress:
+      - {}
+    egress:
+      - {}

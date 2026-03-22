@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: miniflux
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    - repoURL: "https://github.com/ikabbash/homelab.git"
+      targetRevision: HEAD
+      path: argocd/k8s/miniflux/app
+    - repoURL: "https://github.com/ikabbash/homelab.git"
+      targetRevision: HEAD
+      path: argocd/k8s/miniflux/database
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: miniflux
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: false
+    syncOptions:
+      - CreateNamespace=true

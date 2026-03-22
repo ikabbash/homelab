@@ -55,3 +55,10 @@ vault kv get homelab/infra/kv-secret/shared/notifications
     vault kv put homelab/infra/kv-secret/llms \
         gemini_api_key='your_gemini_api_key'
     ```
+- Path for Miniflux config:
+    ```bash
+    vault kv put homelab/apps/kv-secret/miniflux \
+        db_user='miniflux' \
+        db_password=$(openssl rand -base64 48 | tr -dc 'A-Za-z0-9' | head -c 30; echo) \
+        db_name='miniflux'
+    ```

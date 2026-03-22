@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: miniflux-config
+  namespace: miniflux
+data:
+  CREATE_ADMIN: "0"
+  DISABLE_LOCAL_AUTH: "true"
+  BASE_URL: "https://miniflux.homelab.ikabbash.com"
+  LISTEN_ADDR: "0.0.0.0:8080"
+  LOG_FILE: "stdout"
+  LOG_FORMAT: "json"
+  LOG_LEVEL: "warning"
+  RUN_MIGRATIONS: "1"
