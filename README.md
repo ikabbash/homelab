@@ -34,10 +34,9 @@ What's planned for the homelab as it evolves. Ideas below may change and more ma
 ### Infra
 - [x] Learn and setup Talos
 - [ ] Deploy the following with Argo CD
-  - [ ] [homepage](https://github.com/gethomepage/homepage)
   - [ ] [n8n](https://docs.n8n.io/hosting/)
-  - [ ] [FreshRSS](https://freshrss.org/)
-  - [ ] [bentopdf](https://github.com/alam00000/bentopdf)
+  - [ ] [Miniflux](https://github.com/miniflux/v2)
+  - [x] [bentopdf](https://github.com/alam00000/bentopdf)
   - [ ] [changedetection.io](https://github.com/dgtlmoon/changedetection.io/)
   - [x] [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack)
   - [x] [Grafana Loki](https://grafana.com/docs/loki/latest/setup/install/helm/)

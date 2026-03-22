@@ -1,0 +1,19 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: bentopdf
+  namespace: bentopdf
+specs:
+  - endpointSelector:
+      matchLabels:
+        app: bentopdf
+    ingress:
+      - fromEntities:
+          - ingress
+    egress:
+      - {}
+  - endpointSelector: {}
+    ingress:
+      - {}
+    egress:
+      - {}
