@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: n8n
+  name: n8n
+  namespace: n8n
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: n8n
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: n8n
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: n8n
+          image: n8nio/n8n:2.12.3
+          securityContext:
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            capabilities:
+              drop:
+                - ALL
+          ports:
+            - containerPort: 5678
+          envFrom:
+            - secretRef:
+                name: n8n-postgres-credentials
+            - configMapRef:
+                name: n8n-env-variables
+          resources:
+            requests:
+              cpu: "200m"
+              memory: "250Mi"
+            limits:
+              cpu: "500m"
+              memory: "1Gi"
+          volumeMounts:
+            - mountPath: /home/node/.n8n
+              name: n8n-storage
+            - mountPath: /home/node/.cache
+              name: n8n-cache
+            - mountPath: /tmp
+              name: tmp
+      restartPolicy: Always
+      volumes:
+        - name: n8n-storage
+          persistentVolumeClaim:
+            claimName: n8n-storage
+        - name: n8n-cache
+          emptyDir: {}
+        - name: tmp
+          emptyDir: {}

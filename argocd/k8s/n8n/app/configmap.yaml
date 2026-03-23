@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: n8n-env-variables
+  namespace: n8n
+  annotations:
+    argocd.argoproj.io/sync-wave: "-2"
+data:
+  DB_TYPE: "postgresdb"
+  N8N_HOST: "n8n.homelab.ikabbash.com"
+  WEBHOOK_URL: "https://n8n.homelab.ikabbash.com/"
+  N8N_PROXY_HOPS: "1"
+  N8N_DIAGNOSTICS_ENABLED: "false"
+  EXECUTIONS_TIMEOUT: "7200" # Workflow timeout 2 hours
+  GENERIC_TIMEZONE: "Africa/Cairo"
+  N8N_TEMPLATES_ENABLED: "false"
+  EXECUTIONS_DATA_PRUNE: "true"
+  EXECUTIONS_DATA_MAX_AGE: "336" # Two weeks (in hours)
+  N8N_LOG_LEVEL: "info"
+  N8N_LOG_OUTPUT: "console"
+  N8N_LOG_FORMAT: "json"
+  N8N_BLOCK_ENV_ACCESS_IN_NODE: "true"

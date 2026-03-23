@@ -33,8 +33,8 @@ What's planned for the homelab as it evolves. Ideas below may change and more ma
 
 ### Infra
 - [x] Learn and setup Talos
-- [ ] Deploy the following with Argo CD
-  - [ ] [n8n](https://docs.n8n.io/hosting/)
+- [x] Deploy the following with Argo CD
+  - [x] [n8n](https://docs.n8n.io/hosting/)
   - [x] [Miniflux](https://github.com/miniflux/v2)
   - [x] [bentopdf](https://github.com/alam00000/bentopdf)
   - [x] [changedetection.io](https://github.com/dgtlmoon/changedetection.io/)

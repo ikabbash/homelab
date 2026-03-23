@@ -1,0 +1,20 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: n8n-network-policy
+  namespace: n8n
+specs:
+  - endpointSelector:
+      matchLabels:
+        app: n8n
+    ingress:
+      - fromEntities:
+          - ingress
+    egress:
+      - toEntities:
+          - all
+  - endpointSelector: {}
+    ingress:
+      - {}
+    egress:
+      - {}

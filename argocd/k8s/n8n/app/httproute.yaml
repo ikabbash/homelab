@@ -1,0 +1,20 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: n8n-http-route
+  namespace: n8n
+spec:
+  parentRefs:
+    - name: homelab-gw
+      namespace: cilium-gateway
+      sectionName: homelab-https
+  hostnames:
+    - "n8n.homelab.ikabbash.com" 
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: n8n
+          port: 80

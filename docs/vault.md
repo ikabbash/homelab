@@ -59,6 +59,13 @@ vault kv get homelab/infra/kv-secret/shared/notifications
     ```bash
     vault kv put homelab/apps/kv-secret/miniflux \
         db_user='miniflux' \
-        db_password=$(openssl rand -base64 48 | tr -dc 'A-Za-z0-9' | head -c 30; echo) \
+        db_password=$(openssl rand -base64 48 | tr -dc 'A-Za-z0-9' | head -c 30) \
         db_name='miniflux'
+    ```
+- Path for n8n config:
+    ```bash
+    vault kv put homelab/apps/kv-secret/n8n \
+        db_user='n8n' \
+        db_password=$(openssl rand -base64 48 | tr -dc 'A-Za-z0-9' | head -c 30) \
+        db_name='n8n'
     ```

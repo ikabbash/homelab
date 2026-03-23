@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: n8n
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    - repoURL: "https://github.com/ikabbash/homelab.git"
+      targetRevision: HEAD
+      path: argocd/k8s/n8n/app
+    - repoURL: "https://github.com/ikabbash/homelab.git"
+      targetRevision: HEAD
+      path: argocd/k8s/n8n/database
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: n8n
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: false
+    syncOptions:
+      - CreateNamespace=true
