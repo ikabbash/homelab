@@ -1,5 +1,7 @@
 # Homelab
-This repository contains a work-in-progress Kubernetes-based homelab where core platform components are provisioned with Terraform and applications are deployed using Argo CD. Terraform sets up essential services while Argo CD manages application deployments and keeps the cluster aligned with a GitOps workflow.
+A Kubernetes-based homelab where core platform components are provisioned with Terraform and applications are deployed using Argo CD. Terraform sets up the essential platform services while Argo CD manages application deployments and continuously reconciles the cluster with this repository.
+
+This is basically my personal playground for self-hosting, automation, and experimenting with new tools and ideas.
 
 ## What's Inside
 <img src="docs/images/homelab-setup.png" alt="Homelab Secrets Diagram" width="800"/>
