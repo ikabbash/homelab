@@ -36,6 +36,15 @@ specs:
           - ports:
               - port: "9000"
                 protocol: TCP
+      # For Argo CD custom init container
+      - fromEndpoints:
+          - matchLabels:
+              io.kubernetes.pod.namespace: argocd
+              app.kubernetes.io/component: dex-server
+        toPorts:
+          - ports:
+              - port: "9000"
+                protocol: TCP
     egress:
       - toEndpoints:
           - matchLabels:
