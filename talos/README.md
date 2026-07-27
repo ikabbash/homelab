@@ -4,6 +4,10 @@ The homelab runs on [Talos Linux](https://www.talos.dev/), an OS designed specif
 If you want to learn more about Talos Linux, you can check this [cheat sheet](https://ikabbash.notion.site/Talos-Linux-299cab751076802a8b1ee963ecb7d8fb).
 
 ## Initial Setup
+Download Talos Linux image from [Talos Linux Image Factory](https://factory.talos.dev/) with the following extensions:
+- `util-linux-tools`
+- `vmtoolsd-guest-agent` (if you're using VMware)
+
 To set up your cluster with Talos Linux, generate the configuration using `talosctl gen config`, which creates the necessary control plane and worker configs along with keys. A helper script is available to automate this process, allowing you to specify the number of control planes and workers. When deploying multiple control planes, the script automatically configures a Virtual IP (VIP) for high availability.
 
 The Virtual IP ([VIP](https://docs.siderolabs.com/talos/v1.11/networking/vip)) serves as a single, stable network address for the cluster’s control plane. It ensures that clients and worker nodes can always reach the API server at the same IP, even if individual control plane nodes go down, enabling seamless failover and high availability.
@@ -87,7 +91,7 @@ After you've generated your nodes' configs using `talos-config-gen.sh`, you'll b
 
 You can run the commands below if you want easier access while working with the cluster. It’s up to you whether you prefer using these environment variables or merging the `talosconfig` and `kubeconfig` into your home directory:
 ```bash
-export CLUSTER_NAME=homelab-staging
+export CLUSTER_NAME=homelab-cluster
 export TALOSCONFIG=/path/to/_out/${CLUSTER_NAME}/cluster-config/talosconfig
 export KUBECONFIG=/path/to/_out/${CLUSTER_NAME}/cluster-config/kubeconfig
 ```
