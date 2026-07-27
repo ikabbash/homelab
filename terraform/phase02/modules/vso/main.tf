@@ -24,4 +24,6 @@ resource "kubernetes_manifest" "vso_network_policy" {
     name            = "terraform"
     force_conflicts = true
   }
+
+  depends_on = [helm_release.vso]
 }

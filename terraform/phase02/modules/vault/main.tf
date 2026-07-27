@@ -82,4 +82,6 @@ resource "kubernetes_manifest" "vault_network_policy" {
     name            = "terraform"
     force_conflicts = true
   }
+
+  depends_on = [helm_release.vault]
 }
