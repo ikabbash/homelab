@@ -12,6 +12,7 @@ resource "authentik_provider_oauth2" "miniflux" {
   sub_mode                   = "hashed_user_id"
   include_claims_in_id_token = true
   issuer_mode                = "per_provider"
+  grant_types                = ["authorization_code"]
   signing_key                = data.authentik_certificate_key_pair.default.id
   property_mappings = [
     data.authentik_property_mapping_provider_scope.scope_openid.id,

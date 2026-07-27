@@ -8,7 +8,7 @@ terraform {
     }
     kubernetes = {
       source  = "hashicorp/kubernetes"
-      version = "~> 2.0"
+      version = "~> 3.0"
     }
   }
 }
@@ -46,7 +46,7 @@ module "authentik_setup" {
 module "argocd" {
   source                 = "./modules/argocd"
   chart_namespace        = "argocd"
-  chart_version          = "9.4.14"
+  chart_version          = "10.2.1"
   argocd_host            = local.argocd_host
   gateway_name           = local.phase02.gateway_name
   gateway_namespace      = local.phase02.gateway_namespace

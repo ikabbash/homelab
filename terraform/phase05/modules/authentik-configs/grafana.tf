@@ -12,6 +12,7 @@ resource "authentik_provider_oauth2" "grafana" {
   sub_mode                   = "hashed_user_id"
   include_claims_in_id_token = true
   issuer_mode                = "per_provider"
+  grant_types                = ["authorization_code"]
   signing_key                = data.authentik_certificate_key_pair.default.id
   logout_method              = "frontchannel"
   property_mappings = [
