@@ -22,7 +22,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: miniflux
-          image: miniflux/miniflux:2.2.18
+          image: miniflux/miniflux:2.3.3
           securityContext:
             readOnlyRootFilesystem: true
             allowPrivilegeEscalation: false
