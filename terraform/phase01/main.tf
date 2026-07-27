@@ -8,7 +8,7 @@ terraform {
     }
     kubernetes = {
       source  = "hashicorp/kubernetes"
-      version = "~> 2.0"
+      version = "~> 3.0"
     }
   }
 }
@@ -17,8 +17,8 @@ terraform {
 module "cilium" {
   source               = "./modules/cilium"
   chart_namespace      = "kube-system"
-  chart_version        = "1.19.1"
-  gateway_api_version  = "v1.4.1"
+  chart_version        = "1.19.6"
+  gateway_api_version  = "v1.6.1"
   cluster_service_host = var.cluster_service_host
   enable_monitoring    = var.enable_monitoring
 }
@@ -27,7 +27,7 @@ module "cilium" {
 module "cert_manager" {
   source               = "./modules/cert-manager"
   chart_namespace      = "cert-manager"
-  chart_version        = "v1.20.0"
+  chart_version        = "v1.21.0"
   cloudflare_api_token = var.cloudflare_api_token
 
   depends_on = [module.cilium]
@@ -37,7 +37,7 @@ module "cert_manager" {
 module "openebs" {
   source          = "./modules/openebs"
   chart_namespace = "openebs"
-  chart_version   = "4.4.0"
+  chart_version   = "4.5.1"
 
   depends_on = [module.cilium]
 }
