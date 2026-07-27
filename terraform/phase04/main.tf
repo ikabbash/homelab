@@ -8,7 +8,7 @@ terraform {
     }
     kubernetes = {
       source  = "hashicorp/kubernetes"
-      version = "~> 2.0"
+      version = "~> 3.0"
     }
   }
 }
@@ -42,6 +42,7 @@ module "postgresql" {
   source              = "./modules/postgresql"
   authentik_namespace = var.authentik_namespace
   storage_class_name  = local.phase01.host_storage_class_name
+  postgres_image_tag  = "18.4-alpine3.23"
 
   depends_on = [kubernetes_namespace_v1.authentik_namespace]
 }
@@ -49,7 +50,7 @@ module "postgresql" {
 module "authentik" {
   source                 = "./modules/authentik"
   chart_namespace        = var.authentik_namespace
-  chart_version          = "2026.2.1"
+  chart_version          = "2026.5.6"
   postgres_secret_name   = module.postgresql.postgres_secret_name
   postgres_host          = module.postgresql.postgres_host
   storage_class_name     = local.phase01.host_storage_class_name

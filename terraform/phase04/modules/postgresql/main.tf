@@ -3,7 +3,7 @@ resource "random_password" "postgres_password" {
   special = false
 }
 
-resource "kubernetes_secret" "postgres_credentials" {
+resource "kubernetes_secret_v1" "postgres_credentials" {
   metadata {
     name      = "authentik-postgres-credentials"
     namespace = var.authentik_namespace
@@ -37,9 +37,10 @@ resource "kubernetes_service_v1" "postgres_svc" {
 resource "kubernetes_manifest" "postgres_statefulset" {
   manifest = yamldecode(templatefile("${path.module}/templates/statefulset.yaml.tftpl", {
     namespace             = var.authentik_namespace
+    image_tag             = var.postgres_image_tag
     storage_class_name    = var.storage_class_name
     postgres_storage_size = var.postgres_storage_size
-    secret_name           = kubernetes_secret.postgres_credentials.metadata[0].name
+    secret_name           = kubernetes_secret_v1.postgres_credentials.metadata[0].name
   }))
 }
 

@@ -31,7 +31,7 @@ resource "kubernetes_manifest" "vso_auth" {
   depends_on = [kubernetes_namespace_v1.authentik_namespace]
 }
 
-resource "kubernetes_service_account" "vso_sa" {
+resource "kubernetes_service_account_v1" "vso_sa" {
   metadata {
     name      = local.phase03.vso_service_account
     namespace = var.authentik_namespace

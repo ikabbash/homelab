@@ -26,6 +26,12 @@ variable "postgres_storage_size" {
 }
 
 # Required
+variable "postgres_image_tag" {
+  description = "Image of PostgreSQL Statefulset"
+  type        = string
+}
+
+# Required
 variable "storage_class_name" {
   description = "Name of the Kubernetes StorageClass used to provision PostgreSQL persistent storage"
   type        = string

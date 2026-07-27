@@ -1,6 +1,6 @@
 output "postgres_secret_name" {
   description = "Kubernetes Secret name containing PostgreSQL credentials"
-  value       = kubernetes_secret.postgres_credentials.metadata[0].name
+  value       = kubernetes_secret_v1.postgres_credentials.metadata[0].name
 }
 
 output "postgres_host" {
