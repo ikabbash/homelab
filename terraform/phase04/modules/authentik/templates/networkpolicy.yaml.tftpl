@@ -85,3 +85,11 @@ specs:
           - ports:
               - port: "587"
                 protocol: TCP
+      - toServices:
+          - k8sService:
+              serviceName: bentopdf
+              namespace: bentopdf
+        toPorts:
+          - ports:
+              - port: "8080"
+                protocol: TCP

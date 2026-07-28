@@ -8,8 +8,10 @@ specs:
       matchLabels:
         app: bentopdf
     ingress:
-      - fromEntities:
-          - ingress
+      - fromEndpoints:
+          - matchLabels:
+              io.kubernetes.pod.namespace: authentik
+              app.kubernetes.io/instance: authentik
     egress:
       - {}
   - endpointSelector: {}

@@ -45,6 +45,10 @@ data "authentik_property_mapping_provider_scope" "scope_profile" {
   name = "authentik default OAuth Mapping: OpenID 'profile'"
 }
 
+data "authentik_outpost" "embedded" {
+  name = "authentik Embedded Outpost"
+}
+
 resource "authentik_group" "homelab_admins" {
   name = "homelab-admins"
 }

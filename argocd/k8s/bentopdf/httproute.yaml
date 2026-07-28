@@ -16,5 +16,6 @@ spec:
             type: PathPrefix
             value: /
       backendRefs:
-        - name: bentopdf
+        - name: authentik-server
+          namespace: authentik
           port: 80
