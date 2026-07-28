@@ -21,8 +21,9 @@ resource "authentik_provider_oauth2" "miniflux" {
   ]
   allowed_redirect_uris = [
     {
-      matching_mode = "strict"
-      url           = "https://miniflux.${var.homelab_domain}/oauth2/oidc/callback"
+      matching_mode     = "strict"
+      url               = "https://miniflux.${var.homelab_domain}/oauth2/oidc/callback"
+      redirect_uri_type = "authorization"
     }
   ]
 

@@ -22,12 +22,14 @@ resource "authentik_provider_oauth2" "grafana" {
   ]
   allowed_redirect_uris = [
     {
-      matching_mode = "strict"
-      url           = "https://grafana.${var.homelab_domain}/login/generic_oauth"
+      matching_mode     = "strict"
+      url               = "https://grafana.${var.homelab_domain}/login/generic_oauth"
+      redirect_uri_type = "authorization"
     },
     {
-      matching_mode = "strict"
-      url           = "https://grafana.${var.homelab_domain}/logout"
+      matching_mode     = "strict"
+      url               = "https://grafana.${var.homelab_domain}/logout"
+      redirect_uri_type = "authorization"
     }
   ]
 

@@ -13,7 +13,7 @@ resource "authentik_application" "bentopdf" {
   slug              = "bentopdf"
   protocol_provider = authentik_provider_proxy.bentopdf.id
   meta_launch_url   = "https://bentopdf.${var.homelab_domain}"
-  meta_icon          = "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/bentopdf.svg"
+  meta_icon         = "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/bentopdf.svg"
 }
 
 resource "authentik_outpost_provider_attachment" "bentopdf" {

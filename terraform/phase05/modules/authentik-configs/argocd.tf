@@ -21,8 +21,9 @@ resource "authentik_provider_oauth2" "argocd" {
   ]
   allowed_redirect_uris = [
     {
-      matching_mode = "strict"
-      url           = "https://${var.argocd_host}/api/dex/callback"
+      matching_mode     = "strict"
+      url               = "https://${var.argocd_host}/api/dex/callback"
+      redirect_uri_type = "authorization"
     }
   ]
 
