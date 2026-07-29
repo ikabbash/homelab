@@ -44,6 +44,23 @@ variable "authentik_templates_pvc_name" {
   default     = "authentik-templates-pvc"
 }
 
+# Optional
+variable "egress_services" {
+  description = "Services the Authentik pod needs egress access to, and which need a ReferenceGrant for HTTPRoute cross-namespace refs"
+  type = list(object({
+    name      = string
+    namespace = string
+    port      = string
+  }))
+  default = [
+    { name = "bentopdf", namespace = "bentopdf", port = "8080" },
+    { name = "alloy", namespace = "monitoring", port = "12345" },
+    { name = "changedetection", namespace = "changedetection", port = "5000" },
+    { name = "prom-stack-prometheus", namespace = "monitoring", port = "9090" },
+    { name = "prom-stack-alertmanager", namespace = "monitoring", port = "9093" },
+  ]
+}
+
 # Required
 variable "postgres_secret_name" {
   description = "Name of the Kubernetes secret holding PostgreSQL credentials"

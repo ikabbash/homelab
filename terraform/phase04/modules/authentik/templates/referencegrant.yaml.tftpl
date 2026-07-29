@@ -5,12 +5,11 @@ metadata:
   namespace: ${authentik_namespace}
 spec:
   from:
+%{ for ns in egress_namespaces ~}
     - group: gateway.networking.k8s.io
       kind: HTTPRoute
-      namespace: bentopdf
-    - group: gateway.networking.k8s.io
-      kind: HTTPRoute
-      namespace: monitoring
+      namespace: ${ns}
+%{ endfor ~}
   to:
     - group: ""
       kind: Service

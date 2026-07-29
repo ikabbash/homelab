@@ -85,19 +85,13 @@ specs:
           - ports:
               - port: "587"
                 protocol: TCP
+%{ for svc in egress_services ~}
       - toServices:
           - k8sService:
-              serviceName: bentopdf
-              namespace: bentopdf
+              serviceName: ${svc.name}
+              namespace: ${svc.namespace}
         toPorts:
           - ports:
-              - port: "8080"
+              - port: "${svc.port}"
                 protocol: TCP
-      - toServices:
-          - k8sService:
-              serviceName: alloy
-              namespace: monitoring
-        toPorts:
-          - ports:
-              - port: "12345"
-                protocol: TCP
+%{ endfor ~}

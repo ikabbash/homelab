@@ -93,6 +93,7 @@ resource "kubernetes_manifest" "authentik_network_policy" {
   manifest = yamldecode(templatefile("${path.module}/templates/networkpolicy.yaml.tftpl", {
     authentik_namespace = var.chart_namespace
     smtp_host           = var.smtp_host
+    egress_services     = var.egress_services
   }))
   field_manager {
     name            = "terraform"
@@ -103,5 +104,6 @@ resource "kubernetes_manifest" "authentik_network_policy" {
 resource "kubernetes_manifest" "authentik_reference_grant" {
   manifest = yamldecode(templatefile("${path.module}/templates/referencegrant.yaml.tftpl", {
     authentik_namespace = var.chart_namespace
+    egress_namespaces   = distinct([for svc in var.egress_services : svc.namespace])
   }))
 }

@@ -20,6 +20,10 @@ specs:
                 protocol: TCP
               - port: "8080"
                 protocol: TCP
+      - fromEndpoints:
+          - matchLabels:
+              io.kubernetes.pod.namespace: authentik
+              app.kubernetes.io/instance: authentik
       - fromEntities:
           - ingress
         toPorts:
@@ -74,6 +78,10 @@ specs:
           - ports:
               - port: "9090"
                 protocol: TCP
+      - fromEndpoints:
+          - matchLabels:
+              io.kubernetes.pod.namespace: authentik
+              app.kubernetes.io/instance: authentik
       - fromEntities:
           - ingress
         toPorts:

@@ -39,5 +39,20 @@ variable "proxy_apps" {
       internal_host = "http://alloy.monitoring.svc:12345"
       meta_icon     = "https://cdn.jsdelivr.net/gh/selfhst/icons/svg/grafana-alloy.svg"
     }
+    changedetection = {
+      name          = "ChangeDetection"
+      internal_host = "http://changedetection.changedetection.svc"
+      meta_icon     = "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/changedetection.svg"
+    }
+    prometheus = {
+      name          = "Prometheus"
+      internal_host = "http://prom-stack-prometheus.monitoring.svc:9090"
+      meta_icon     = "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/prometheus.svg"
+    }
+    alertmanager = {
+      name          = "Alertmanager"
+      internal_host = "http://prom-stack-alertmanager.monitoring.svc:9093"
+      meta_icon     = "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/alertmanager-dark.svg"
+    }
   }
 }

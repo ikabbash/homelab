@@ -8,8 +8,10 @@ specs:
       matchLabels:
         app: changedetection
     ingress:
-      - fromEntities:
-          - ingress
+      - fromEndpoints:
+          - matchLabels:
+              io.kubernetes.pod.namespace: authentik
+              app.kubernetes.io/instance: authentik
   - endpointSelector: {}
     ingress:
       - {}
