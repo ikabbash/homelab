@@ -21,3 +21,23 @@ variable "authentik_api_token" {
   description = "Authentik admin API token for Terraform"
   type        = string
 }
+
+variable "proxy_apps" {
+  type = map(object({
+    name          = string
+    internal_host = string
+    meta_icon     = string
+  }))
+  default = {
+    bentopdf = {
+      name          = "BentoPDF"
+      internal_host = "http://bentopdf.bentopdf.svc"
+      meta_icon     = "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/bentopdf.svg"
+    }
+    alloy = {
+      name          = "Alloy"
+      internal_host = "http://alloy.monitoring.svc:12345"
+      meta_icon     = "https://cdn.jsdelivr.net/gh/selfhst/icons/svg/grafana-alloy.svg"
+    }
+  }
+}

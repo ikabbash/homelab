@@ -93,3 +93,11 @@ specs:
           - ports:
               - port: "8080"
                 protocol: TCP
+      - toServices:
+          - k8sService:
+              serviceName: alloy
+              namespace: monitoring
+        toPorts:
+          - ports:
+              - port: "12345"
+                protocol: TCP

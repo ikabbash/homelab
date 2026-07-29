@@ -13,6 +13,9 @@ spec:
         - matchLabels:
             io.kubernetes.pod.namespace: monitoring
             app.kubernetes.io/name: prometheus
+        - matchLabels:
+            io.kubernetes.pod.namespace: authentik
+            app.kubernetes.io/instance: authentik
   egress:
     - toEndpoints:
         - matchLabels:
