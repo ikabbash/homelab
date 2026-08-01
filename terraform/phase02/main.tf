@@ -39,6 +39,7 @@ module "gateway" {
 module "vault" {
   source                 = "./modules/vault"
   chart_namespace        = "vault"
+  # renovate: datasource=helm depName=vault registryUrl=https://helm.releases.hashicorp.com
   chart_version          = "0.34.0"
   vault_host             = local.vault_host
   cluster_issuer_name    = module.gateway.cluster_issuer_name
@@ -54,6 +55,7 @@ module "vault" {
 module "vso" {
   source            = "./modules/vso"
   chart_namespace   = "vault-secrets-operator-system"
+  # renovate: datasource=helm depName=vault-secrets-operator registryUrl=https://helm.releases.hashicorp.com
   chart_version     = "1.4.1"
   vault_host        = local.vault_host
   vault_namespace   = module.vault.vault_namespace

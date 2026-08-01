@@ -1,0 +1,60 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "dependencyDashboard": true,
+  "dependencyDashboardTitle": "Renovate Dependency Dashboard",
+
+  "enabledManagers": ["terraform", "argocd", "kubernetes", "custom.regex"],
+
+  "argocd": {
+    "managerFilePatterns": ["/^argocd/apps/.+\\.yaml$/"]
+  },
+
+  "kubernetes": {
+    "managerFilePatterns": ["/^argocd/k8s/.+/deployment\\.yaml$/"]
+  },
+
+  "terraform": {
+    "managerFilePatterns": ["/^terraform/(?:.*/)?main\\.tf$/"]
+  },
+
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Bump Helm chart_version values passed into Terraform modules (helm_release lives inside the module, not in the root main.tf, so the native terraform manager can't see it). Annotate the line above chart_version with a renovate comment.",
+      "managerFilePatterns": ["/^terraform/(?:.*/)?main\\.tf$/"],
+      "matchStrings": [
+        "#\\s*renovate:\\s*datasource=(?<datasource>\\S+)\\s+depName=(?<depName>\\S+)(?:\\s+registryUrl=(?<registryUrl>\\S+))?\\s*\\n\\s*chart_version\\s*=\\s*\"(?<currentValue>[^\"]+)\""
+      ],
+      "versioningTemplate": "semver"
+    }
+  ],
+
+  "packageRules": [
+    {
+      "description": "This repo is the GitOps source itself, referenced as an Argo CD git source with targetRevision: HEAD. It is not a version to bump.",
+      "matchPackageNames": ["https://github.com/ikabbash/homelab.git"],
+      "enabled": false
+    },
+    {
+      "description": "Refresh .terraform.lock.hcl on a schedule. Explicitly scoped to matchManagers so this can never touch anything but the terraform lock file, even if other managers get lock-file support added later.",
+      "matchManagers": ["terraform"],
+      "lockFileMaintenance": {
+        "enabled": true,
+        "schedule": ["before 6am on monday"]
+      }
+    },
+    {
+      "description": "helm + kubernetes providers and the terraform required_version constraint repeat almost identically across every phase, group them into one PR instead of many near-duplicates.",
+      "matchManagers": ["terraform"],
+      "matchDepTypes": ["required_version"],
+      "groupName": "terraform core (helm, kubernetes, terraform version)"
+    },
+    {
+      "matchManagers": ["terraform"],
+      "matchDepTypes": ["required_provider"],
+      "matchPackageNames": ["hashicorp/helm", "hashicorp/kubernetes"],
+      "groupName": "terraform core (helm, kubernetes, terraform version)"
+    }
+  ]
+}
