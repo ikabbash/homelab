@@ -3,6 +3,8 @@
   "extends": ["config:recommended"],
   "dependencyDashboard": true,
   "dependencyDashboardTitle": "Renovate Dependency Dashboard",
+  "prHourlyLimit": 0,
+  "prConcurrentLimit": 0,
 
   "enabledManagers": ["terraform", "argocd", "kubernetes", "custom.regex"],
 
@@ -11,7 +13,7 @@
   },
 
   "kubernetes": {
-    "managerFilePatterns": ["/^argocd/k8s/.+/deployment\\.yaml$/"]
+    "managerFilePatterns": ["/^argocd/k8s/.+/(?:deployment|cronjob)\\.yaml$/"]
   },
 
   "terraform": {
@@ -41,7 +43,7 @@
       "matchManagers": ["terraform"],
       "lockFileMaintenance": {
         "enabled": true,
-        "schedule": ["before 3am on friday"]
+        "schedule": ["at any time"]
       }
     },
     {
