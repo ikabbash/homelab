@@ -29,7 +29,7 @@ module "cert_manager" {
   source               = "./modules/cert-manager"
   chart_namespace      = "cert-manager"
   # renovate: datasource=helm depName=cert-manager registryUrl=https://charts.jetstack.io
-  chart_version        = "v1.21.0"
+  chart_version        = "v1.21.1"
   cloudflare_api_token = var.cloudflare_api_token
 
   depends_on = [module.cilium]
