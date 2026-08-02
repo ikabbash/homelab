@@ -29,6 +29,7 @@ locals {
 module "gateway" {
   source                     = "./modules/gateway"
   gateway_external_ip        = var.gateway_external_ip
+  vault_gateway_external_ip  = var.vault_gateway_external_ip
   homelab_domain             = var.homelab_domain
   letsencrypt_email          = var.letsencrypt_email
   cluster_issuer_secret_name = local.phase01.cluster_issuer_secret_name
@@ -37,13 +38,13 @@ module "gateway" {
 
 # Deploy Vault
 module "vault" {
-  source                 = "./modules/vault"
-  chart_namespace        = "vault"
+  source          = "./modules/vault"
+  chart_namespace = "vault"
   # renovate: datasource=helm depName=vault registryUrl=https://helm.releases.hashicorp.com
   chart_version          = "0.34.0"
   vault_host             = local.vault_host
   cluster_issuer_name    = module.gateway.cluster_issuer_name
-  gateway_name           = module.gateway.gateway_name
+  gateway_name           = module.gateway.vault_gateway_name
   gateway_namespace      = module.gateway.gateway_namespace
   gateway_listener_http  = module.gateway.gateway_listener_http
   gateway_listener_vault = module.gateway.gateway_listener_vault
@@ -53,8 +54,8 @@ module "vault" {
 
 # Deploy VSO
 module "vso" {
-  source            = "./modules/vso"
-  chart_namespace   = "vault-secrets-operator-system"
+  source          = "./modules/vso"
+  chart_namespace = "vault-secrets-operator-system"
   # renovate: datasource=helm depName=vault-secrets-operator registryUrl=https://helm.releases.hashicorp.com
   chart_version     = "1.5.0"
   vault_host        = local.vault_host

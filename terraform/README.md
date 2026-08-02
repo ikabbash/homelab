@@ -25,15 +25,14 @@ Components are provisioned through five Terraform projects (phases), which must 
   - For Cert Manager's DNS challenge.
 
 ### Notes
-- Internal service domains (e.g. `authentik.homelab.example.com`) are resolved locally by mapping `*.homelab.example.com` to the Gateway service IP, either via CoreDNS or a network-level DNS, avoiding public DNS and per-pod host aliases in a private home network.
-  - Example below modifies CoreDNS' `ConfigMap`.
-    ```
-    template IN A homelab.example.com {
-      match \.homelab\.example\.com
-      answer "{{ .Name }} 60 IN A <GATEWAY_SVC_IP>"
-      fallthrough
+- Apps will need to resolve `authentik.homelab.example.com` for OAuth, and Vault Secrets Operator will need to resolve `vault.homelab.example.com` due to end-to-end TLS. If you run your own DNS server (e.g. Pi-hole, dnsmasq), add records pointing each hostname at its Gateway IP and forward CoreDNS queries for the domain to it if needed. Otherwise, edit the `coredns` ConfigMap directly and add a `hosts` block (must go right after the `ready` line, ordering matters):
+  ```
+    hosts custom.hosts {
+        192.168.100.12 vault.homelab.example.com
+        192.168.100.11 authentik.homelab.example.com
+        fallthrough
     }
-    ```
+  ```
 - To enable monitoring for Cilium, Vault, VSO, and Argo CD, set `enable_monitoring = true` in each component’s `terraform.tfvars` file in `phase01`, `phase02`, and `phase05`. Do this only after kube-prometheus-stack has been deployed through Argo CD.
 
 ### Providers Used

@@ -29,15 +29,3 @@ spec:
       allowedRoutes:
         namespaces:
           from: All
-    - name: ${gateway_listener_vault}
-      protocol: TLS
-      port: 443
-      hostname: "${vault_host}"
-      tls:
-        mode: Passthrough
-      allowedRoutes:
-        namespaces:
-          from: Selector
-          selector:
-            matchLabels:
-              route-access: "vault"

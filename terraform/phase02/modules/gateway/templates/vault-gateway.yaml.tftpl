@@ -1,0 +1,32 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: ${vault_gateway_name}
+  namespace: ${gateway_namespace}
+spec:
+  gatewayClassName: cilium
+  addresses:
+    - type: IPAddress
+      value: "${vault_gateway_external_ip}"
+  listeners:
+    - name: ${gateway_listener_http}
+      protocol: HTTP
+      port: 80
+      allowedRoutes:
+        namespaces:
+          from: Selector
+          selector:
+            matchLabels:
+              route-access: "vault"
+    - name: ${gateway_listener_vault}
+      protocol: TLS
+      port: 443
+      hostname: "${vault_host}"
+      tls:
+        mode: Passthrough
+      allowedRoutes:
+        namespaces:
+          from: Selector
+          selector:
+            matchLabels:
+              route-access: "vault"

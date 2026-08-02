@@ -4,17 +4,17 @@ output "cluster_issuer_name" {
 }
 
 output "gateway_name" {
-  description = "Name of the Gateway resource"
+  description = "Name of the wildcard Gateway resource (HTTP/HTTPS)"
   value       = var.gateway_name
 }
 
 output "gateway_namespace" {
-  description = "Namespace of the Gateway resource"
+  description = "Namespace of the Gateway resources"
   value       = var.gateway_namespace
 }
 
 output "gateway_external_ip" {
-  description = "Load balancer external IP for Gateway API"
+  description = "Load balancer external IP for the wildcard Gateway"
   value       = var.gateway_external_ip
 }
 
@@ -26,6 +26,16 @@ output "gateway_listener_http" {
 output "gateway_listener_https" {
   description = "Listener name for wildcard HTTPS traffic"
   value       = var.gateway_listener_https
+}
+
+output "vault_gateway_name" {
+  description = "Name of the Vault TLS passthrough Gateway resource"
+  value       = var.vault_gateway_name
+}
+
+output "vault_gateway_external_ip" {
+  description = "Load balancer external IP for the Vault Gateway"
+  value       = var.vault_gateway_external_ip
 }
 
 output "gateway_listener_vault" {

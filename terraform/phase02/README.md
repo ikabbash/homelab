@@ -5,19 +5,22 @@ This phase deploys Gateway resource, Vault, and Vault Secrets Operator (VSO). Al
 
 ### Gateway
 - Creates a `ClusterIssuer` required for TLS secrets creation.
-- Creates a single `Gateway` resource with 3 listeners.
-    - HTTP listener for all namespaces (used mainly for HTTPS redirects via `HTTPRoute`).
-    - HTTPS listener with a **wildcard** certificate for all namespaces.
-    - TLS listener for Vault using TLS passthrough.
-- Configures a Cilium L2 announcement policy (`CiliumL2AnnouncementPolicy`) to advertise the Gateway service external IP to be reachable.
-- Defines a Cilium load balancer IP pool (`CiliumLoadBalancerIPPool`) that assigns and reserves the Gateway’s external IP for the Cilium Gateway service.
-- Acts as the single entry point for all inbound traffic into the cluster.
+- Creates two `Gateway` resources, since Vault's TLS passthrough listener cannot share a port with the wildcard HTTPS listener on the same IP:
+    - **`homelab-gw`** — the main Gateway, with 2 listeners:
+        - HTTP listener for all namespaces (used mainly for HTTPS redirects via `HTTPRoute`).
+        - HTTPS listener with a **wildcard** certificate for all namespaces.
+    - **`vault-gw`** — dedicated Gateway for Vault, with 2 listeners, both restricted to routes labeled `route-access: vault`:
+        - HTTP listener, used for HTTP to HTTPS redirection.
+        - TLS listener using TLS passthrough.
+- Configures Cilium L2 announcement policies (`CiliumL2AnnouncementPolicy`) to advertise both Gateway service external IPs to be reachable.
+- Defines Cilium load balancer IP pools (`CiliumLoadBalancerIPPool`), one per Gateway, each scoped to its own service via `serviceSelector` so it reliably gets its own dedicated external IP.
+- Acts as the entry point for all inbound traffic into the cluster, split across two IPs: one for general HTTP(S) traffic under the wildcard domain, one dedicated to Vault's passthrough traffic.
 
 ### Vault
 - Creates a Cert Manager `Certificate` resource to issue the TLS secret.
     - The TLS secret is mounted into the Vault pod to enable end-to-end TLS.
-- Creates an `HTTPRoute` to handle HTTP to HTTPS redirection.
-- Creates a `TLSRoute` for Vault to enable TLS passthrough.
+- Creates an `HTTPRoute` to handle HTTP to HTTPS redirection, attached to `vault-gw`.
+- Creates a `TLSRoute` for Vault to enable TLS passthrough, attached to `vault-gw`.
 - Deploys Vault using Helm provider with a Raft storage backend and the UI enabled.
 - Creates a CronJob for Vault audit log file truncation.
 - Provides centralized secrets management with secure access through the Gateway.

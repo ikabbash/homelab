@@ -13,7 +13,13 @@ variable "homelab_domain" {
 
 # Required
 variable "gateway_external_ip" {
-  description = "Load balancer external IP for Gateway API"
+  description = "Load balancer external IP for wildcard Gateway"
+  type        = string
+}
+
+# Required
+variable "vault_gateway_external_ip" {
+  description = "Load balancer external IP for Vault Gateway"
   type        = string
 }
 
