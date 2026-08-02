@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: renovate-config
+  namespace: renovate
+data:
+  config.json: |
+    {
+      "platform": "github",
+      "repositories": ["ikabbash/homelab"],
+      "onboarding": false,
+      "requireConfig": "required",
+      "gitAuthor": "Renovate Bot <renovate@homelab.local>",
+      "persistRepoData": false
+    }
