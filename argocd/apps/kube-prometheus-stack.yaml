@@ -12,7 +12,7 @@ spec:
       path: argocd/k8s/kube-prometheus-stack/manifests
     - repoURL: "https://prometheus-community.github.io/helm-charts"
       chart: kube-prometheus-stack
-      targetRevision: "87.21.0"
+      targetRevision: "88.1.2"
       helm:
         releaseName: kube-prometheus-stack
         valueFiles:
