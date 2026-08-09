@@ -43,9 +43,8 @@ What's planned for the homelab as it evolves. Ideas below may change and more ma
   - [x] [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack)
   - [x] [Grafana Loki](https://grafana.com/docs/loki/latest/setup/install/helm/)
   - [x] [Grafana Alloy](https://grafana.com/docs/alloy/latest/set-up/install/kubernetes/)
-- [ ] Pi-hole
 - [x] Migrate from NGINX Ingress Controller to Cilium's Gateway API
-- [ ] Move to Mayastor after expanding the cluster with additional nodes
+- [ ] Pi-hole and Tailscale setup
 - [ ] Data backup and restore plan
 
 ### Security
@@ -54,13 +53,7 @@ What's planned for the homelab as it evolves. Ideas below may change and more ma
 - [x] Define and enforce pod security contexts  
 - [x] Cilium network policies
 - [x] Cluster audit logging and alerting
-- [ ] Protect web UIs/app using Authentik [Proxy Provider](https://docs.goauthentik.io/add-secure-apps/providers/proxy/forward_auth/)
-- [ ] Jobs to scan containers for vulnerabilities
-
-### n8n
-- [ ] RSS feed summarizer
-- [ ] Check every app installed by Helm for new versions and notify with a summary of the changelogs
-  - [ ] Create PRs for automatic upgrade (e.g. update image tags in the manifests or chart version)
-  - [ ] Notify on list of apps/repos releases (e.g. Kubernetes, GitLab)
-- [ ] Alert for product verions approaching end of life
-- [ ] Alert on newly discovered vulnerabilities for homelab apps
+- [x] Protect web UIs/app using Authentik [Proxy Provider](https://docs.goauthentik.io/add-secure-apps/providers/proxy/forward_auth/)
+- [ ] Jobs to scan containers for vulnerabilities and alert for high/critical ones
+- [x] Automatic app version upgrade
+- [ ] Alert for app verions approaching end of life
