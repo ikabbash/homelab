@@ -52,7 +52,7 @@ vault kv get homelab/infra/kv-secret/shared/notifications
     ```
 - Path for LLM API keys:
     ```bash
-    vault kv put homelab/infra/kv-secret/llms \
+    vault kv put homelab/infra/kv-secret/shared/gemini \
         gemini_api_key='your_gemini_api_key'
     ```
 - Path for Miniflux config:
@@ -68,4 +68,9 @@ vault kv get homelab/infra/kv-secret/shared/notifications
         db_user='n8n' \
         db_password=$(openssl rand -base64 48 | tr -dc 'A-Za-z0-9' | head -c 30) \
         db_name='n8n'
+    ```
+- Path for Renovate Github token:
+    ```bash
+    vault kv put homelab/infra/kv-secret/shared/github-token \
+        github_token='your_github_token'
     ```
