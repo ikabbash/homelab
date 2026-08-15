@@ -13,6 +13,7 @@ specs:
     egress:
       - toEntities:
           - all
+  # Any other pod in the same namespace deny everything
   - endpointSelector: {}
     ingress:
       - {}
