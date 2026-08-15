@@ -121,6 +121,9 @@ grafana:
       hubble:
         url: https://raw.githubusercontent.com/cilium/cilium/main/install/kubernetes/cilium/files/hubble/dashboards/hubble-dashboard.json
         datasource: Prometheus
+      loki-logs:
+        url: https://raw.githubusercontent.com/ikabbash/toolkit/main/grafana/loki-logs-dashboard.json
+        datasource: Loki
 
   datasources:
     datasources.yaml:
