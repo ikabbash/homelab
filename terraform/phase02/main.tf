@@ -41,7 +41,7 @@ module "vault" {
   source          = "./modules/vault"
   chart_namespace = "vault"
   # renovate: datasource=helm depName=vault registryUrl=https://helm.releases.hashicorp.com
-  chart_version          = "0.34.0"
+  chart_version          = "0.34.1"
   vault_host             = local.vault_host
   cluster_issuer_name    = module.gateway.cluster_issuer_name
   gateway_name           = module.gateway.vault_gateway_name
