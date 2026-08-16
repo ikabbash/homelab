@@ -1,0 +1,101 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: glance-config
+  namespace: glance
+data:
+  glance.yml: |
+    theme:
+      background-color: 222 40 5
+      primary-color: 0 66 43
+      positive-color: 160 100 44
+      negative-color: 0 66 43
+    pages:
+      - name: Home
+        columns:
+          - size: small
+            widgets:
+              - type: clock
+                hour-format: 24h
+                timezones:
+                  - timezone: Africa/Cairo
+                    label: Cairo
+                  - timezone: Asia/Dubai
+                    label: Dubai (UAE)
+
+              - type: markets
+                title: Currency Watch
+                markets:
+                  - symbol: EGP=X
+                    name: USD / EGP
+                  - symbol: EUREGP=X
+                    name: EUR / EGP
+
+              - type: group
+                widgets:
+                  - type: weather
+                    title: Alexandria
+                    location: Alexandria, Egypt
+                    units: metric
+                    hour-format: 24h
+                  - type: weather
+                    title: New Cairo
+                    location: New Cairo, Egypt
+                    units: metric
+                    hour-format: 24h
+
+          - size: full
+            widgets:
+              - type: monitor
+                title: Homelab Services
+                cache: 1m
+                sites:
+                  - title: ArgoCD
+                    url: https://argocd.homelab.ikabbash.com
+                    icon: si:argo
+                  - title: Authentik
+                    url: https://authentik.homelab.ikabbash.com
+                    icon: si:authentik
+                  - title: Grafana
+                    url: https://grafana.homelab.ikabbash.com
+                    icon: si:grafana
+                  - title: Alertmanager
+                    url: https://alertmanager.homelab.ikabbash.com
+                    icon: si:prometheus
+                  - title: Prometheus
+                    url: https://prometheus.homelab.ikabbash.com
+                    icon: si:prometheus
+                  - title: BentoPDF
+                    url: https://bentopdf.homelab.ikabbash.com
+                    icon: sh:bentopdf
+                  - title: changedetection.io
+                    url: https://changedetection.homelab.ikabbash.com
+                    icon: si:changedetection
+                  - title: Miniflux
+                    url: https://miniflux.homelab.ikabbash.com
+                    icon: sh:miniflux
+                  - title: n8n
+                    url: https://n8n.homelab.ikabbash.com
+                    icon: si:n8n
+                  - title: Alloy
+                    url: https://alloy.homelab.ikabbash.com
+                    icon: si:grafana
+                  - title: Vaultwarden
+                    url: https://vaultwarden.homelab.ikabbash.com
+                    icon: si:vaultwarden
+                  - title: Vault
+                    url: https://vault.homelab.ikabbash.com
+                    icon: si:vault
+
+              - type: hacker-news
+                limit: 15
+                collapse-after: 5
+
+          - size: small
+            widgets:
+              - type: repository
+                title: Homelab
+                repository: ikabbash/homelab
+                pull-requests-limit: 5
+                issues-limit: 3
+                commits-limit: 3

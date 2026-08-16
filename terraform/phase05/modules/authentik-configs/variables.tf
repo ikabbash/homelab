@@ -54,5 +54,10 @@ variable "proxy_apps" {
       internal_host = "http://prom-stack-alertmanager.monitoring.svc:9093"
       meta_icon     = "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/alertmanager-dark.svg"
     }
+    glance = {
+      name          = "Glance"
+      internal_host = "http://glance.glance.svc:8080"
+      meta_icon     = "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/glance.svg"
+    }
   }
 }

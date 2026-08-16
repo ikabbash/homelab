@@ -58,6 +58,7 @@ variable "egress_services" {
     { name = "changedetection", namespace = "changedetection", port = "5000" },
     { name = "prom-stack-prometheus", namespace = "monitoring", port = "9090" },
     { name = "prom-stack-alertmanager", namespace = "monitoring", port = "9093" },
+    { name = "glance", namespace = "glance", port = "8080" },
   ]
 }
 
