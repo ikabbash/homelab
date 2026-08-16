@@ -49,6 +49,13 @@ data "authentik_outpost" "embedded" {
   name = "authentik Embedded Outpost"
 }
 
+# For offline access for apps.
+# offline_access is required for Vaultwarden to receive a refresh token;
+# without it sessions are capped at the access token lifetime.
+data "authentik_property_mapping_provider_scope" "scope_offline_access" {
+  name = "authentik default OAuth Mapping: OpenID 'offline_access'"
+}
+
 resource "authentik_group" "homelab_admins" {
   name = "homelab-admins"
 }

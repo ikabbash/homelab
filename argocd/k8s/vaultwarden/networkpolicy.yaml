@@ -1,0 +1,46 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: vaultwarden-network-policy
+  namespace: vaultwarden
+spec:
+  endpointSelector:
+    matchLabels:
+      app: vaultwarden
+  ingress:
+    - fromEntities:
+        - ingress
+
+  egress:
+    # DNS
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: kube-system
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: ANY
+          rules:
+            dns:
+              - matchPattern: "authentik.homelab.ikabbash.com"
+
+    # For mobile push notifications
+    # - toFQDNs:
+    #     - matchName: "identity.bitwarden.eu"
+    #     - matchName: "api.bitwarden.eu"
+    #     - matchName: "firebaseinstallations.googleapis.com"
+    #   toPorts:
+    #     - ports:
+    #         - port: "443"
+    #           protocol: TCP
+
+    # SSO
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: authentik
+            app.kubernetes.io/instance: authentik
+      toPorts:
+        - ports:
+            - port: "9000"
+              protocol: TCP

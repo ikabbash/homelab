@@ -41,6 +41,8 @@ This phase configures Authentik applications and providers (e.g. OIDC) for SSO a
 - Argo CD Helm values: https://artifacthub.io/packages/helm/argo/argo-cd
 - Authentik SSO integration with Argo CD: https://integrations.goauthentik.io/infrastructure/argocd/
 - Authentik SSO integration with Grafana: https://integrations.goauthentik.io/monitoring/grafana/
+- Authentik SSO integration with Miniflux: https://integrations.goauthentik.io/media/miniflux/
+- Authentik SSO integration with Vaultwarden: https://integrations.goauthentik.io/security/vaultwarden/
 - Authentik Terraform OAuth2 provider resource: https://registry.terraform.io/providers/goauthentik/authentik/latest/docs/resources/provider_oauth2
 - Authentik Terraform application resource: https://registry.terraform.io/providers/goauthentik/authentik/latest/docs/resources/application
 - Authentik Terraform group resource: https://registry.terraform.io/providers/goauthentik/authentik/latest/docs/resources/group

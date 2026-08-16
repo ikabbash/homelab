@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vaultwarden-env-variables
+  namespace: vaultwarden
+data:
+  DOMAIN: "https://vaultwarden.homelab.ikabbash.com"
+  SIGNUPS_ALLOWED: "false"
+  INVITATIONS_ALLOWED: "false"
+  SHOW_PASSWORD_HINT: "false"
+  ICON_SERVICE: "bitwarden"
+  TRASH_AUTO_DELETE_DAYS: "30"
+  ROCKET_PORT: "8080"
+  SSO_ENABLED: "true"
+  SSO_SCOPES: "email profile offline_access"
+  SSO_ALLOW_UNKNOWN_EMAIL_VERIFICATION: "false"
+  SSO_CLIENT_CACHE_EXPIRATION: "0"
+  SSO_ONLY: "true"
+  SSO_SIGNUPS_MATCH_EMAIL: "true"
+  # PUSH_ENABLED: "true"
+  # PUSH_RELAY_URI: "https://api.bitwarden.eu"
+  # PUSH_IDENTITY_URI: "https://identity.bitwarden.eu"
