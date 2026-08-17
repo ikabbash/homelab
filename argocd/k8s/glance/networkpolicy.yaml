@@ -1,0 +1,69 @@
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: glance-network-policy
+specs:
+  - endpointSelector:
+      matchLabels:
+        k8s:io.kubernetes.pod.namespace: glance
+    ingress:
+      - {}
+    egress:
+      - {}
+
+  - endpointSelector:
+      matchLabels:
+        app: glance
+        k8s:io.kubernetes.pod.namespace: glance
+
+    ingress:
+      - fromEndpoints:
+          - matchLabels:
+              io.kubernetes.pod.namespace: authentik
+              app.kubernetes.io/instance: authentik
+
+    egress:
+      # DNS resolution, required for both FQDN policy enforcement and general lookups
+      - toEndpoints:
+          - matchLabels:
+              io.kubernetes.pod.namespace: kube-system
+              k8s-app: kube-dns
+        toPorts:
+          - ports:
+              - port: "53"
+                protocol: ANY
+            rules:
+              dns:
+                - matchPattern: "*"
+
+      # External APIs used by other widgets
+      - toFQDNs:
+          - matchPattern: "*.github.com"
+          - matchName: "api.open-meteo.com"
+          - matchName: "geocoding-api.open-meteo.com"
+          - matchName: "query1.finance.yahoo.com"
+          - matchName: "hacker-news.firebaseio.com"
+        toPorts:
+          - ports:
+              - port: "443"
+                protocol: TCP
+
+      # Homelab services
+      - toEntities:
+        - ingress
+      - toEndpoints:
+          - matchLabels:
+              homelab.io/glance-visible: "true"
+        toPorts:
+          - ports:
+                - port: "8080"
+                  protocol: TCP
+                - port: "9000"
+                  protocol: TCP
+                - port: "3000"
+                  protocol: TCP
+                - port: "8200"
+                  protocol: TCP
+            rules:
+              http:
+                - method: "GET"

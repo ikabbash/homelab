@@ -69,6 +69,8 @@ server:
     limits:
       cpu: 2000m
       memory: 2Gi
+  podLabels:
+    homelab.io/glance-visible: "true"
   %{ if enable_monitoring }
   metrics:
     enabled: true

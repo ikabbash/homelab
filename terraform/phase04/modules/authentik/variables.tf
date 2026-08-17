@@ -54,11 +54,11 @@ variable "egress_services" {
   }))
   default = [
     { name = "bentopdf", namespace = "bentopdf", port = "8080" },
+    { name = "changedetection", namespace = "changedetection", port = "8080" },
+    { name = "glance", namespace = "glance", port = "8080" },
     { name = "alloy", namespace = "monitoring", port = "12345" },
-    { name = "changedetection", namespace = "changedetection", port = "5000" },
     { name = "prom-stack-prometheus", namespace = "monitoring", port = "9090" },
     { name = "prom-stack-alertmanager", namespace = "monitoring", port = "9093" },
-    { name = "glance", namespace = "glance", port = "8080" },
   ]
 }
 

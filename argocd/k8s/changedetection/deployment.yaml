@@ -15,6 +15,7 @@ spec:
     metadata:
       labels:
         app: changedetection
+        homelab.io/glance-visible: "true"
     spec:
       securityContext:
         fsGroup: 1000
@@ -42,7 +43,7 @@ spec:
               memory: 256Mi
           ports:
             - name: http
-              containerPort: 5000
+              containerPort: 8080
               protocol: TCP
           envFrom:
             - configMapRef:

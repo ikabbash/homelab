@@ -39,6 +39,8 @@ configs:
 server:
   ingress:
     enabled: false
+  podLabels:
+    homelab.io/glance-visible: "true"
   resources:
     limits:
       cpu: 500m

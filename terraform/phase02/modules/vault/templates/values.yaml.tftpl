@@ -9,6 +9,8 @@ ui:
   enabled: true
 
 server:
+  extraLabels:
+    homelab.io/glance-visible: "true"
   dataStorage:
     enabled: true
     storageClass: ${storage_class_name}

@@ -16,6 +16,7 @@ spec:
     metadata:
       labels:
         app: n8n
+        homelab.io/glance-visible: "true"
     spec:
       securityContext:
         runAsUser: 1000
@@ -34,7 +35,7 @@ spec:
               drop:
                 - ALL
           ports:
-            - containerPort: 5678
+            - containerPort: 8080
           envFrom:
             - secretRef:
                 name: n8n-postgres-credentials

@@ -4,7 +4,7 @@ metadata:
   name: changedetection-config
   namespace: changedetection
 data:
-  PORT: "5000"
+  PORT: "8080"
   TZ: "Africa/Cairo"
   LOGGER_LEVEL: "WARNING"
   BASE_URL: "changedetection.homelab.ikabbash.com"

@@ -5,16 +5,19 @@ metadata:
   namespace: bentopdf
   labels:
     app: bentopdf
+    homelab.io/glance-visible: "true"
 spec:
   replicas: 1
   revisionHistoryLimit: 2
   selector:
     matchLabels:
       app: bentopdf
+      homelab.io/glance-visible: "true"
   template:
     metadata:
       labels:
         app: bentopdf
+        homelab.io/glance-visible: "true"
     spec:
       securityContext:
         fsGroup: 101

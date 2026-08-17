@@ -59,9 +59,6 @@ data:
                   - title: Grafana
                     url: https://grafana.homelab.ikabbash.com
                     icon: di:grafana
-                  - title: Prometheus
-                    url: https://prometheus.homelab.ikabbash.com
-                    icon: di:prometheus
                   - title: BentoPDF
                     url: https://bentopdf.homelab.ikabbash.com
                     icon: di:bentopdf
