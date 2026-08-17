@@ -50,7 +50,7 @@ data:
                 title: Homelab Services
                 cache: 1m
                 sites:
-                  - title: ArgoCD
+                  - title: Argo CD
                     url: https://argocd.homelab.ikabbash.com
                     icon: si:argo
                   - title: Authentik
@@ -59,9 +59,6 @@ data:
                   - title: Grafana
                     url: https://grafana.homelab.ikabbash.com
                     icon: si:grafana
-                  - title: Alertmanager
-                    url: https://alertmanager.homelab.ikabbash.com
-                    icon: si:prometheus
                   - title: Prometheus
                     url: https://prometheus.homelab.ikabbash.com
                     icon: si:prometheus
@@ -77,9 +74,6 @@ data:
                   - title: n8n
                     url: https://n8n.homelab.ikabbash.com
                     icon: si:n8n
-                  - title: Alloy
-                    url: https://alloy.homelab.ikabbash.com
-                    icon: si:grafana
                   - title: Vaultwarden
                     url: https://vaultwarden.homelab.ikabbash.com
                     icon: si:vaultwarden
@@ -99,3 +93,27 @@ data:
                 pull-requests-limit: 5
                 issues-limit: 3
                 commits-limit: 3
+
+              - type: custom-api
+                title: Talos Version
+                cache: 1d
+                url: http://prom-stack-prometheus.monitoring.svc:9090/api/v1/query
+                parameters:
+                  query: kube_node_info
+                subrequests:
+                  latest-release:
+                    url: https://api.github.com/repos/siderolabs/talos/releases/latest
+                template: |
+                  {{ $current := .JSON.String "data.result.0.metric.os_image" }}
+                  {{ $latest := (.Subrequest "latest-release").JSON.String "tag_name" }}
+
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <div class="size-h6 color-base">RUNNING</div>
+                      <div class="color-highlight size-h5">{{ $current }}</div>
+                    </div>
+                    <div>
+                      <div class="size-h6 color-base">LATEST</div>
+                      <div class="size-h5 {{ if eq $current (printf "Talos (%s)" $latest) }}color-positive{{ else }}color-negative{{ end }}">{{ $latest }}</div>
+                    </div>
+                  </div>
