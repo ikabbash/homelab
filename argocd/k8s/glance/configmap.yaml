@@ -52,34 +52,34 @@ data:
                 sites:
                   - title: Argo CD
                     url: https://argocd.homelab.ikabbash.com
-                    icon: si:argo
+                    icon: di:argo-cd
                   - title: Authentik
                     url: https://authentik.homelab.ikabbash.com
-                    icon: si:authentik
+                    icon: di:authentik
                   - title: Grafana
                     url: https://grafana.homelab.ikabbash.com
-                    icon: si:grafana
+                    icon: di:grafana
                   - title: Prometheus
                     url: https://prometheus.homelab.ikabbash.com
-                    icon: si:prometheus
+                    icon: di:prometheus
                   - title: BentoPDF
                     url: https://bentopdf.homelab.ikabbash.com
-                    icon: sh:bentopdf
+                    icon: di:bentopdf
                   - title: changedetection.io
                     url: https://changedetection.homelab.ikabbash.com
-                    icon: si:changedetection
+                    icon: di:changedetection
                   - title: Miniflux
                     url: https://miniflux.homelab.ikabbash.com
-                    icon: sh:miniflux
+                    icon: di:miniflux
                   - title: n8n
                     url: https://n8n.homelab.ikabbash.com
-                    icon: si:n8n
+                    icon: di:n8n
                   - title: Vaultwarden
                     url: https://vaultwarden.homelab.ikabbash.com
-                    icon: si:vaultwarden
+                    icon: di:vaultwarden
                   - title: Vault
                     url: https://vault.homelab.ikabbash.com
-                    icon: si:vault
+                    icon: di:vault
 
               - type: hacker-news
                 limit: 15
@@ -97,14 +97,11 @@ data:
               - type: custom-api
                 title: Talos Version
                 cache: 1d
-                url: http://prom-stack-prometheus.monitoring.svc:9090/api/v1/query
-                parameters:
-                  query: kube_node_info
                 subrequests:
                   latest-release:
                     url: https://api.github.com/repos/siderolabs/talos/releases/latest
                 template: |
-                  {{ $current := .JSON.String "data.result.0.metric.os_image" }}
+                  {{ $current := "v1.13.7" }}
                   {{ $latest := (.Subrequest "latest-release").JSON.String "tag_name" }}
 
                   <div class="flex items-center justify-between">
@@ -114,6 +111,6 @@ data:
                     </div>
                     <div>
                       <div class="size-h6 color-base">LATEST</div>
-                      <div class="size-h5 {{ if eq $current (printf "Talos (%s)" $latest) }}color-positive{{ else }}color-negative{{ end }}">{{ $latest }}</div>
+                      <div class="size-h5 {{ if eq $current $latest }}color-positive{{ else }}color-negative{{ end }}">{{ $latest }}</div>
                     </div>
                   </div>

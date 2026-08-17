@@ -88,18 +88,6 @@ specs:
           - ports:
               - port: "9090"
                 protocol: TCP
-      - fromEndpoints:
-          - matchLabels:
-              io.kubernetes.pod.namespace: glance
-              app: glance
-        toPorts:
-          - ports:
-              - port: "9090"
-                protocol: TCP
-            rules:
-              http:
-                - method: GET
-                  path: "^/api/v1/query(?:\\?.*)?$"
 
   # Grafana
   - endpointSelector:
