@@ -51,7 +51,7 @@ module "authentik" {
   source                 = "./modules/authentik"
   chart_namespace        = var.authentik_namespace
   # renovate: datasource=helm depName=authentik registryUrl=https://charts.goauthentik.io
-  chart_version          = "2026.5.6"
+  chart_version          = "2026.8.0"
   postgres_secret_name   = module.postgresql.postgres_secret_name
   postgres_host          = module.postgresql.postgres_host
   storage_class_name     = local.phase01.host_storage_class_name
