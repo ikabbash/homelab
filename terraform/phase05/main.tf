@@ -47,7 +47,7 @@ module "argocd" {
   source                 = "./modules/argocd"
   chart_namespace        = "argocd"
   # renovate: datasource=helm depName=argo-cd registryUrl=https://argoproj.github.io/argo-helm
-  chart_version          = "10.3.3"
+  chart_version          = "10.4.0"
   argocd_host            = local.argocd_host
   gateway_name           = local.phase02.gateway_name
   gateway_namespace      = local.phase02.gateway_namespace
