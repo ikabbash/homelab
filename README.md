@@ -10,7 +10,7 @@ The setup is split into two main parts:
 - Terraform, which bootstraps the foundation (check the [doc](./terraform/README.md) for further details).
 - Argo CD, which deploys and manages the applications defined in this repository.
 
-This design tracks and versions all infrastructure changes, making it easy to reproduce the cluster in another environment. Terraform bootstraps core services like Vault and Authentik, while Argo CD deploys and manages applications using GitOps.
+This design tracks and versions all infrastructure changes, making it easy to reproduce the cluster in another environment. Terraform bootstraps core services like Vault and Authentik, while Argo CD deploys and manages applications in GitOps fashion.
 
 The observability stack is built on kube-prometheus-stack, Loki, and Alloy, covering metrics, logs, and alerting across the cluster. Everything is wired into Grafana for dashboards and log exploration.
 
@@ -28,32 +28,4 @@ For my setup, I use Talos Linux because it’s lightweight, minimal, and built s
 
 With the cluster ready, the next step is provisioning the platform stack with [Terraform](./terraform/README.md). Terraform lays down the base layer of the cluster by applying a series of ordered phases that install and configure components like Cilium, Cert Manager, OpenEBS, Vault, Authentik, and Argo CD. Each phase lives in its own directory and is meant to be applied in sequence.
 
-Once Terraform finishes laying down the core platform components, Argo CD takes the wheel. The repository follows an App-of-Apps pattern, where syncing the root application triggers the deployment of all other applications and keeps them continuously reconciled through GitOps.
-
-## To-do
-What's planned for the homelab as it evolves. Ideas below may change and more may be added.
-
-### Infra
-- [x] Learn and setup Talos
-- [x] Deploy the following with Argo CD
-  - [x] [n8n](https://docs.n8n.io/hosting/)
-  - [x] [Miniflux](https://github.com/miniflux/v2)
-  - [x] [bentopdf](https://github.com/alam00000/bentopdf)
-  - [x] [changedetection.io](https://github.com/dgtlmoon/changedetection.io/)
-  - [x] [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack)
-  - [x] [Grafana Loki](https://grafana.com/docs/loki/latest/setup/install/helm/)
-  - [x] [Grafana Alloy](https://grafana.com/docs/alloy/latest/set-up/install/kubernetes/)
-- [x] Migrate from NGINX Ingress Controller to Cilium's Gateway API
-- [ ] Pi-hole and Tailscale setup
-- [ ] Data backup and restore plan
-
-### Security
-- [x] Deploy [Authentik](https://github.com/goauthentik/helm/blob/main/charts/authentik/README.md) using Terraform
-  - [x] Integrate SSO across platforms
-- [x] Define and enforce pod security contexts  
-- [x] Cilium network policies
-- [x] Cluster audit logging and alerting
-- [x] Protect web UIs/app using Authentik [Proxy Provider](https://docs.goauthentik.io/add-secure-apps/providers/proxy/forward_auth/)
-- [ ] Jobs to scan containers for vulnerabilities and alert for high/critical ones
-- [x] Automatic app version upgrade
-- [ ] Alert for app verions approaching end of life
+Once Terraform finishes laying down the core platform components, Argo CD takes the wheel. The repository follows an App-of-Apps pattern, where syncing the root application triggers the deployment of all other applications and keeps them continuously reconciled.
