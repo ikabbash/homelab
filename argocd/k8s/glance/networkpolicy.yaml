@@ -3,9 +3,7 @@ kind: CiliumClusterwideNetworkPolicy
 metadata:
   name: glance-network-policy
 specs:
-  - endpointSelector:
-      matchLabels:
-        k8s:io.kubernetes.pod.namespace: glance
+  - endpointSelector: {}
     ingress:
       - {}
     egress:
