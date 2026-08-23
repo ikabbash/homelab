@@ -1,0 +1,105 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: trivy-network-policy
+  namespace: trivy
+specs:
+  # trivy-operator
+  - description: "trivy-operator: ingress from Prometheus only, egress to kube-apiserver, DNS, and trivy-server"
+    endpointSelector:
+      matchLabels:
+        app.kubernetes.io/name: trivy-operator
+    ingress:
+      - fromEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: monitoring
+              app.kubernetes.io/name: prometheus
+        toPorts:
+          - ports:
+              - port: "8080"
+                protocol: TCP
+    egress:
+      - toEntities:
+          - kube-apiserver
+      - toEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: kube-system
+              k8s-app: kube-dns
+        toPorts:
+          - ports:
+              - port: "53"
+                protocol: ANY
+      - toEndpoints:
+          - matchLabels:
+              app.kubernetes.io/name: trivy-server
+        toPorts:
+          - ports:
+              - port: "4954"
+                protocol: TCP
+
+  # trivy-server (built-in server, holds the persistent DB)
+  - description: "trivy-server: ingress from trivy-operator and scan jobs only, egress to DB registry and DNS"
+    endpointSelector:
+      matchLabels:
+        app.kubernetes.io/name: trivy-server
+        app.kubernetes.io/instance: trivy-server
+    ingress:
+      - fromEndpoints:
+          - matchLabels:
+              app.kubernetes.io/managed-by: trivy-operator # For scan jobs
+          - matchLabels:
+              app.kubernetes.io/name: trivy-operator
+        toPorts:
+          - ports:
+              - port: "4954"
+                protocol: TCP
+    egress:
+      - toEntities:
+          - world
+      - toEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: kube-system
+              k8s-app: kube-dns
+        toPorts:
+          - ports:
+              - port: "53"
+                protocol: ANY
+            rules:
+              dns:
+                - matchPattern: "*"
+
+  # scan job pods (one per image scan, labeled managed-by: trivy-operator)
+  - description: "scan job pods: no ingress, egress to trivy-server + registries + DNS"
+    endpointSelector:
+      matchLabels:
+        app.kubernetes.io/managed-by: trivy-operator
+    ingress:
+      - {}
+    egress:
+      - toEndpoints:
+          - matchLabels:
+              app.kubernetes.io/name: trivy-server
+        toPorts:
+          - ports:
+              - port: "4954"
+                protocol: TCP
+      - toEntities:
+          - world
+      - toEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: kube-system
+              k8s-app: kube-dns
+        toPorts:
+          - ports:
+              - port: "53"
+                protocol: ANY
+            rules:
+              dns:
+                - matchPattern: "*"
+
+  # Block everything else
+  - endpointSelector: {}
+    ingress:
+      - {}
+    egress:
+      - {}
