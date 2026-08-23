@@ -37,7 +37,7 @@ grafana:
       memory: 128Mi
     limits:
       cpu: 500m
-      memory: 512Mi
+      memory: 1Gi
   securityContext:
     fsGroup: 472
   extraSecretMounts:
@@ -128,6 +128,9 @@ grafana:
         datasource:
           - name: DS_LOKI
             value: Loki
+      trivy-operator:
+        gnetId: 16337
+        datasource: Prometheus
 
   datasources:
     datasources.yaml:

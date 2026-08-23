@@ -1,0 +1,31 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: trivy-operator
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    # Reference: https://argo-cd.readthedocs.io/en/latest/user-guide/multiple_sources/#helm-value-files-from-external-git-repository
+    - repoURL: "https://github.com/ikabbash/homelab.git"
+      targetRevision: HEAD
+      path: argocd/k8s/trivy-operator/manifests
+    - repoURL: "https://aquasecurity.github.io/helm-charts"
+      chart: trivy-operator
+      targetRevision: "0.35.0"
+      helm:
+        releaseName: trivy-operator
+        valueFiles:
+          - $values/argocd/k8s/trivy-operator/values/values.yaml
+    - repoURL: "https://github.com/ikabbash/homelab.git"
+      targetRevision: HEAD
+      ref: values
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: trivy
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: false
+    syncOptions:
+      - CreateNamespace=true
