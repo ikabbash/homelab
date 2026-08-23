@@ -171,6 +171,9 @@ talosctl --nodes $NODE_IP_ADDRESS containers -k
 # Checks volume status
 talosctl get volumestatus
 
+# Checks mount status
+talosctl get mountstatus
+
 # Checks volume location usage (obtained from volumestatus)
-talosctl usage -H /dev/sdaX
+talosctl usage -H /var/mnt/homelab
 ```
