@@ -13,7 +13,7 @@
   },
 
   "kubernetes": {
-  "managerFilePatterns": ["/^argocd/k8s/.+/(?:deployment|cronjob|statefulset)\\.yaml$/"]
+    "managerFilePatterns": ["/^argocd/k8s/.+/(?:deployment|cronjob|statefulset)\\.yaml$/"]
   },
 
   "terraform": {
@@ -29,6 +29,15 @@
         "#\\s*renovate:\\s*datasource=(?<datasource>\\S+)\\s+depName=(?<depName>\\S+)(?:\\s+registryUrl=(?<registryUrl>\\S+))?\\s*\\n\\s*chart_version\\s*=\\s*\"(?<currentValue>[^\"]+)\""
       ],
       "versioningTemplate": "semver"
+    },
+    {
+      "customType": "regex",
+      "description": "Bump Authentik postgres_image_tag passed into the postgresql Terraform module (image tag lives in the module input, not a native terraform resource, so the native terraform manager can't see it).",
+      "managerFilePatterns": ["/^terraform/(?:.*/)?main\\.tf$/"],
+      "matchStrings": [
+        "#\\s*renovate:\\s*datasource=(?<datasource>\\S+)\\s+depName=(?<depName>\\S+)(?:\\s+registryUrl=(?<registryUrl>\\S+))?\\s*\\n\\s*postgres_image_tag\\s*=\\s*\"(?<currentValue>[^\"]+)\""
+      ],
+      "versioningTemplate": "docker"
     }
   ],
 
@@ -59,9 +68,8 @@
       "groupName": "terraform core (helm, kubernetes, terraform version)"
     },
     {
-      "description": "Postgres in StatefulSets: allow minor/patch bumps only.",
-      "matchManagers": ["kubernetes"],
-      "matchFileNames": ["argocd/k8s/**/statefulset.yaml"],
+      "description": "Postgres images, both StatefulSets and the Authentik Terraform postgresql module: allow minor/patch bumps only, never major, since major postgres upgrades need manual migration steps (pg_upgrade, dump/restore, etc).",
+      "matchManagers": ["kubernetes", "custom.regex"],
       "matchPackageNames": ["postgres"],
       "matchUpdateTypes": ["major"],
       "enabled": false

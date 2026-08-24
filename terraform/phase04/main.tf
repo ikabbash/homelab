@@ -42,6 +42,7 @@ module "postgresql" {
   source              = "./modules/postgresql"
   authentik_namespace = var.authentik_namespace
   storage_class_name  = local.phase01.host_storage_class_name
+  # renovate: datasource=docker depName=postgres
   postgres_image_tag  = "18.6-alpine3.23"
 
   depends_on = [kubernetes_namespace_v1.authentik_namespace]
