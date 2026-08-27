@@ -14,7 +14,9 @@ The Virtual IP ([VIP](https://docs.siderolabs.com/talos/v1.11/networking/vip)) s
 
 The `cluster-patch.yaml` file is used as a strategic merge patch when generating configs, which lets you declaratively inject all your custom cluster and machine settings (networking, DNS, kernel params, etc.) into the configs while generating. This ensures reproducible and consistent configs for all nodes.
 
-Note that it's assumed that the DHCP server is configured to assign fixed IPs to the nodes based on their MAC addresses. You're welcome to make any changes to the `cluster-patch.yaml`.
+It's assumed that the DHCP server is configured to assign fixed IPs to the nodes based on their MAC addresses. You're welcome to make any changes to the `cluster-patch.yaml`.
+
+`imageMaximumGCAge` is set to 30 days which cleans up unused images older than 30 days. If the kubelet is restarted, the tracked image age is reset, causing the kubelet to wait the full imageMaximumGCAge duration before qualifying images for garbage collection based on image age.
 
 Note that the PodSecurity admission defaults are already set to restricted for all audit, enforce, and warn levels. To check after installation, execute the command below.
 ```bash

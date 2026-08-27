@@ -171,6 +171,8 @@ machine:
   kubelet:
     extraArgs:
       rotate-certificates: true
+    extraConfig:
+      imageMaximumGCAge: 720h
     extraMounts:
       - destination: /var/local
         type: bind
