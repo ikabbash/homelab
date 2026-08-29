@@ -73,6 +73,14 @@
       "matchPackageNames": ["postgres"],
       "matchUpdateTypes": ["major"],
       "enabled": false
+    },
+    {
+      "description": "Auto-merge patch-level updates for Argo CD targetRevisions and Kubernetes manifest images. Terraform is intentionally excluded, both the native manager and the custom.regex Helm chart_version / postgres_image_tag trackers, so anything terraform-related always waits for manual review.",
+      "matchManagers": ["kubernetes", "argocd"],
+      "matchUpdateTypes": ["patch"],
+      "automerge": true,
+      "automergeType": "pr",
+      "platformAutomerge": true
     }
   ]
 }
