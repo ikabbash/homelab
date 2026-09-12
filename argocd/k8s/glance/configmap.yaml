@@ -90,24 +90,3 @@ data:
                 pull-requests-limit: 5
                 issues-limit: 3
                 commits-limit: 3
-
-              - type: custom-api
-                title: Talos Version
-                cache: 1d
-                subrequests:
-                  latest-release:
-                    url: https://api.github.com/repos/siderolabs/talos/releases/latest
-                template: |
-                  {{ $current := "v1.13.7" }}
-                  {{ $latest := (.Subrequest "latest-release").JSON.String "tag_name" }}
-
-                  <div class="flex items-center justify-between">
-                    <div>
-                      <div class="size-h6 color-base">RUNNING</div>
-                      <div class="color-highlight size-h5">{{ $current }}</div>
-                    </div>
-                    <div>
-                      <div class="size-h6 color-base">LATEST</div>
-                      <div class="size-h5 {{ if eq $current $latest }}color-positive{{ else }}color-negative{{ end }}">{{ $latest }}</div>
-                    </div>
-                  </div>

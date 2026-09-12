@@ -51,21 +51,6 @@ prometheus:
           - targets: ["app.namespace.svc:9100"]
 ```
 
-#### Talos Linux
-Prometheus can scrape the Controller Manager and Scheduler, but by default in Talos Linux the bind is set to `127.0.0.1` which makes them unreachable from within the cluster for security practices. To expose their metrics, change the bind address to `0.0.0.0` by using the following Talos machine config:
-```yaml
-cluster:
-  controllerManager:
-    extraArgs:
-      bind-address: 0.0.0.0
-  scheduler:
-    extraArgs:
-      bind-address: 0.0.0.0
-```
-Note that exposing these on all interfaces does introduce a network exposure risk, so it's worth protecting them with a firewall. Luckily Talos supports [ingress firewall](https://docs.siderolabs.com/talos/latest/networking/ingress-firewall) rules natively. 
-
-For etcd metrics, refer to the Talos etcd metrics [guide](https://docs.siderolabs.com/kubernetes-guides/monitoring-and-observability/etcd-metrics).
-
 ### Alert Manager
 Alertmanager handles routing and delivery of alerts fired by Prometheus. There are several ways to configure it within the chart:
 - `alertmanager.config` is the default approach where you define the full Alertmanager configuration directly in the values file. If you go this route, make sure to include all required pieces like the null receiver, since it overwrites the chart's default config entirely.

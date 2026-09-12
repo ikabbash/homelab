@@ -24,8 +24,6 @@ The observability stack is built on kube-prometheus-stack, Loki, and Alloy, cove
 - Argo CD: The GitOps engine that keeps the cluster in sync with this repository. Any changes pushed here get automatically reflected in the cluster.
 
 ## Getting Started
-For my setup, I use Talos Linux because it’s lightweight, minimal, and built specifically for running Kubernetes. Kubernetes on Ubuntu works as well, but make sure your cluster has no CNI installed before proceeding. For Talos, you can check the [documentation](./talos/README.md) I made and use the provided script to generate machine configs for control planes and workers with preconfigured settings applied via a patch template. It saves time, and all you need to do is apply the configs onto the machines after booting Talos.
-
-With the cluster ready, the next step is provisioning the platform stack with [Terraform](./terraform/README.md). Terraform lays down the base layer of the cluster by applying a series of ordered phases that install and configure components like Cilium, Cert Manager, OpenEBS, Vault, Authentik, and Argo CD. Each phase lives in its own directory and is meant to be applied in sequence.
+With the cluster ready (with no CNI installed), the next step is provisioning the platform stack with [Terraform](./terraform/README.md). Terraform lays down the base layer of the cluster by applying a series of ordered phases that install and configure components like Cilium, Cert Manager, OpenEBS, Vault, Authentik, and Argo CD. Each phase lives in its own directory and is meant to be applied in sequence.
 
 Once Terraform finishes laying down the core platform components, Argo CD takes the wheel. The repository follows an App-of-Apps pattern, where syncing the root application triggers the deployment of all other applications and keeps them continuously reconciled.
