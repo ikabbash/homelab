@@ -73,9 +73,9 @@ hubble:
     auto:
       enabled: true
       method: cronJob
-      certValidityDuration: 1095  # in days (3 years)
+      certValidityDuration: 365  # in days (1 year)
       schedule: "0 0 1 */4 *"  # Renew every 4 months on the 1st at midnight
-  
+
   relay:
     enabled: true
     replicas: 1
