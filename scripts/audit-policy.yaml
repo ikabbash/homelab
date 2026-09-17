@@ -1,0 +1,111 @@
+apiVersion: audit.k8s.io/v1
+kind: Policy
+rules:
+  - level: RequestResponse
+    omitStages: ["RequestReceived"]
+    resources:
+      - group: ""
+        resources: ["pods/exec", "pods/attach", "pods/portforward"]
+    verbs: ["create", "get"]
+  - level: RequestResponse
+    omitStages: ["RequestReceived"]
+    resources:
+      - group: ""
+        resources: ["nodes/proxy"]
+    verbs: ["*"]
+  - level: None
+    users:
+      - "system:serviceaccount:vault-secrets-operator-system:vault-secrets-operator-controller-manager"
+    resources:
+      - group: ""
+        resources: ["secrets"]
+    verbs: ["get", "list", "watch"]
+  - level: Metadata
+    omitStages: ["RequestReceived"]
+    resources:
+      - group: ""
+        resources: ["secrets"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - level: RequestResponse
+    omitStages: ["RequestReceived"]
+    resources:
+      - group: "cilium.io"
+        resources:
+          - ciliumnetworkpolicies
+          - ciliumclusterwidenetworkpolicies
+    verbs: ["create", "update", "patch", "delete"]
+  - level: RequestResponse
+    omitStages: ["RequestReceived"]
+    resources:
+      - group: "rbac.authorization.k8s.io"
+        resources:
+          - roles
+          - rolebindings
+          - clusterroles
+          - clusterrolebindings
+    verbs: ["create", "update", "patch", "delete"]
+  - level: RequestResponse
+    omitStages: ["RequestReceived"]
+    resources:
+      - group: ""
+        resources: ["serviceaccounts"]
+    verbs: ["create", "update", "patch", "delete"]
+  - level: RequestResponse
+    omitStages: ["RequestReceived"]
+    resources:
+      - group: ""
+        resources: ["serviceaccounts/token"]
+    verbs: ["create"]
+  - level: Metadata
+    omitStages: ["RequestReceived"]
+    resources:
+      - group: "certificates.k8s.io"
+        resources: ["certificatesigningrequests"]
+    verbs: ["create", "update", "delete"]
+  - level: RequestResponse
+    omitStages: ["RequestReceived"]
+    resources:
+      - group: ""
+        resources: ["pods"]
+    verbs: ["create"]
+  - level: Metadata
+    omitStages: ["RequestReceived"]
+    resources:
+      - group: "apps"
+        resources: ["deployments", "daemonsets", "statefulsets", "replicasets"]
+      - group: "batch"
+        resources: ["jobs", "cronjobs"]
+    verbs: ["create", "update", "patch", "delete"]
+  - level: RequestResponse
+    omitStages: ["RequestReceived"]
+    users: ["admin"]
+    verbs: ["create", "update", "patch", "delete"]
+  - level: RequestResponse
+    omitStages: ["RequestReceived"]
+    userGroups: ["system:masters"]
+    verbs: ["create", "update", "patch", "delete"]
+  - level: None
+    users:
+      - "system:serviceaccount:kube-system:cilium"
+      - "system:serviceaccount:kube-system:cilium-operator"
+    verbs: ["get", "list", "watch"]
+  - level: None
+    resources:
+      - group: "cilium.io"
+        resources:
+          - ciliumnetworkpolicies
+          - ciliumclusterwidenetworkpolicies
+          - ciliumendpoints
+          - ciliumnodes
+          - ciliumidentities
+    verbs: ["get", "list", "watch"]
+  - level: None
+    users:
+      - "system:apiserver"
+      - "system:kube-scheduler"
+      - "system:kube-controller-manager"
+    verbs: ["get", "list", "watch"]
+  - level: None
+    userGroups: ["system:nodes"]
+    verbs: ["get", "list", "watch"]
+  - level: None
