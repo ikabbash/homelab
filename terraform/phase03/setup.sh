@@ -5,7 +5,7 @@ set -e
 # Variables
 BASE_DIR=$(readlink -f $(dirname ${0}))
 VAULT_POD="vault-0"
-VAULT_NAMESPACE=$(terraform output -state=../phase02/terraform.tfstate -raw vault_namespace)
+VAULT_NAMESPACE=$(terraform -chdir=../phase02 output -raw vault_namespace)
 POLICY_NAME="terraform-admin"
 POLICY_FILE="terraform-admin.hcl"
 AUTH_FILE="${HOME}/.vault-token"

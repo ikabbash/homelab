@@ -24,11 +24,12 @@ This phase deploys Cilium as the CNI with Gateway API enabled and L2 load balanc
 - Acts as the primary storage layer for persisting volumes.
 
 ## Steps
-1. Initialize Terraform `terraform init`.
-2. Create `terraform.tfvars`:
+1. Create namespace to store Terraform state `kubectl create ns terraform-state`.
+2. Initialize Terraform `terraform init`.
+3. Create `terraform.tfvars`:
     - Add control plane API IP or VIP into `cluster_service_host` variable.
     - Create Cloudflare API token following these [steps](https://cert-manager.io/docs/configuration/acme/dns01/cloudflare/#api-tokens) and add it into `cloudflare_api_token` variable.
-3. Deploy Helm charts using `terraform apply`.
+4. Deploy Helm charts using `terraform apply`.
 
 ## Notes
 - Gateway API is enabled in Cilium, with Cert Manager configured to integrate with it for certificate management on Gateway resources created in later `phase02`.

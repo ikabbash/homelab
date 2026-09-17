@@ -1,6 +1,12 @@
 terraform {
   required_version = ">= 1.0"
 
+  backend "kubernetes" {
+    secret_suffix = "phase02"
+    namespace     = "terraform-state"
+    config_path   = "~/.kube/config"
+  }
+
   required_providers {
     helm = {
       source  = "hashicorp/helm"
@@ -14,9 +20,11 @@ terraform {
 }
 
 data "terraform_remote_state" "phase01" {
-  backend = "local"
+  backend = "kubernetes"
   config = {
-    path = "../phase01/terraform.tfstate"
+    secret_suffix = "phase01"
+    namespace     = "terraform-state"
+    config_path   = "~/.kube/config"
   }
 }
 

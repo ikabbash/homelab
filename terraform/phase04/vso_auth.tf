@@ -1,7 +1,9 @@
 data "terraform_remote_state" "phase03" {
-  backend = "local"
+  backend = "kubernetes"
   config = {
-    path = "../phase03/terraform.tfstate"
+    secret_suffix = "phase03"
+    namespace     = "terraform-state"
+    config_path   = "~/.kube/config"
   }
 }
 
