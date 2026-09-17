@@ -31,46 +31,9 @@ This configuration tells Vault how to communicate with the Kubernetes API and ve
 Authentication roles then define which Kubernetes service accounts are allowed to authenticate and which Vault policies they receive once authenticated.
 
 ## Secrets to Create
-The Vault secrets listed here are required for platform components and applications to access the credentials they need to operate properly.
+The Vault secrets needed for the homelab are created using [`vault-secrets-init.sh`](../scripts/vault/vault-secrets-init.sh).
 
 To confirm on any path, you can use the following command as an example:
 ```bash
 vault kv get homelab/infra/kv-secret/shared/notifications
 ```
-
-- Path for all shared notification/alerting credentials (SMTP, webhooks, etc.):
-    ```bash
-    vault kv put homelab/infra/kv-secret/shared/notifications \
-        smtp_host='smtp.example.com' \
-        smtp_port='587' \
-        smtp_endpoint='smtp.example.com:587' \
-        smtp_username='your_smtp_username' \
-        smtp_password='your_smtp_password' \
-        smtp_domain='example.com' \
-        smtp_receiver='hamada@example.com \
-        discord_webhook_url='your_discord_webhook'
-    ```
-- Path for LLM API keys:
-    ```bash
-    vault kv put homelab/infra/kv-secret/shared/gemini \
-        gemini_api_key='your_gemini_api_key'
-    ```
-- Path for Miniflux config:
-    ```bash
-    vault kv put homelab/apps/kv-secret/miniflux \
-        db_user='miniflux' \
-        db_password=$(openssl rand -base64 48 | tr -dc 'A-Za-z0-9' | head -c 30) \
-        db_name='miniflux'
-    ```
-- Path for n8n config:
-    ```bash
-    vault kv put homelab/apps/kv-secret/n8n \
-        db_user='n8n' \
-        db_password=$(openssl rand -base64 48 | tr -dc 'A-Za-z0-9' | head -c 30) \
-        db_name='n8n'
-    ```
-- Path for Renovate Github token:
-    ```bash
-    vault kv put homelab/infra/kv-secret/shared/github-token \
-        github_token='your_github_token'
-    ```
