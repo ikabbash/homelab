@@ -24,7 +24,7 @@ spec:
         runAsUser: 1000
       containers:
         - name: changedetection
-          image: "ghcr.io/dgtlmoon/changedetection.io:0.55.8"
+          image: "ghcr.io/dgtlmoon/changedetection.io:0.60.7"
           imagePullPolicy: IfNotPresent
           securityContext:
             allowPrivilegeEscalation: false
