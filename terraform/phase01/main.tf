@@ -24,7 +24,7 @@ module "cilium" {
   source               = "./modules/cilium"
   chart_namespace      = "kube-system"
   # renovate: datasource=helm depName=cilium registryUrl=https://helm.cilium.io/
-  chart_version        = "1.20.1"
+  chart_version        = "1.20.2"
   gateway_api_version  = "v1.6.1"
   cluster_service_host = var.cluster_service_host
   enable_monitoring    = var.enable_monitoring
