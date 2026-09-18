@@ -23,21 +23,23 @@
   "customManagers": [
     {
       "customType": "regex",
-      "description": "Bump Helm chart_version values passed into Terraform modules (helm_release lives inside the module, not in the root main.tf, so the native terraform manager can't see it). Annotate the line above chart_version with a renovate comment.",
+      "description": "Bump Helm chart_version values passed into Terraform modules (helm_release lives inside the module, not in the root main.tf, so the native terraform manager can't see it). Tagged with depTypeTemplate helm_release so it matches the same automerge rule as Terraform's native helm_release resources. Annotate the line above chart_version with a renovate comment.",
       "managerFilePatterns": ["/^terraform/(?:.*/)?main\\.tf$/"],
       "matchStrings": [
         "#\\s*renovate:\\s*datasource=(?<datasource>\\S+)\\s+depName=(?<depName>\\S+)(?:\\s+registryUrl=(?<registryUrl>\\S+))?\\s*\\n\\s*chart_version\\s*=\\s*\"(?<currentValue>[^\"]+)\""
       ],
-      "versioningTemplate": "semver"
+      "versioningTemplate": "semver",
+      "depTypeTemplate": "helm_release"
     },
     {
       "customType": "regex",
-      "description": "Bump Authentik postgres_image_tag passed into the postgresql Terraform module (image tag lives in the module input, not a native terraform resource, so the native terraform manager can't see it).",
+      "description": "Bump postgres_image_tag passed into the postgresql Terraform module (image tag lives in the module input, not a native terraform resource, so the native terraform manager can't see it). Annotate the line above with a renovate comment.",
       "managerFilePatterns": ["/^terraform/(?:.*/)?main\\.tf$/"],
       "matchStrings": [
         "#\\s*renovate:\\s*datasource=(?<datasource>\\S+)\\s+depName=(?<depName>\\S+)(?:\\s+registryUrl=(?<registryUrl>\\S+))?\\s*\\n\\s*postgres_image_tag\\s*=\\s*\"(?<currentValue>[^\"]+)\""
       ],
-      "versioningTemplate": "docker"
+      "versioningTemplate": "docker",
+      "depTypeTemplate": "docker_image"
     }
   ],
 
@@ -68,15 +70,24 @@
       "groupName": "terraform core (helm, kubernetes, terraform version)"
     },
     {
-      "description": "Postgres images, both StatefulSets and the Authentik Terraform postgresql module: allow minor/patch bumps only, never major, since major postgres upgrades need manual migration steps (pg_upgrade, dump/restore, etc).",
+      "description": "Postgres images, both StatefulSets and the Terraform postgresql module: allow minor/patch bumps only, never major, since major postgres upgrades need manual migration steps (pg_upgrade, dump/restore, etc).",
       "matchManagers": ["kubernetes", "custom.regex"],
       "matchPackageNames": ["postgres"],
       "matchUpdateTypes": ["major"],
       "enabled": false
     },
     {
-      "description": "Auto-merge patch-level updates for Argo CD targetRevisions and Kubernetes manifest images. Terraform is intentionally excluded, both the native manager and the custom.regex Helm chart_version / postgres_image_tag trackers, so anything terraform-related always waits for manual review.",
+      "description": "Auto-merge patch-level updates for Argo CD targetRevisions and Kubernetes manifest images. Terraform-native and custom.regex-tracked deps are handled by the separate helm_release rule below and the docker-tag postgres tracker, which is intentionally left out of automerge entirely.",
       "matchManagers": ["kubernetes", "argocd"],
+      "matchUpdateTypes": ["patch"],
+      "automerge": true,
+      "automergeType": "pr",
+      "platformAutomerge": true
+    },
+    {
+      "description": "Auto-merge patch-level updates for Helm charts managed via Terraform: native helm_release resources (cert-manager, cilium, argo-cd itself, openebs, etc) plus the custom.regex-tracked authentik chart_version, matched by shared depType helm_release. Everything else Terraform tracks (providers, required_version, modules, the postgres_image_tag docker tag) is deliberately excluded and stays manual.",
+      "matchManagers": ["terraform", "custom.regex"],
+      "matchDepTypes": ["helm_release"],
       "matchUpdateTypes": ["patch"],
       "automerge": true,
       "automergeType": "pr",
