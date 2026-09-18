@@ -5,6 +5,7 @@
   "dependencyDashboardTitle": "Renovate Dependency Dashboard",
   "prHourlyLimit": 0,
   "prConcurrentLimit": 0,
+  "ignoreTests": true,
 
   "enabledManagers": ["terraform", "argocd", "kubernetes", "custom.regex"],
 
