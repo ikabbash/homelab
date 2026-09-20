@@ -12,7 +12,7 @@ spec:
       path: argocd/k8s/loki/manifests
     - repoURL: "https://grafana-community.github.io/helm-charts"
       chart: loki
-      targetRevision: "18.13.3"
+      targetRevision: "18.13.4"
       helm:
         releaseName: loki
         valueFiles:
