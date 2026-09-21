@@ -114,6 +114,9 @@ grafana:
       vault:
         gnetId: 12904
         datasource: Prometheus
+      trivy-operator:
+        gnetId: 16337
+        datasource: Prometheus
       argocd:
         url: https://raw.githubusercontent.com/argoproj/argo-cd/master/examples/dashboard.json
         datasource: Prometheus
@@ -128,9 +131,6 @@ grafana:
         datasource:
           - name: DS_LOKI
             value: Loki
-      trivy-operator:
-        gnetId: 16337
-        datasource: Prometheus
 
   datasources:
     datasources.yaml:
