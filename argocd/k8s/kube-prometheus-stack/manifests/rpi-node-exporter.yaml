@@ -1,0 +1,15 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  name: raspberry-pi-node-exporter
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  scrapeInterval: 30s
+  metricsPath: /metrics
+  staticConfigs:
+    - targets:
+        - pi-hole.homelab.ikabbash.com:9100
+      labels:
+        job: node-exporter
