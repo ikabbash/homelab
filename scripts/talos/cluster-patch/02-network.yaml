@@ -1,0 +1,16 @@
+# CNI and kube-proxy for Cilium (was: .cluster.network.cni.name: none and .cluster.proxy.disabled: true)
+apiVersion: v1alpha1
+kind: KubeFlannelCNIConfig
+$patch: delete
+---
+apiVersion: v1alpha1
+kind: KubeProxyConfig
+enabled: false
+---
+# Was cluster.network.podSubnets and cluster.network.serviceSubnets
+apiVersion: v1alpha1
+kind: KubeNetworkConfig
+podSubnets:
+  - 10.244.0.0/16
+serviceSubnets:
+  - 10.96.0.0/12

@@ -1,0 +1,58 @@
+machine:
+  certSANs:
+    - NODE_IP_ADDRESS
+    - NODE_HOSTNAME
+---
+# was: .machine.kubelet
+apiVersion: v1alpha1
+kind: KubeletConfig
+extraArgs:
+  rotate-certificates: "true"
+config:
+  imageMaximumGCAge: 720h
+defaultRuntimeSeccompProfileEnabled: true
+---
+# Was: .machine.install
+apiVersion: v1alpha1
+kind: UnattendedInstallConfig
+provisioning:
+  diskSelector:
+    match: 'disk.dev_path == "NODE_DISK_DEVICE"'
+  wipe: true
+---
+apiVersion: v1alpha1
+kind: HostnameConfig
+auto: off
+hostname: NODE_HOSTNAME
+---
+# Was: .machine.time
+apiVersion: v1alpha1
+kind: TimeSyncConfig
+ntp:
+  servers:
+    - time.cloudflare.com
+    - pool.ntp.org
+---
+# Was: .machine.features.hostDNS, forwardKubeDNSToHost must be false for Cilium without kube-proxy
+apiVersion: v1alpha1
+kind: ResolverConfig
+hostDNS:
+  enabled: true
+  forwardKubeDNSToHost: false
+---
+# Was: .machine.features.kubernetesTalosAPIAccess
+apiVersion: v1alpha1
+kind: KubeTalosAPIAccessConfig
+allowedRoles:
+  - os:admin
+allowedKubernetesNamespaces:
+  - kube-system
+---
+# Was: .machine.nodeLabels and .cluster.allowSchedulingOnControlPlanes
+apiVersion: v1alpha1
+kind: KubeNodeConfig
+labels:
+  openebs.io/engine: mayastor
+taints:
+  node-role.kubernetes.io/control-plane:
+    $patch: delete
