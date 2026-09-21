@@ -1,0 +1,211 @@
+# certSANs is added automatically for cluster VIP
+cluster:
+  network:
+    cni:
+      name: none  # Don't install default CNI - we'll install Cilium separately
+    podSubnets:
+      - 10.244.0.0/16  # IP range for pods (65,536 addresses)
+    serviceSubnets:
+      - 10.96.0.0/12   # IP range for services (1,048,576 addresses)
+  proxy:
+    disabled: true
+  apiServer:
+    admissionControl:
+        - name: PodSecurity
+          configuration:
+            apiVersion: pod-security.admission.config.k8s.io/v1alpha1
+            defaults:
+                audit: restricted
+                audit-version: latest
+                enforce: restricted
+                enforce-version: latest
+                warn: restricted
+                warn-version: latest
+            exemptions:
+              namespaces:
+                - openebs
+                - monitoring
+    auditPolicy:
+      apiVersion: audit.k8s.io/v1
+      kind: Policy
+      rules:
+        # Pod exec/attach/portforward
+        - level: RequestResponse
+          omitStages: ["RequestReceived"]
+          resources:
+            - group: ""
+              resources: ["pods/exec", "pods/attach", "pods/portforward"]
+          verbs: ["create", "get"]
+        # Node proxy
+        - level: RequestResponse
+          omitStages: ["RequestReceived"]
+          resources:
+            - group: ""
+              resources: ["nodes/proxy"]
+          verbs: ["*"]
+        # Secrets Metadata only for most verbs while dropping VSO's (using RequestResponse will cause data leakage)
+        - level: None
+          users:
+            - "system:serviceaccount:vault-secrets-operator-system:vault-secrets-operator-controller-manager"
+          resources:
+            - group: ""
+              resources: ["secrets"]
+          verbs: ["get", "list", "watch"]
+        - level: Metadata
+          omitStages: ["RequestReceived"]
+          resources:
+            - group: ""
+              resources: ["secrets"]
+          verbs: ["get", "list", "watch","create", "update", "patch", "delete"]
+        # Cilium network policy changes (security relevant)
+        - level: RequestResponse
+          omitStages: ["RequestReceived"]
+          resources:
+            - group: "cilium.io"
+              resources:
+                - ciliumnetworkpolicies
+                - ciliumclusterwidenetworkpolicies
+          verbs: ["create", "update", "patch", "delete"]
+        # RBAC changes
+        - level: RequestResponse
+          omitStages: ["RequestReceived"]
+          resources:
+            - group: "rbac.authorization.k8s.io"
+              resources:
+                - roles
+                - rolebindings
+                - clusterroles
+                - clusterrolebindings
+          verbs: ["create", "update", "patch", "delete"]
+        # Privilege escalation signals
+        - level: RequestResponse
+          omitStages: ["RequestReceived"]
+          resources:
+            - group: ""
+              resources: ["serviceaccounts"]
+          verbs: ["create", "update", "patch", "delete"]
+        - level: RequestResponse
+          omitStages: ["RequestReceived"]
+          resources:
+            - group: ""
+              resources: ["serviceaccounts/token"]
+          verbs: ["create"]
+        - level: Metadata
+          omitStages: ["RequestReceived"]
+          resources:
+            - group: "certificates.k8s.io"
+              resources: ["certificatesigningrequests"]
+          verbs: ["create", "update", "delete"]
+        # Workload writes
+        - level: RequestResponse
+          omitStages: ["RequestReceived"]
+          resources:
+            - group: ""
+              resources: ["pods"]
+          verbs: ["create"]
+        - level: Metadata
+          omitStages: ["RequestReceived"]
+          resources:
+            - group: "apps"
+              resources: ["deployments", "daemonsets", "statefulsets", "replicasets"]
+            - group: "batch"
+              resources: ["jobs", "cronjobs"]
+          verbs: ["create", "update", "patch", "delete"]
+        # Admin and cluster-admin user writes
+        - level: RequestResponse
+          omitStages: ["RequestReceived"]
+          users: ["admin"]
+          verbs: ["create", "update", "patch", "delete"]
+        - level: RequestResponse
+          omitStages: ["RequestReceived"]
+          userGroups: ["system:masters"]
+          verbs: ["create", "update", "patch", "delete"]
+        # Drop noisy system/health traffic
+        - level: None
+          users:
+            - "system:serviceaccount:kube-system:cilium"
+            - "system:serviceaccount:kube-system:cilium-operator"
+          verbs: ["get", "list", "watch"]
+        - level: None
+          resources:
+            - group: "cilium.io"
+              resources:
+                - ciliumnetworkpolicies
+                - ciliumclusterwidenetworkpolicies
+                - ciliumendpoints
+                - ciliumnodes
+                - ciliumidentities
+          verbs: ["get", "list", "watch"]
+        - level: None
+          users:
+            - "system:apiserver"
+            - "system:kube-scheduler"
+            - "system:kube-controller-manager"
+          verbs: ["get", "list", "watch"]
+        - level: None
+          userGroups: ["system:nodes"]
+          verbs: ["get", "list", "watch"]
+        - level: None
+          nonResourceURLs:
+            - /healthz*
+            - /readyz*
+            - /livez*
+            - /metrics
+        # Drop everything else
+        - level: None
+machine:
+  time:
+    servers:
+      - time.cloudflare.com
+      - pool.ntp.org
+  features:
+    kubernetesTalosAPIAccess:
+      enabled: true          # Allow Kubernetes to manage Talos
+      allowedRoles:
+        - os:admin           # Which roles can access Talos API
+      allowedKubernetesNamespaces:
+        - kube-system        # Only kube-system pods can manage OS to limit OS access
+    hostDNS:
+      enabled: true
+      forwardKubeDNSToHost: false  # Must be false for Cilium without kube-proxy. Why: Prevents DNS loops
+  kubelet:
+    extraArgs:
+      rotate-certificates: true
+    extraConfig:
+      imageMaximumGCAge: 720h
+    extraMounts:
+      - destination: /var/local
+        type: bind
+        source: /var/local
+        options:
+          - bind
+          - rshared
+          - rw
+  nodeLabels:
+    openebs.io/engine: "mayastor"
+  install:
+    disk: NODE_DISK_DEVICE
+    wipe: true
+  certSANs:
+    - NODE_IP_ADDRESS
+    - NODE_HOSTNAME
+  kernel:
+    modules:
+      - name: br_netfilter  # Required for Kubernetes networking
+      - name: nvme-tcp      # Required for OpenEBS Mayastor
+      - name: ext4          # Required for OpenEBS Mayastor
+      - name: xfs           # Required for OpenEBS Mayastor
+  sysctls:  # Kernel tuning parameters
+    net.core.somaxconn: "65535"         # Max queued connections
+    net.core.netdev_max_backlog: "4096" # Network device backlog
+    net.netfilter.nf_conntrack_max: "131072"  # Increase connection tracking to prevent "table full" errors
+    # CRITICAL for Cilium eBPF because it needs relaxed rp_filter. Drop to "0" if you see asymmetric routing
+    net.ipv4.conf.all.rp_filter: "2"      # Loose mode reverse path filtering
+    net.ipv4.conf.default.rp_filter: "2"  # Loose mode for new interfaces
+    fs.aio-max-nr: "1048576"   # Allows more concurrent disk operations for better performance
+    vm.nr_hugepages: "1024"    # 2MiB-sized Huge Pages must be supported and enabled on the Replicated PV Mayastor storage nodes for Mayastor
+---
+apiVersion: v1alpha1
+kind: HostnameConfig
+auto: off
+hostname: NODE_HOSTNAME
