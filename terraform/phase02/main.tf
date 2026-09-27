@@ -65,7 +65,7 @@ module "vso" {
   source          = "./modules/vso"
   chart_namespace = "vault-secrets-operator-system"
   # renovate: datasource=helm depName=vault-secrets-operator registryUrl=https://helm.releases.hashicorp.com
-  chart_version     = "1.5.1"
+  chart_version     = "1.6.0"
   vault_host        = local.vault_host
   vault_namespace   = module.vault.vault_namespace
   enable_monitoring = var.enable_monitoring
