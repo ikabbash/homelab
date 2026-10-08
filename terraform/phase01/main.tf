@@ -46,7 +46,7 @@ module "openebs" {
   source          = "./modules/openebs"
   chart_namespace = "openebs"
   # renovate: datasource=helm depName=openebs registryUrl=https://openebs.github.io/openebs
-  chart_version   = "4.6.1"
+  chart_version   = "4.6.2"
 
   depends_on = [module.cilium]
 }
