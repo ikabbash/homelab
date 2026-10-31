@@ -93,6 +93,15 @@
       "automerge": true,
       "automergeType": "pr",
       "platformAutomerge": true
+    },
+    {
+      "description": "Auto-merge minor and patch updates of the renovate image used by the cronjob. Its tags (e.g. 44.192 to 44.198) are classified as minor even though they are effectively patch releases. Major bumps (44.x to 45.x) stay manual.",
+      "matchManagers": ["kubernetes"],
+      "matchPackageNames": ["renovate/renovate", "ghcr.io/renovatebot/renovate"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "automerge": true,
+      "automergeType": "pr",
+      "platformAutomerge": true
     }
   ]
 }
